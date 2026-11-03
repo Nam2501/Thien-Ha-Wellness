@@ -255,6 +255,7 @@ h3 { font-size: 24px; color: var(--navy); }
 .field input[type="date"] { color-scheme: dark; }
 .field .invalid { border-color: #e7a3a3; }
 .form-msg { grid-column: 1 / -1; min-height: 1em; font-size: 14px; color: var(--mist); text-align: center; }
+.form-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
 
 /* ---------- Bài viết (thẻ) ---------- */
 .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }

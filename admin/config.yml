@@ -37,6 +37,7 @@ collections:
           - { name: name, label: "Tên spa", widget: string }
           - { name: phone, label: "Hotline (hiển thị)", widget: string, hint: "vd 0909 123 456 — tên, địa chỉ, SĐT phải khớp hồ sơ Google Maps (NAP)." }
           - { name: zalo, label: "Số Zalo (viết liền)", widget: string }
+          - { name: zaloLink, label: "Link Zalo đầy đủ (nên điền)", widget: string, required: false, hint: "Link zalo.me/<số> chỉ mở được khi tài khoản cho phép người lạ tìm bằng số điện thoại. Dán link chia sẻ trang cá nhân hoặc link Zalo OA vào đây để luôn mở được." }
           - { name: email, label: "Email", widget: string, required: false }
           - { name: address, label: "Địa chỉ", widget: string, hint: "Ghi đầy đủ, giống hệt địa chỉ trên Google Business Profile." }
           - { name: hours, label: "Giờ mở cửa (hiển thị)", widget: string }

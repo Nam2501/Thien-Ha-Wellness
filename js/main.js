@@ -19,7 +19,8 @@
     DATA = { site, services: assignSlugs(services.items), faq: faq.items || [], gallery: gallery.items || [], posts: assignSlugs(posts.items) };
   }
   const CFG = DATA.site || {}, SERVICES = DATA.services || [];
-  const LINKS = { tel: "tel:" + String(CFG.phone || "").replace(/[^\d+]/g, ""), zalo: "https://zalo.me/" + (CFG.zalo || ""), map: CFG.mapUrl, review: CFG.reviewUrl };
+  // Ưu tiên link Zalo đầy đủ (link chia sẻ trang cá nhân / Zalo OA) vì zalo.me/<số> chỉ mở được khi tài khoản cho phép tìm bằng số điện thoại
+  const LINKS = { tel: "tel:" + String(CFG.phone || "").replace(/[^\d+]/g, ""), zalo: CFG.zaloLink || "https://zalo.me/" + (CFG.zalo || ""), map: CFG.mapUrl, review: CFG.reviewUrl };
 
   /* ---------- Điền thông tin (khi chưa build) ---------- */
   if (!embedded) {
@@ -88,7 +89,9 @@
       let copied = false;
       try { await navigator.clipboard.writeText(msg); copied = true; } catch (_) {}
       window.open(LINKS.zalo, "_blank", "noopener");
-      $("#form-msg").textContent = copied ? "Đã sao chép thông tin đặt lịch — hãy dán vào Zalo và gửi cho Thiên Hà." : "Vui lòng nhắn Zalo hoặc gọi hotline để xác nhận lịch.";
+      // Luôn có nút dự phòng: Zalo không mở được (chặn popup, tài khoản ẩn số) thì khách vẫn gọi được
+      $("#form-msg").innerHTML = (copied ? "Đã sao chép thông tin đặt lịch — dán vào Zalo và gửi cho Thiên Hà." : "Vui lòng gửi thông tin đặt lịch cho Thiên Hà qua Zalo hoặc gọi hotline.") +
+        `<span class="form-actions"><a class="btn btn-pearl btn-sm" href="${esc(LINKS.zalo)}" target="_blank" rel="noopener">Mở Zalo</a><a class="btn btn-ghost btn-sm" href="${esc(LINKS.tel)}">Gọi ${esc(CFG.phone || "")}</a></span>`;
       toast("Cảm ơn bạn! Thiên Hà sẽ liên hệ xác nhận lịch sớm.");
       form.reset();
     });

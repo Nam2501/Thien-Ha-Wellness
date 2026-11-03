@@ -35,7 +35,7 @@ const FAQ = read("faq").items || [], GALLERY = read("gallery").items || [];
 const ctx = { ...SEO, siteUrl: SITE_URL };
 const full = p => SITE_URL + p;
 const img = p => p ? (/^https?:/.test(p) ? p : full(absPath(p))) : "";
-const LINKS = { tel: "tel:" + String(SITE.phone || "").replace(/[^\d+]/g, ""), zalo: "https://zalo.me/" + (SITE.zalo || ""), map: SITE.mapUrl || "#", review: SITE.reviewUrl || "#" };
+const LINKS = { tel: "tel:" + String(SITE.phone || "").replace(/[^\d+]/g, ""), zalo: SITE.zaloLink || "https://zalo.me/" + (SITE.zalo || ""), map: SITE.mapUrl || "#", review: SITE.reviewUrl || "#" };
 const isoDate = d => { const m = String(d || "").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}` : ""; };
 const ld = o => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, "\\u003c")}</script>`;
 
