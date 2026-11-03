@@ -250,16 +250,21 @@
             <a class="contact-pill" data-cfg-href="zalo" href="#" target="_blank" rel="noopener"><b class="zalo-txt">Zalo</b><span>Nhắn tin tư vấn</span></a>
           </div>
         </div>
-        <form class="booking-form" id="booking-form" novalidate>
-          <div class="field"><label for="f-name">Họ và tên *</label><input id="f-name" name="name" required autocomplete="name"></div>
-          <div class="field"><label for="f-phone">Số điện thoại *</label><input id="f-phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel"></div>
-          <div class="field full"><label for="f-service">Liệu trình</label><select id="f-service" name="service"></select></div>
-          <div class="field"><label for="f-date">Ngày</label><input id="f-date" name="date" type="date"></div>
-          <div class="field"><label for="f-time">Giờ</label><select id="f-time" name="time"></select></div>
-          <div class="field full"><label for="f-note">Ghi chú</label><textarea id="f-note" name="note" rows="3" placeholder="Vùng cần tập trung, mong muốn kỹ thuật viên nam/nữ…"></textarea></div>
-          <button class="btn btn-pearl full" type="submit">Gửi yêu cầu đặt lịch</button>
+        <!-- Form gửi thẳng về Netlify Forms (Netlify → Forms → "dat-lich"); spa nhận email mỗi lịch mới -->
+        <form class="booking-form" id="booking-form" name="dat-lich" method="POST" action="/dat-lich-thanh-cong/" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+          <input type="hidden" name="form-name" value="dat-lich">
+          <input type="hidden" name="lieu_trinh" id="f-service-text">
+          <p class="hp" aria-hidden="true"><label>Không điền ô này <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+          <div class="field"><label for="f-name">Họ và tên *</label><input id="f-name" name="ho_ten" required autocomplete="name"></div>
+          <div class="field"><label for="f-phone">Số điện thoại *</label><input id="f-phone" name="so_dien_thoai" type="tel" required autocomplete="tel" inputmode="tel"></div>
+          <div class="field full"><label for="f-service">Liệu trình</label><select id="f-service"></select></div>
+          <div class="field"><label for="f-date">Ngày</label><input id="f-date" name="ngay" type="date"></div>
+          <div class="field"><label for="f-time">Giờ</label><select id="f-time" name="gio"></select></div>
+          <div class="field full"><label for="f-note">Ghi chú</label><textarea id="f-note" name="ghi_chu" rows="3" placeholder="Vùng cần tập trung, mong muốn kỹ thuật viên nam/nữ…"></textarea></div>
+          <button class="btn btn-pearl full" type="submit" id="f-submit">Gửi yêu cầu đặt lịch</button>
           <p class="form-msg" id="form-msg" role="status"></p>
         </form>
+        <div class="booking-done" id="booking-done" hidden tabindex="-1"></div>
       </div>
     </section>
   </main>

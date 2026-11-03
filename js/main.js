@@ -73,27 +73,43 @@
     const dv = new URLSearchParams(location.search).get("dv");
     if (dv && [...$("#f-service").options].some(o => o.value === dv)) $("#f-service").value = dv;
 
+    const done = $("#booking-done"), btn = $("#f-submit");
+    const contactBtns = `<span class="form-actions"><a class="btn btn-pearl btn-sm" href="${esc(LINKS.tel)}">Gọi ${esc(CFG.phone || "")}</a><a class="btn btn-ghost btn-sm" href="${esc(LINKS.zalo)}" target="_blank" rel="noopener">Nhắn Zalo</a></span>`;
+
     form.addEventListener("submit", async e => {
       e.preventDefault();
-      const d = Object.fromEntries(new FormData(form));
-      const phoneOk = /^(\+?84|0)\d{9,10}$/.test(d.phone.replace(/[\s.-]/g, ""));
-      form.name.classList.toggle("invalid", !d.name.trim());
-      form.phone.classList.toggle("invalid", !phoneOk);
-      if (!d.name.trim() || !phoneOk) { $("#form-msg").textContent = "Vui lòng nhập họ tên và số điện thoại hợp lệ."; return; }
-      const [sid, mins] = (d.service || "").split("|"), s = SERVICES.find(x => x.id === sid);
-      const msg = [`ĐẶT LỊCH — ${CFG.name || "Thiên Hà Wellness"}`, `Khách: ${d.name}`, `SĐT: ${d.phone}`,
-        `Liệu trình: ${s ? `${s.name} (${mins} phút)` : "Cần tư vấn"}`,
-        `Thời gian: ${d.date ? d.date.split("-").reverse().join("/") : "Linh hoạt"} ${d.time || ""}`.trim(),
-        d.note ? `Ghi chú: ${d.note}` : ""].filter(Boolean).join("\n");
-      // Website tĩnh chưa có máy chủ: sao chép nội dung và mở Zalo để khách gửi cho spa
-      let copied = false;
-      try { await navigator.clipboard.writeText(msg); copied = true; } catch (_) {}
-      window.open(LINKS.zalo, "_blank", "noopener");
-      // Luôn có nút dự phòng: Zalo không mở được (chặn popup, tài khoản ẩn số) thì khách vẫn gọi được
-      $("#form-msg").innerHTML = (copied ? "Đã sao chép thông tin đặt lịch — dán vào Zalo và gửi cho Thiên Hà." : "Vui lòng gửi thông tin đặt lịch cho Thiên Hà qua Zalo hoặc gọi hotline.") +
-        `<span class="form-actions"><a class="btn btn-pearl btn-sm" href="${esc(LINKS.zalo)}" target="_blank" rel="noopener">Mở Zalo</a><a class="btn btn-ghost btn-sm" href="${esc(LINKS.tel)}">Gọi ${esc(CFG.phone || "")}</a></span>`;
-      toast("Cảm ơn bạn! Thiên Hà sẽ liên hệ xác nhận lịch sớm.");
-      form.reset();
+      const name = $("#f-name").value.trim(), phone = $("#f-phone").value.trim();
+      const phoneOk = /^(\+?84|0)\d{9,10}$/.test(phone.replace(/[\s.-]/g, ""));
+      $("#f-name").classList.toggle("invalid", !name);
+      $("#f-phone").classList.toggle("invalid", !phoneOk);
+      if (!name || !phoneOk) { $("#form-msg").textContent = "Vui lòng nhập họ tên và số điện thoại hợp lệ."; (name ? $("#f-phone") : $("#f-name")).focus(); return; }
+
+      // Ghi liệu trình dạng chữ dễ đọc để spa thấy ngay trong email / Netlify
+      const sel = $("#f-service"), service = sel.value ? sel.selectedOptions[0].text : "Chưa chọn — cần tư vấn";
+      $("#f-service-text").value = service;
+      const date = $("#f-date").value ? $("#f-date").value.split("-").reverse().join("/") : "Linh hoạt";
+      const when = `${date}${$("#f-time").value ? " · " + $("#f-time").value : ""}`;
+
+      btn.disabled = true; btn.textContent = "Đang gửi…"; $("#form-msg").textContent = "";
+      try {
+        // Gửi thẳng tới Netlify Forms — khách không phải nhắn lại ở đâu khác
+        const res = await fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(new FormData(form)).toString() });
+        if (!res.ok) throw new Error(res.status);
+        done.innerHTML = `<span class="done-ic" aria-hidden="true">✓</span>
+          <h3>Thiên Hà đã nhận lịch của bạn</h3>
+          <p>Cảm ơn <b>${esc(name)}</b>! Chúng tôi sẽ gọi tới <b>${esc(phone)}</b> để xác nhận lịch trong giờ làm việc.</p>
+          <dl class="done-sum"><dt>Liệu trình</dt><dd>${esc(service)}</dd><dt>Thời gian</dt><dd>${esc(when)}</dd></dl>
+          <p class="done-note">Cần đổi lịch hoặc muốn trao đổi ngay?</p>${contactBtns}
+          <button type="button" class="link-again" id="book-again">Đặt thêm lịch khác</button>`;
+        form.hidden = true; done.hidden = false; done.focus();
+        $("#book-again").onclick = () => { form.reset(); form.hidden = false; done.hidden = true; $("#f-name").focus(); };
+        toast("Đã gửi lịch thành công!");
+      } catch (_) {
+        // Mất mạng / máy chủ lỗi: giữ nguyên thông tin khách đã nhập, đưa cách liên hệ trực tiếp
+        $("#form-msg").innerHTML = `Chưa gửi được do lỗi kết nối. Vui lòng bấm gửi lại, hoặc liên hệ trực tiếp:${contactBtns}`;
+      } finally {
+        btn.disabled = false; btn.textContent = "Gửi yêu cầu đặt lịch";
+      }
     });
   }
 

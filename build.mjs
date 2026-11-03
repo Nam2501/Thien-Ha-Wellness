@@ -177,6 +177,13 @@ write("index.html", home);
 const urls = [{ u: "/", noindex: homeMeta.noindex }];
 SERVICES.forEach(s => { write(path.join("lieu-trinh", s.slug, "index.html"), servicePage(s)); urls.push({ u: urlFor("services", s), noindex: !!s.seo?.noindex }); });
 write(path.join("bai-viet", "index.html"), blogPage()); urls.push({ u: "/bai-viet/" });
+// Trang cảm ơn khi trình duyệt tắt JavaScript (form gửi kiểu truyền thống) — không đưa vào sitemap
+write(path.join("dat-lich-thanh-cong", "index.html"), page({
+  meta: { title: `Đã nhận lịch | ${SITE.name}`, description: "Thiên Hà Wellness đã nhận yêu cầu đặt lịch của bạn.", url: full("/dat-lich-thanh-cong/"), noindex: true },
+  schemas: [],
+  hero: `<p class="eyebrow light">Đặt lịch</p><h1>Thiên Hà đã nhận lịch của bạn</h1><p class="lead">Cảm ơn bạn! Chúng tôi sẽ gọi điện xác nhận lịch trong giờ làm việc.</p>`,
+  body: `<div class="prose"><p>Cần đổi lịch hoặc muốn trao đổi ngay, vui lòng gọi <a href="${esc(LINKS.tel)}">${esc(SITE.phone)}</a> hoặc <a href="${esc(LINKS.zalo)}" target="_blank" rel="noopener">nhắn Zalo</a>.</p><p><a class="btn btn-navy" href="/">Về trang chủ</a></p></div>`
+}));
 POSTS.forEach(p => { write(path.join("bai-viet", p.slug, "index.html"), postPage(p)); urls.push({ u: urlFor("posts", p), lastmod: isoDate(p.updated || p.date), noindex: !!p.seo?.noindex }); });
 
 const sm = urls.filter(x => !x.noindex && !SEO.noindexAll).map(x => `  <url><loc>${esc(full(x.u))}</loc>${x.lastmod ? `<lastmod>${x.lastmod}</lastmod>` : ""}</url>`);
