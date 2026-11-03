@@ -1,0 +1,179 @@
+# ==========================================================
+#  TRANG QUẢN TRỊ (Decap CMS) — Thiên Hà Wellness
+#  Kho GitHub: https://github.com/Nam2501/Thien-Ha-Wellness
+# ==========================================================
+backend:
+  name: github
+  repo: Nam2501/Thien-Ha-Wellness
+  branch: main
+  commit_messages:
+    create: "Thêm {{collection}} “{{slug}}”"
+    update: "Cập nhật {{collection}} “{{slug}}”"
+    delete: "Xóa {{collection}} “{{slug}}”"
+    uploadMedia: "Tải ảnh “{{path}}”"
+    deleteMedia: "Xóa ảnh “{{path}}”"
+
+# Sửa thử trên máy: mở cửa sổ lệnh tại thư mục web và gõ  npx decap-server@3.11.3
+local_backend: true
+
+locale: vi
+site_url: /
+display_url: /
+logo_url: /images/favicon.svg
+
+media_folder: images/uploads
+public_folder: images/uploads
+
+collections:
+  # ---------------- THÔNG TIN SPA ----------------
+  - name: settings
+    label: "Thông tin spa"
+    editor: { preview: false }
+    files:
+      - name: site
+        label: "Liên hệ, giờ mở cửa & banner"
+        file: data/site.json
+        fields:
+          - { name: name, label: "Tên spa", widget: string }
+          - { name: phone, label: "Hotline (hiển thị)", widget: string, hint: "vd 0909 123 456 — tên, địa chỉ, SĐT phải khớp hồ sơ Google Maps (NAP)." }
+          - { name: zalo, label: "Số Zalo (viết liền)", widget: string }
+          - { name: email, label: "Email", widget: string, required: false }
+          - { name: address, label: "Địa chỉ", widget: string, hint: "Ghi đầy đủ, giống hệt địa chỉ trên Google Business Profile." }
+          - { name: hours, label: "Giờ mở cửa (hiển thị)", widget: string }
+          - { name: mapUrl, label: "Link Google Maps của spa", widget: string }
+          - { name: reviewUrl, label: "Link viết đánh giá Google", widget: string, hint: "Lấy trong Google Business Profile → Xin đánh giá." }
+          - { name: facebook, label: "Link Facebook", widget: string, required: false }
+          - { name: heroEyebrow, label: "Banner — dòng chữ nhỏ", widget: string }
+          - { name: heroTitle, label: "Banner — tiêu đề lớn", widget: string, hint: "Đặt chữ trong dấu * để in nghiêng, vd: Thả trôi mệt mỏi, *như dòng nước* về biển lặng." }
+          - { name: heroLead, label: "Banner — đoạn mô tả", widget: text }
+
+  # ---------------- SEO TOÀN WEBSITE ----------------
+  - name: seo
+    label: "SEO toàn website"
+    editor: { preview: true }
+    files:
+      - name: seo
+        label: "Cài đặt SEO"
+        file: data/seo.json
+        fields:
+          - { name: siteUrl, label: "Tên miền chính", widget: string, required: false, hint: "vd https://thienhawellness.vn — không có dấu / ở cuối." }
+          - { name: titleTemplate, label: "Mẫu tiêu đề", widget: string, hint: "%s là tiêu đề từng trang." }
+          - { name: defaultImage, label: "Ảnh chia sẻ mặc định (1200×630, JPG/PNG)", widget: image, required: false }
+          - { name: gscVerification, label: "Mã xác minh Google Search Console", widget: string, required: false }
+          - { name: ga4Id, label: "Mã Google Analytics 4 (G-…)", widget: string, required: false }
+          - { name: noindexAll, label: "Chặn Google lập chỉ mục TOÀN website", widget: boolean, default: false, hint: "Chỉ bật khi đang thử nghiệm." }
+          - name: business
+            label: "Thông tin doanh nghiệp cho Google (schema DaySpa)"
+            widget: object
+            collapsed: true
+            fields:
+              - { name: priceRange, label: "Khoảng giá", widget: string, required: false }
+              - { name: openingHours, label: "Giờ mở cửa (chuẩn máy đọc)", widget: string, required: false, hint: "vd Mo-Su 09:00-22:00" }
+              - { name: city, label: "Tỉnh / thành phố", widget: string, required: false }
+              - { name: latitude, label: "Vĩ độ", widget: string, required: false, hint: "Lấy trên Google Maps: bấm chuột phải vào vị trí spa." }
+              - { name: longitude, label: "Kinh độ", widget: string, required: false }
+          - name: pages
+            label: "SEO trang chủ & trang bài viết"
+            widget: object
+            fields:
+              - { name: home, label: "Trang chủ", widget: object, collapsed: true, fields: &pagefields [
+                  { name: title, label: "Tiêu đề", widget: string },
+                  { name: description, label: "Mô tả", widget: text },
+                  { name: keyword, label: "Từ khóa chính", widget: string, required: false },
+                  { name: image, label: "Ảnh chia sẻ", widget: image, required: false } ] }
+              - { name: blog, label: "Trang danh sách bài viết", widget: object, collapsed: true, fields: *pagefields }
+
+  # ---------------- NỘI DUNG ----------------
+  - name: content
+    label: "Nội dung"
+    editor: { preview: true }
+    files:
+      - name: services
+        label: "Liệu trình & bảng giá"
+        file: data/services.json
+        fields:
+          - name: items
+            label: "Danh sách liệu trình"
+            label_singular: "liệu trình"
+            widget: list
+            summary: "{{fields.name}}"
+            fields:
+              - { name: id, label: "Mã (không trùng, viết liền không dấu)", widget: string }
+              - { name: name, label: "Tên liệu trình", widget: string }
+              - &slug { name: slug, label: "Đường dẫn (URL)", widget: string, required: false, hint: "Để trống = tự tạo từ tên. Đã đăng thì không nên đổi." }
+              - { name: tag, label: "Nhãn (vd Phổ biến)", widget: string, required: false }
+              - { name: icon, label: "Biểu tượng (khi chưa có ảnh)", widget: select, options: [ { label: "Cổ vai", value: neck }, { label: "Lưng", value: back }, { label: "Đầu", value: head }, { label: "Giọt nước", value: drop }, { label: "Khuôn mặt", value: face }, { label: "Ngôi sao", value: star } ], default: drop }
+              - { name: img, label: "Ảnh", widget: image, required: false }
+              - { name: desc, label: "Mô tả ngắn (hiện trên thẻ)", widget: text }
+              - { name: content, label: "Nội dung trang chi tiết", widget: text, hint: "Cách 1 dòng trống giữa các đoạn. Tiêu đề phụ: '## '. Danh sách: mỗi dòng '- '." }
+              - name: prices
+                label: "Bảng giá theo thời lượng"
+                label_singular: "mức giá"
+                widget: list
+                summary: "{{fields.min}} phút — {{fields.price}}đ"
+                fields:
+                  - { name: min, label: "Thời lượng (phút)", widget: number, value_type: int, min: 10 }
+                  - { name: price, label: "Giá (đồng)", widget: number, value_type: int, min: 0 }
+              - &seo
+                name: seo
+                label: "SEO"
+                widget: object
+                collapsed: true
+                required: false
+                hint: "Điểm SEO và bản xem trước Google hiện ở khung bên phải."
+                fields:
+                  - { name: keyword, label: "Từ khóa chính", widget: string, required: false, hint: "vd massage cổ vai gáy quận 1 — mỗi trang một từ khóa." }
+                  - { name: title, label: "Tiêu đề SEO", widget: string, required: false, hint: "Để trống = dùng tên. Nên 30–60 ký tự." }
+                  - { name: description, label: "Mô tả SEO", widget: text, required: false, hint: "110–160 ký tự, có từ khóa và lời mời đặt lịch." }
+                  - { name: image, label: "Ảnh chia sẻ", widget: image, required: false }
+                  - { name: noindex, label: "Ẩn trang khỏi Google", widget: boolean, default: false, required: false }
+
+      - name: posts
+        label: "Bài viết"
+        file: data/posts.json
+        fields:
+          - name: items
+            label: "Danh sách bài viết"
+            label_singular: "bài viết"
+            widget: list
+            summary: "{{fields.title}} — {{fields.date}}"
+            fields:
+              - { name: id, label: "Mã (không trùng, vd p2)", widget: string }
+              - { name: title, label: "Tiêu đề", widget: string }
+              - *slug
+              - { name: excerpt, label: "Mô tả ngắn", widget: text }
+              - { name: date, label: "Ngày đăng (dd/mm/yyyy)", widget: string }
+              - { name: updated, label: "Ngày cập nhật (dd/mm/yyyy)", widget: string, required: false }
+              - { name: img, label: "Ảnh đại diện", widget: image, required: false }
+              - { name: content, label: "Nội dung", widget: text, hint: "Cách 1 dòng trống giữa các đoạn. Tiêu đề phụ: '## '. Danh sách: '- '." }
+              - { name: author, label: "Tác giả", widget: string, required: false }
+              - { name: reviewer, label: "Người tham vấn chuyên môn (nếu có, người thật)", widget: string, required: false }
+              - { name: sources, label: "Nguồn tham khảo", label_singular: "nguồn", widget: list, required: false, field: { name: source, label: "Nguồn", widget: string } }
+              - *seo
+
+      - name: faq
+        label: "Hỏi đáp"
+        file: data/faq.json
+        fields:
+          - name: items
+            label: "Câu hỏi"
+            label_singular: "câu hỏi"
+            widget: list
+            summary: "{{fields.q}}"
+            fields:
+              - { name: q, label: "Câu hỏi", widget: string }
+              - { name: a, label: "Trả lời", widget: text }
+
+      - name: gallery
+        label: "Không gian (5 ảnh)"
+        file: data/gallery.json
+        fields:
+          - name: items
+            label: "Ảnh không gian"
+            label_singular: "ảnh"
+            widget: list
+            max: 5
+            summary: "{{fields.caption}}"
+            fields:
+              - { name: caption, label: "Chú thích", widget: string }
+              - { name: img, label: "Ảnh", widget: image, required: false }

@@ -1,0 +1,29 @@
+﻿{
+  "siteUrl": "",
+  "titleTemplate": "%s | Thiên Hà Wellness",
+  "defaultImage": "",
+  "gscVerification": "",
+  "ga4Id": "",
+  "noindexAll": false,
+  "business": {
+    "priceRange": "250.000đ – 1.250.000đ",
+    "openingHours": "Mo-Su 09:00-22:00",
+    "city": "",
+    "latitude": "",
+    "longitude": ""
+  },
+  "pages": {
+    "home": {
+      "title": "Thiên Hà Wellness — Spa & Massage trị liệu thư giãn",
+      "description": "Thiên Hà Wellness — không gian spa yên tĩnh với massage trị liệu cổ vai gáy, lưng, gội đầu dưỡng sinh và liệu trình toàn thân. Đặt lịch nhanh qua hotline hoặc Zalo.",
+      "keyword": "spa massage trị liệu",
+      "image": ""
+    },
+    "blog": {
+      "title": "Góc chăm sóc cơ thể",
+      "description": "Kiến thức thư giãn, massage và chăm sóc cơ thể tại nhà từ Thiên Hà Wellness — giúp bạn hiểu cơ thể và chọn liệu trình phù hợp.",
+      "keyword": "",
+      "image": ""
+    }
+  }
+}

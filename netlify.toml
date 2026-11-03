@@ -1,0 +1,12 @@
+# Netlify tự chạy build mỗi khi có thay đổi trên GitHub (kể cả khi sửa trong /admin)
+[build]
+  command = "node build.mjs"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

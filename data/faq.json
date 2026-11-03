@@ -1,0 +1,9 @@
+{
+  "items": [
+    { "q": "Tôi nên chọn liệu trình nào cho lần đầu?", "a": "Nếu mỏi do ngồi làm việc lâu, liệu trình cổ vai gáy 60 phút là lựa chọn phổ biến. Nếu muốn thư giãn tổng thể, hãy chọn massage tinh dầu toàn thân 90 phút. Kỹ thuật viên sẽ tư vấn thêm khi bạn đến." },
+    { "q": "Có cần đặt lịch trước không?", "a": "Nên đặt trước ít nhất 2–3 giờ, đặc biệt vào buổi tối và cuối tuần, để chúng tôi chuẩn bị phòng và kỹ thuật viên phù hợp." },
+    { "q": "Tôi có thể chọn kỹ thuật viên nam hoặc nữ không?", "a": "Có. Hãy ghi chú khi đặt lịch, chúng tôi sẽ sắp xếp theo mong muốn của bạn nếu còn lịch trống." },
+    { "q": "Phụ nữ mang thai hoặc người có bệnh lý có dùng dịch vụ được không?", "a": "Vui lòng báo trước tình trạng sức khỏe khi đặt lịch. Với một số trường hợp, bạn nên hỏi ý kiến bác sĩ trước; liệu trình tại spa mang tính thư giãn, chăm sóc, không thay thế điều trị y khoa." },
+    { "q": "Tôi có bị mời mua gói liệu trình không?", "a": "Không. Bạn hoàn toàn có thể sử dụng từng buổi lẻ theo nhu cầu." }
+  ]
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Quản trị — Thiên Hà Wellness</title>
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <style>
+    /* Nút mở Bảng điều khiển SEO, nổi ở góc dưới trái */
+    .seo-fab { position: fixed; left: 18px; bottom: 18px; z-index: 9999; display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 18px; border-radius: 999px; background: #0d2440; color: #fff; font: 600 14px system-ui, sans-serif;
+      text-decoration: none; box-shadow: 0 8px 24px rgba(7,20,38,.3); }
+    .seo-fab:hover { background: #174b6d; }
+    .seo-fab i { width: 9px; height: 9px; border-radius: 50%; background: #9cc3d6; }
+  </style>
+</head>
+<body>
+  <a class="seo-fab" href="/admin/seo.html"><i></i>Bảng điều khiển SEO</a>
+  <!-- Decap CMS: đọc cấu hình từ admin/config.yml -->
+  <script src="https://unpkg.com/decap-cms@3.16.3/dist/decap-cms.js"></script>
+  <script src="/js/render.js"></script>
+  <script src="/admin/seo-check.js"></script>
+  <script src="/admin/preview.js"></script>
+</body>
+</html>

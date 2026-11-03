@@ -1,0 +1,52 @@
+{
+  "items": [
+    {
+      "id": "co-vai-gay", "slug": "", "tag": "Phổ biến", "icon": "neck", "img": "",
+      "name": "Massage cổ vai gáy",
+      "desc": "Tập trung giải tỏa vùng cổ, vai, gáy — phù hợp người ngồi máy tính nhiều.",
+      "content": "Liệu trình dành cho người thường xuyên ngồi máy tính, lái xe hoặc cúi điện thoại nhiều giờ mỗi ngày.\n\n## Liệu trình gồm\n- Trò chuyện ngắn để biết vùng mỏi và lực tay mong muốn\n- Chườm khăn ấm vùng cổ vai\n- Day, miết và ấn dọc cơ cổ, vai, bả vai\n- Thư giãn da đầu và kết thúc bằng trà thảo mộc\n\n## Phù hợp với ai\nNgười cứng cổ, nặng vai sau giờ làm việc. Nếu bạn đang có chấn thương hoặc bệnh lý cột sống, hãy báo trước để kỹ thuật viên điều chỉnh, hoặc hỏi ý kiến bác sĩ.",
+      "prices": [ { "min": 60, "price": 350000 }, { "min": 90, "price": 480000 } ],
+      "seo": { "keyword": "massage cổ vai gáy", "title": "", "description": "", "image": "", "noindex": false }
+    },
+    {
+      "id": "lung", "slug": "", "tag": "Trị liệu", "icon": "back", "img": "",
+      "name": "Massage lưng chuyên sâu",
+      "desc": "Day ấn dọc cơ lưng và thắt lưng, kết hợp chườm đá nóng giúp cơ thả lỏng.",
+      "content": "Dành cho người mỏi lưng sau ngày dài đứng hoặc ngồi.\n\n## Liệu trình gồm\n- Tư vấn vùng cần tập trung\n- Chườm đá nóng dọc lưng\n- Massage chuyên sâu cơ lưng, thắt lưng\n- Nghỉ ngơi và trà ấm",
+      "prices": [ { "min": 60, "price": 380000 }, { "min": 90, "price": 520000 } ],
+      "seo": { "keyword": "", "title": "", "description": "", "image": "", "noindex": false }
+    },
+    {
+      "id": "goi-dau", "slug": "", "tag": "Thư giãn", "icon": "head", "img": "",
+      "name": "Gội đầu dưỡng sinh",
+      "desc": "Gội thảo mộc, bấm huyệt đầu – cổ, xả nước ấm; giúp đầu óc nhẹ nhõm.",
+      "content": "Gội đầu bằng nước thảo mộc ấm, kết hợp massage da đầu, cổ và vai.\n\n## Liệu trình gồm\n- Làm sạch tóc và da đầu bằng thảo mộc\n- Massage đầu, cổ, vai gáy\n- Xả nước ấm, sấy khô",
+      "prices": [ { "min": 45, "price": 250000 }, { "min": 60, "price": 320000 }, { "min": 90, "price": 450000 } ],
+      "seo": { "keyword": "", "title": "", "description": "", "image": "", "noindex": false }
+    },
+    {
+      "id": "toan-than", "slug": "", "tag": "Toàn thân", "icon": "drop", "img": "",
+      "name": "Massage tinh dầu toàn thân",
+      "desc": "Lực tay đều, chậm, kết hợp tinh dầu ấm — tái tạo năng lượng sau tuần dài.",
+      "content": "Massage toàn thân với tinh dầu ấm, nhịp tay chậm và đều để cơ thể thả lỏng hoàn toàn.",
+      "prices": [ { "min": 60, "price": 450000 }, { "min": 90, "price": 620000 }, { "min": 120, "price": 790000 } ],
+      "seo": { "keyword": "", "title": "", "description": "", "image": "", "noindex": false }
+    },
+    {
+      "id": "da-mat", "slug": "", "tag": "Chăm sóc da", "icon": "face", "img": "",
+      "name": "Chăm sóc da mặt thuần tự nhiên",
+      "desc": "Làm sạch, massage nâng cơ nhẹ nhàng và đắp mặt nạ dịu da.",
+      "content": "Chăm sóc da mặt nhẹ nhàng với các bước làm sạch, massage và đắp mặt nạ.",
+      "prices": [ { "min": 60, "price": 420000 }, { "min": 90, "price": 580000 } ],
+      "seo": { "keyword": "", "title": "", "description": "", "image": "", "noindex": false }
+    },
+    {
+      "id": "thien-ha", "slug": "", "tag": "Đặc trưng", "icon": "star", "img": "",
+      "name": "Dòng chảy Thiên Hà",
+      "desc": "Ngâm chân thảo mộc, massage toàn thân, đá ấm và gội đầu dưỡng sinh trong một hành trình.",
+      "content": "Liệu trình đặc trưng của Thiên Hà Wellness, kết hợp nhiều bước chăm sóc trong một buổi.\n\n## Hành trình\n- Ngâm chân thảo mộc\n- Massage tinh dầu toàn thân với đá ấm\n- Gội đầu dưỡng sinh\n- Trà thảo mộc và nghỉ ngơi",
+      "prices": [ { "min": 120, "price": 990000 }, { "min": 150, "price": 1250000 } ],
+      "seo": { "keyword": "", "title": "", "description": "", "image": "", "noindex": false }
+    }
+  ]
+}

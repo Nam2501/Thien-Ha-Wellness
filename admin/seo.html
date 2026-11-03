@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Bảng điều khiển SEO — Thiên Hà Wellness</title>
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/seo-admin.css">
+</head>
+<body class="sx-app">
+  <header class="sx-top">
+    <div class="sx-wrap">
+      <span class="sx-logo"><img src="/images/favicon.svg" alt=""></span>
+      <h1>Bảng điều khiển SEO<small>Thiên Hà Wellness · số liệu theo nội dung đang đăng</small></h1>
+      <nav>
+        <a class="sx-btn ghost" href="/" target="_blank">Xem website</a>
+        <a class="sx-btn gold" href="/admin/#/">Sửa nội dung</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="sx-wrap sx-main">
+    <section class="sx-card sx-overview">
+      <div class="sx-ring" id="ring"></div>
+      <div><div class="sx-kpis" id="kpis"></div><div class="sx-todo" id="todo"></div></div>
+    </section>
+
+    <div class="sx-grid2">
+      <section class="sx-card"><h2>SEO địa phương &amp; kỹ thuật</h2><div class="sx-tech" id="tech"><p class="sx-note">Đang kiểm tra…</p></div></section>
+      <section class="sx-card"><h2>Bản đồ từ khóa <small>mỗi từ khóa chỉ nên có 1 trang</small></h2><div class="sx-kwlist" id="kw"></div></section>
+    </div>
+
+    <section class="sx-card">
+      <h2>Điểm từng trang <small id="count"></small></h2>
+      <div class="sx-toolbar">
+        <div id="types"></div>
+        <input class="sx-input" id="q" placeholder="Tìm theo tên, đường dẫn, từ khóa…">
+        <select class="sx-select" id="sort"><option value="asc">Điểm thấp trước</option><option value="desc">Điểm cao trước</option><option value="name">Theo tên</option></select>
+      </div>
+      <div class="sx-table-wrap">
+        <table class="sx-table">
+          <thead><tr><th>Trang</th><th>Loại</th><th>Từ khóa chính</th><th class="sx-hide-sm">Tiêu đề</th><th class="sx-hide-sm">Mô tả</th><th class="sx-hide-sm">Số chữ</th><th>Điểm</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="sx-note">Điểm SEO là thang đo nội bộ dựa trên hướng dẫn của Google về tiêu đề, mô tả, nội dung hữu ích và thông tin doanh nghiệp địa phương. Điểm cao không bảo đảm thứ hạng; vị trí thật xem trong Google Search Console và Google Business Profile.</p>
+  </main>
+
+  <div class="sx-shade" id="shade"></div>
+  <aside class="sx-drawer" id="drawer" aria-hidden="true">
+    <header><span id="d-score"></span><h3 id="d-title"></h3><button class="sx-x" id="d-close" aria-label="Đóng">✕</button></header>
+    <div class="sx-dbody" id="d-body"></div>
+  </aside>
+
+  <script src="/js/render.js"></script>
+  <script src="/admin/seo-check.js"></script>
+  <script src="/admin/seo.js"></script>
+</body>
+</html>

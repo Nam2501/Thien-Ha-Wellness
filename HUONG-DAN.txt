@@ -1,0 +1,40 @@
+THIÊN HÀ WELLNESS — HƯỚNG DẪN SỬ DỤNG
+
+1. XEM WEBSITE TRÊN MÁY
+   - Bấm đúp file xem-web.bat → trình duyệt mở http://localhost:8080
+   - (Cần đã cài Node.js và Python.)
+
+2. TRANG QUẢN TRỊ /admin  (sau khi đưa web lên Netlify)
+   - Mở https://<tên-miền>/admin → đăng nhập GitHub.
+   - Thông tin spa:   hotline, Zalo, địa chỉ, giờ mở cửa, link Google Maps, chữ trên banner.
+   - SEO toàn website: tên miền, mã Search Console, GA4, thông tin doanh nghiệp cho Google.
+   - Nội dung:
+       · Liệu trình & bảng giá (mỗi liệu trình có trang riêng /lieu-trinh/...)
+       · Bài viết (trang /bai-viet/...) — viết bài để lên Google với từ khóa mới
+       · Hỏi đáp, Không gian (5 ảnh)
+   - Khi soạn liệu trình / bài viết: bấm mở nhóm "SEO", điền từ khóa, tiêu đề, mô tả.
+     Khung bên phải hiện điểm SEO và bản xem trước Google.
+   - Nút "Bảng điều khiển SEO" (góc trái) → xem điểm toàn website và việc cần làm.
+   - Bấm "Xuất bản" → khoảng 1–2 phút sau web tự cập nhật.
+
+3. SỬA THỬ TRÊN MÁY (không cần mạng)
+   - Mở cửa sổ lệnh trong thư mục này, gõ:  npx decap-server@3.11.3
+   - Chạy xem-web.bat, vào http://localhost:8080/admin  (sửa xong chạy lại xem-web.bat để build)
+
+4. ĐƯA LÊN MẠNG LẦN ĐẦU
+   - Tạo kho GitHub (vd thien-ha-wellness), đưa toàn bộ thư mục này lên.
+   - Sửa dòng "repo:" trong admin/config.yml thành <tài-khoản>/<tên-kho>.
+   - Netlify → Add new site → Import từ GitHub (Netlify tự đọc netlify.toml).
+   - Bật đăng nhập admin: Netlify → Site configuration → Access & security → OAuth → GitHub.
+
+5. NGUYÊN TẮC SEO CHO SPA
+   - Tên, địa chỉ, số điện thoại trên web phải GIỐNG HỆT Google Business Profile.
+   - Không viết "chữa khỏi", "đặc trị", "trị dứt điểm"… — spa không được quảng cáo chữa bệnh.
+   - Không tự viết đánh giá giả; dẫn khách đánh giá thật trên Google Maps.
+   - Ảnh nên là ảnh thật chụp tại spa.
+   - Đã đăng liệu trình / bài viết thì không đổi đường dẫn (URL).
+
+6. MÀU SẮC (mệnh Thủy)
+   - css/style.css, khối :root: xanh đêm, xanh biển (Thủy) + trắng ngọc, bạc (Kim sinh Thủy).
+
+Thiết kế: Umix
