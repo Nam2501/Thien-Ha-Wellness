@@ -1,14 +1,14 @@
 {
+  "facebook": "",
+  "zalo": "0782751714",
   "name": "Thiên Hà Wellness",
-  "phone": "0900 000 000",
-  "zalo": "0900000000",
-  "email": "lienhe@thienhawellness.vn",
-  "address": "Cập nhật địa chỉ spa",
+  "phone": "0782751714",
+  "heroEyebrow": "Spa & Massage trị liệu · Tinh thần của nước",
   "hours": "9:00 – 22:00 · Thứ 2 – Chủ nhật",
   "mapUrl": "https://www.google.com/maps/search/?api=1&query=Thi%C3%AAn+H%C3%A0+Wellness",
+  "address": "Cập nhật địa chỉ spa",
+  "heroLead": "Thiên Hà Wellness là khoảng lặng giữa nhịp sống vội — nơi đôi tay kỹ thuật viên, hương thảo mộc ấm và tiếng nước chảy giúp cơ thể thả lỏng, tâm trí dịu lại.",
   "reviewUrl": "https://www.google.com/maps/search/?api=1&query=Thi%C3%AAn+H%C3%A0+Wellness",
-  "facebook": "",
-  "heroEyebrow": "Spa & Massage trị liệu · Tinh thần của nước",
-  "heroTitle": "Thả trôi mệt mỏi, *như dòng nước* tìm về biển lặng.",
-  "heroLead": "Thiên Hà Wellness là khoảng lặng giữa nhịp sống vội — nơi đôi tay kỹ thuật viên, hương thảo mộc ấm và tiếng nước chảy giúp cơ thể thả lỏng, tâm trí dịu lại."
+  "email": "lienhe@thienhawellness.vn",
+  "heroTitle": "Thả trôi mệt mỏi, *như dòng nước* tìm về biển lặng."
 }
