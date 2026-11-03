@@ -250,10 +250,10 @@
             <a class="contact-pill" data-cfg-href="zalo" href="#" target="_blank" rel="noopener"><b class="zalo-txt">Zalo</b><span>Nhắn tin tư vấn</span></a>
           </div>
         </div>
-        <!-- Form gửi thẳng về Netlify Forms (Netlify → Forms → "dat-lich"); spa nhận email mỗi lịch mới -->
-        <form class="booking-form" id="booking-form" name="dat-lich" method="POST" action="/dat-lich-thanh-cong/" data-netlify="true" netlify-honeypot="bot-field" novalidate>
-          <input type="hidden" name="form-name" value="dat-lich">
+        <!-- Form gửi tới /api/dat-lich (netlify/functions/dat-lich.mjs) → tin nhắn Telegram cho spa -->
+        <form class="booking-form" id="booking-form" method="POST" action="/api/dat-lich" novalidate>
           <input type="hidden" name="lieu_trinh" id="f-service-text">
+          <input type="hidden" name="t" id="f-opened">
           <p class="hp" aria-hidden="true"><label>Không điền ô này <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
           <div class="field"><label for="f-name">Họ và tên *</label><input id="f-name" name="ho_ten" required autocomplete="name"></div>
           <div class="field"><label for="f-phone">Số điện thoại *</label><input id="f-phone" name="so_dien_thoai" type="tel" required autocomplete="tel" inputmode="tel"></div>

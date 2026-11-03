@@ -74,6 +74,8 @@
     if (dv && [...$("#f-service").options].some(o => o.value === dv)) $("#f-service").value = dv;
 
     const done = $("#booking-done"), btn = $("#f-submit");
+    $("#f-opened").value = Date.now();   // chống bot: gửi quá nhanh sau khi mở trang sẽ bị bỏ qua
+    if (new URLSearchParams(location.search).get("loi") === "dat-lich") $("#form-msg").textContent = "Chưa gửi được lịch, vui lòng thử lại hoặc gọi hotline.";
     const contactBtns = `<span class="form-actions"><a class="btn btn-pearl btn-sm" href="${esc(LINKS.tel)}">Gọi ${esc(CFG.phone || "")}</a><a class="btn btn-ghost btn-sm" href="${esc(LINKS.zalo)}" target="_blank" rel="noopener">Nhắn Zalo</a></span>`;
 
     form.addEventListener("submit", async e => {
@@ -92,9 +94,10 @@
 
       btn.disabled = true; btn.textContent = "Đang gửi…"; $("#form-msg").textContent = "";
       try {
-        // Gửi thẳng tới Netlify Forms — khách không phải nhắn lại ở đâu khác
-        const res = await fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(new FormData(form)).toString() });
-        if (!res.ok) throw new Error(res.status);
+        // Gửi thẳng tới /api/dat-lich → Telegram của spa — khách không phải nhắn lại ở đâu khác
+        const res = await fetch("/api/dat-lich", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok || !out.ok) throw new Error(out.error || res.status);
         done.innerHTML = `<span class="done-ic" aria-hidden="true">✓</span>
           <h3>Thiên Hà đã nhận lịch của bạn</h3>
           <p>Cảm ơn <b>${esc(name)}</b>! Chúng tôi sẽ gọi tới <b>${esc(phone)}</b> để xác nhận lịch trong giờ làm việc.</p>
@@ -102,7 +105,7 @@
           <p class="done-note">Cần đổi lịch hoặc muốn trao đổi ngay?</p>${contactBtns}
           <button type="button" class="link-again" id="book-again">Đặt thêm lịch khác</button>`;
         form.hidden = true; done.hidden = false; done.focus();
-        $("#book-again").onclick = () => { form.reset(); form.hidden = false; done.hidden = true; $("#f-name").focus(); };
+        $("#book-again").onclick = () => { form.reset(); $("#f-opened").value = Date.now(); form.hidden = false; done.hidden = true; $("#f-name").focus(); };
         toast("Đã gửi lịch thành công!");
       } catch (_) {
         // Mất mạng / máy chủ lỗi: giữ nguyên thông tin khách đã nhập, đưa cách liên hệ trực tiếp

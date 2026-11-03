@@ -27,6 +27,18 @@ THIÊN HÀ WELLNESS — HƯỚNG DẪN SỬ DỤNG
    - Netlify → Add new site → Import từ GitHub (Netlify tự đọc netlify.toml).
    - Bật đăng nhập admin: Netlify → Site configuration → Access & security → OAuth → GitHub.
 
+4b. NHẬN LỊCH ĐẶT QUA TELEGRAM (khách điền form → bot nhắn ngay cho spa)
+   - Telegram: chat với @BotFather → /newbot → đặt tên → nhận MÃ BOT (token). Giữ bí mật, không gửi cho ai.
+   - Mở chat với bot vừa tạo, bấm Start, nhắn 1 câu bất kỳ.
+     (Muốn cả nhóm nhân viên cùng nhận: thêm bot vào nhóm Telegram rồi nhắn 1 câu trong nhóm.)
+   - Lấy ID người nhận: mở trên trình duyệt  https://api.telegram.org/bot<MÃ BOT>/getUpdates
+     → tìm "chat":{"id": ... }  (nhóm có ID bắt đầu bằng dấu -)
+   - Netlify → Site configuration → Environment variables → thêm:
+       TELEGRAM_BOT_TOKEN = mã bot
+       TELEGRAM_CHAT_ID   = ID người nhận (nhiều nơi: cách nhau bằng dấu phẩy)
+   - Deploys → Trigger deploy → Deploy site. Đặt thử 1 lịch trên web để kiểm tra.
+   - Code xử lý: netlify/functions/dat-lich.mjs (đường dẫn /api/dat-lich).
+
 5. NGUYÊN TẮC SEO CHO SPA
    - Tên, địa chỉ, số điện thoại trên web phải GIỐNG HỆT Google Business Profile.
    - Không viết "chữa khỏi", "đặc trị", "trị dứt điểm"… — spa không được quảng cáo chữa bệnh.

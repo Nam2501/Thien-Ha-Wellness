@@ -3,6 +3,10 @@
   command = "node build.mjs"
   publish = "dist"
 
+[functions]
+  # Hàm nhận lịch đặt và gửi Telegram: netlify/functions/dat-lich.mjs (đường dẫn /api/dat-lich)
+  directory = "netlify/functions"
+
 [build.environment]
   NODE_VERSION = "20"
 
