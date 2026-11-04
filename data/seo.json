@@ -1,4 +1,4 @@
-﻿{
+{
   "siteUrl": "https://thienhawellness.netlify.app",
   "titleTemplate": "%s | Thiên Hà Wellness",
   "defaultImage": "",
@@ -6,7 +6,7 @@
   "ga4Id": "",
   "noindexAll": false,
   "business": {
-    "priceRange": "250.000đ – 1.250.000đ",
+    "priceRange": "70.000đ – 400.000đ",
     "openingHours": "Mo-Su 09:00-22:00",
     "city": "",
     "latitude": "",

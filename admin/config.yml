@@ -101,6 +101,7 @@ collections:
             fields:
               - { name: id, label: "Mã (không trùng, viết liền không dấu)", widget: string }
               - { name: name, label: "Tên liệu trình", widget: string }
+              - { name: group, label: "Nhóm dịch vụ (bảng giá hiển thị theo nhóm)", widget: select, options: [ "Dịch vụ gội đầu", "Dịch vụ massage body thư giãn", "Dịch vụ massage dưỡng sinh & phục hồi sức khỏe", "Dịch vụ chăm sóc tai & mặt" ], default: "Dịch vụ gội đầu" }
               - &slug { name: slug, label: "Đường dẫn (URL)", widget: string, required: false, hint: "Để trống = tự tạo từ tên. Đã đăng thì không nên đổi." }
               - { name: tag, label: "Nhãn (vd Phổ biến)", widget: string, required: false }
               - { name: icon, label: "Biểu tượng (khi chưa có ảnh)", widget: select, options: [ { label: "Cổ vai", value: neck }, { label: "Lưng", value: back }, { label: "Đầu", value: head }, { label: "Giọt nước", value: drop }, { label: "Khuôn mặt", value: face }, { label: "Ngôi sao", value: star } ], default: drop }
@@ -111,9 +112,9 @@ collections:
                 label: "Bảng giá theo thời lượng"
                 label_singular: "mức giá"
                 widget: list
-                summary: "{{fields.min}} phút — {{fields.price}}đ"
+                summary: "{{fields.min}} phút — {{fields.price}}đ (0 phút = trọn gói)"
                 fields:
-                  - { name: min, label: "Thời lượng (phút)", widget: number, value_type: int, min: 10 }
+                  - { name: min, label: "Thời lượng (phút)", widget: number, value_type: int, min: 0, hint: "Nhập 0 nếu là gói trọn gói, không tính theo phút." }
                   - { name: price, label: "Giá (đồng)", widget: number, value_type: int, min: 0 }
               - &seo
                 name: seo

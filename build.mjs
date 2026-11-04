@@ -81,7 +81,7 @@ home = home
   .replace(/(<(\w+)\b[^>]*\bdata-cfg="(\w+)"[^>]*>)[\s\S]*?(<\/\2>)/g, (all, open, tag, key, close) => SITE[key] != null ? open + esc(SITE[key]) + close : all)
   .replace(/(<(\w+)\b[^>]*\bdata-cfg-html="(\w+)"[^>]*>)[\s\S]*?(<\/\2>)/g, (all, open, tag, key, close) => SITE[key] ? open + titleHTML(SITE[key]) + close : all)
   .replace(/data-cfg-href="(\w+)" href="#"/g, (all, k) => `data-cfg-href="${k}" href="${esc(LINKS[k] || "#")}"`)
-  .replace('<div class="services" id="services"></div>', `<div class="services" id="services">${SERVICES.map(R.serviceCard).join("")}</div>`)
+  .replace('<div class="svc-groups" id="services"></div>', `<div class="svc-groups" id="services">${R.servicesHTML(SERVICES)}</div>`)
   .replace('<div class="faq" id="faq"></div>', `<div class="faq" id="faq">${R.faqHTML(FAQ)}</div>`)
   .replace('<div class="gallery" id="gallery"></div>', `<div class="gallery" id="gallery">${R.galleryHTML(GALLERY)}</div>`)
   .replace('<div class="posts" id="home-posts"></div>', `<div class="posts" id="home-posts">${POSTS.slice(0, 3).map(R.postCard).join("")}</div>`);
@@ -135,12 +135,12 @@ function servicePage(s) {
   const schemas = [crumbs([["Trang chủ", "/"], [s.name, url]]), { "@context": "https://schema.org", "@type": "Service", name: s.name, description: m.description, serviceType: "Spa & massage",
     image: s.img ? img(s.img) : undefined, provider: { "@id": full("/#spa"), ...SPA }, areaServed: B.city || undefined,
     offers: ps.length ? { "@type": "AggregateOffer", priceCurrency: "VND", lowPrice: Math.min(...ps.map(p => p.price)), highPrice: Math.max(...ps.map(p => p.price)), offerCount: ps.length } : undefined }];
-  const others = SERVICES.filter(x => x !== s).slice(0, 5);
+  const others = [...SERVICES.filter(x => x !== s && x.group === s.group), ...SERVICES.filter(x => x.group !== s.group)].slice(0, 5);
   return page({ meta: m, schemas,
     hero: `${crumbHTML(list)}${s.tag ? `<p class="eyebrow light">${esc(s.tag)}</p>` : ""}<h1>${esc(s.name)}</h1><p class="lead">${esc(s.desc)}</p>`,
     body: `<div class="detail"><article class="prose">${s.img ? `<figure><img src="${esc(absPath(s.img))}" alt="${esc(s.name)}" width="1200" height="675"></figure>` : ""}${bodyHTML(s.content || s.desc)}
       <div class="disclaimer">Liệu trình mang tính thư giãn, chăm sóc cơ thể; không thay thế chẩn đoán hay điều trị y khoa. Vui lòng báo trước nếu bạn đang mang thai hoặc có bệnh lý.</div></article>
-      <aside class="side"><div class="side-card"><h3>Bảng giá</h3><table class="price-table">${ps.map(p => `<tr><td>${p.min} phút</td><td>${money(p.price)}</td></tr>`).join("")}</table>
+      <aside class="side"><div class="side-card"><h3>Bảng giá</h3><table class="price-table">${ps.map(p => `<tr><td>${R.durText(p.min)}</td><td>${money(p.price)}</td></tr>`).join("")}</table>
         <a class="btn btn-navy" href="/?dv=${encodeURIComponent(s.id + "|" + (ps[0]?.min || ""))}#dat-lich">Đặt lịch liệu trình này</a><a class="btn btn-line" href="${esc(LINKS.tel)}">Gọi ${esc(SITE.phone)}</a></div>
         <div class="side-card"><h3>Liệu trình khác</h3><ul class="side-list">${others.map(x => `<li><a href="${urlFor("services", x)}">${esc(x.name)}</a></li>`).join("")}</ul></div></aside></div>` });
 }

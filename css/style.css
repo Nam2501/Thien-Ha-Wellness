@@ -139,6 +139,12 @@ h3 { font-size: 24px; color: var(--navy); }
 
 /* ---------- Dịch vụ & bảng giá ---------- */
 .services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.svc-group + .svc-group { margin-top: 64px; }
+.svc-group-title { display: flex; align-items: center; gap: 18px; margin-bottom: 26px; font-size: 30px; color: var(--navy); }
+.svc-group-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line), transparent); }
+.svc-groups .svc-art { aspect-ratio: 16 / 8; }
+.svc-groups .svc-body h3 { font-size: 24px; }
+@media (min-width: 1101px) { .svc-groups .services { grid-template-columns: repeat(4, 1fr); gap: 20px; } .svc-groups .svc-body { padding: 22px 20px 24px; } .svc-groups .price { font-size: 23px; white-space: nowrap; } .svc-groups .svc-foot .btn-sm { padding-inline: 14px; } }
 .svc { background: var(--white); border-radius: var(--radius); border: 1px solid var(--line); overflow: hidden; display: flex; flex-direction: column; transition: transform .35s, box-shadow .35s; }
 .svc:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
 .svc.pick { box-shadow: 0 0 0 2px var(--tide), var(--shadow); }

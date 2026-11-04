@@ -4,7 +4,7 @@
    sửa tại trang quản trị /admin. build.mjs nhúng sẵn dữ liệu vào trang.
    ========================================================= */
 (async function () {
-  const { esc, money, prices, serviceCard, faqHTML, galleryHTML, postCard, titleHTML, assignSlugs } = Render;
+  const { esc, money, prices, durText, priceHTML, servicesHTML, faqHTML, galleryHTML, postCard, titleHTML, assignSlugs } = Render;
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const toast = msg => { const t = $("#toast"); if (!t) return; t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 4200); };
@@ -28,7 +28,7 @@
     $$("[data-cfg-html]").forEach(el => { if (CFG[el.dataset.cfgHtml]) el.innerHTML = titleHTML(CFG[el.dataset.cfgHtml]); });
     $$("[data-cfg-href]").forEach(el => { el.href = LINKS[el.dataset.cfgHref] || "#"; });
     const fill = (id, html) => { const el = $(id); if (el && !el.children.length) el.innerHTML = html; };
-    fill("#services", SERVICES.map(serviceCard).join(""));
+    fill("#services", servicesHTML(SERVICES));
     fill("#faq", faqHTML(DATA.faq));
     fill("#gallery", galleryHTML(DATA.gallery));
     fill("#home-posts", (DATA.posts || []).slice(0, 3).map(postCard).join(""));
@@ -42,7 +42,7 @@
     if (b) {
       const card = b.closest(".svc"), s = SERVICES.find(x => x.id === card.dataset.id), p = prices(s).find(x => String(x.min) === b.dataset.min);
       $$("[data-min]", card).forEach(x => x.classList.toggle("on", x === b));
-      $("[data-price]", card).innerHTML = `${money(p.price)}<small>/ ${p.min}'</small>`;
+      $("[data-price]", card).innerHTML = priceHTML(p);
     }
     const book = e.target.closest("[data-book]");
     if (book && $("#f-service")) {
@@ -63,8 +63,10 @@
   /* ---------- Form đặt lịch ---------- */
   const form = $("#booking-form");
   if (form) {
-    $("#f-service").innerHTML = `<option value="">— Chưa chọn, cần tư vấn —</option>` + SERVICES.map(s =>
-      `<optgroup label="${esc(s.name)}">${prices(s).map(p => `<option value="${esc(s.id)}|${p.min}">${esc(s.name)} · ${p.min} phút · ${money(p.price)}</option>`).join("")}</optgroup>`).join("");
+    const groups = [...new Set(SERVICES.map(s => s.group || "Liệu trình khác"))];
+    $("#f-service").innerHTML = `<option value="">— Chưa chọn, cần tư vấn —</option>` + groups.map(g =>
+      `<optgroup label="${esc(g)}">${SERVICES.filter(s => (s.group || "Liệu trình khác") === g).map(s => prices(s).map(p =>
+        `<option value="${esc(s.id)}|${p.min}">${esc(s.name)} · ${durText(p.min)} · ${money(p.price)}</option>`).join("")).join("")}</optgroup>`).join("");
     const times = []; for (let h = 9; h <= 20; h++) for (const mm of ["00", "30"]) if (!(h === 20 && mm === "30")) times.push(`${String(h).padStart(2, "0")}:${mm}`);
     $("#f-time").innerHTML = `<option value="">Giờ bất kỳ</option>` + times.map(t => `<option>${t}</option>`).join("");
     const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());

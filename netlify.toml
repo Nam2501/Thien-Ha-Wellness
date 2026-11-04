@@ -10,6 +10,28 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Liệu trình cũ (trước khi đổi bảng giá) → trang mới gần nhất, giữ link đã chia sẻ / Google đã lưu
+[[redirects]]
+  from = "/lieu-trinh/massage-co-vai-gay/"
+  to = "/lieu-trinh/massage-co-vai-gay-chuyen-sau/"
+  status = 301
+[[redirects]]
+  from = "/lieu-trinh/massage-lung-chuyen-sau/"
+  to = "/lieu-trinh/massage-than-chuyen-sau/"
+  status = 301
+[[redirects]]
+  from = "/lieu-trinh/massage-tinh-dau-toan-than/"
+  to = "/lieu-trinh/massage-body-thu-gian/"
+  status = 301
+[[redirects]]
+  from = "/lieu-trinh/cham-soc-da-mat-thuan-tu-nhien/"
+  to = "/#bang-gia"
+  status = 301
+[[redirects]]
+  from = "/lieu-trinh/dong-chay-thien-ha/"
+  to = "/#bang-gia"
+  status = 301
+
 [[headers]]
   for = "/admin/*"
   [headers.values]

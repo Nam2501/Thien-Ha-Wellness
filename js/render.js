@@ -49,7 +49,24 @@
     star: '<path d="M32 10l5 12 13 1-10 8 3 13-11-7-11 7 3-13-10-8 13-1z"/>'
   };
   const ARTS = ["", "art-v2", "art-v3", "art-v4"];
-  const prices = s => (s.prices || []).filter(p => p && p.min).map(p => ({ min: Number(p.min), price: Number(p.price) || 0 }));
+  // min = 0 → gói không tính theo thời lượng ("Trọn gói")
+  const prices = s => (s.prices || []).filter(p => p && (p.min || p.price)).map(p => ({ min: Number(p.min) || 0, price: Number(p.price) || 0 }));
+  const durText = min => min ? `${min} phút` : "Trọn gói";
+  const priceHTML = p => `${money(p.price)}${p.min ? `<small>/ ${p.min}'</small>` : ""}`;
+
+  // Bảng giá chia nhóm theo trường "group" (giữ thứ tự xuất hiện)
+  function servicesHTML(list) {
+    const groups = [];
+    (list || []).forEach(s => {
+      const name = s.group || "Liệu trình khác";
+      let g = groups.find(x => x.name === name);
+      if (!g) groups.push(g = { name, items: [] });
+      g.items.push(s);
+    });
+    let i = 0;
+    return groups.map(g => `<div class="svc-group"><h3 class="svc-group-title">${esc(g.name)}</h3>
+      <div class="services">${g.items.map(s => serviceCard(s, i++)).join("")}</div></div>`).join("");
+  }
 
   function serviceCard(s, i = 0) {
     const ps = prices(s), first = ps[0] || { min: 0, price: 0 };
@@ -59,8 +76,8 @@
       <div class="svc-body">
         <h3><a href="${urlFor("services", s)}">${esc(s.name)}</a></h3>
         <p>${esc(s.desc)}</p>
-        <div class="durations" role="group" aria-label="Chọn thời lượng">${ps.map((p, k) => `<button type="button" data-min="${p.min}" class="${k ? "" : "on"}">${p.min} phút</button>`).join("")}</div>
-        <div class="svc-foot"><span class="price" data-price>${money(first.price)}<small>/ ${first.min}'</small></span>
+        <div class="durations" role="group" aria-label="Chọn thời lượng">${ps.map((p, k) => `<button type="button" data-min="${p.min}" class="${k ? "" : "on"}">${durText(p.min)}</button>`).join("")}</div>
+        <div class="svc-foot"><span class="price" data-price>${priceHTML(first)}</span>
           <a href="/#dat-lich" class="btn btn-navy btn-sm" data-book="${esc(s.id)}">Đặt lịch</a></div>
       </div></article>`;
   }
@@ -73,6 +90,6 @@
     <div class="post-body"><span class="post-date">${esc(p.date)}</span><h3><a href="${urlFor("posts", p)}">${esc(p.title)}</a></h3><p>${esc(p.excerpt)}</p>
     <a class="link-more" href="${urlFor("posts", p)}">Đọc tiếp →</a></div></article>`;
 
-  const API = { esc, money, slugify, absPath, SECTIONS, nameOf, assignSlugs, urlFor, titleHTML, bodyHTML, ICONS, prices, serviceCard, faqHTML, galleryHTML, postCard };
+  const API = { esc, money, slugify, absPath, SECTIONS, nameOf, assignSlugs, urlFor, titleHTML, bodyHTML, ICONS, prices, durText, priceHTML, servicesHTML, serviceCard, faqHTML, galleryHTML, postCard };
   if (typeof module === "object" && module.exports) module.exports = API; else root.Render = API;
 })(typeof window !== "undefined" ? window : globalThis);
