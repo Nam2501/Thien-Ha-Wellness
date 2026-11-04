@@ -47,6 +47,20 @@ collections:
           - { name: heroEyebrow, label: "Banner — dòng chữ nhỏ", widget: string }
           - { name: heroTitle, label: "Banner — tiêu đề lớn", widget: string, hint: "Đặt chữ trong dấu * để in nghiêng, vd: Thả trôi mệt mỏi, *như dòng nước* về biển lặng." }
           - { name: heroLead, label: "Banner — đoạn mô tả", widget: text }
+          - { name: needsEyebrow, label: "Mục 'Cơ thể bạn cần gì' — dòng chữ nhỏ", widget: string, required: false }
+          - { name: needsTitle, label: "Mục 'Cơ thể bạn cần gì' — tiêu đề", widget: string, required: false, hint: "Đặt chữ trong dấu * để in nghiêng, vd: Hôm nay, cơ thể bạn *cần điều gì?*" }
+          - { name: needsSub, label: "Mục 'Cơ thể bạn cần gì' — mô tả ngắn", widget: string, required: false }
+          - name: needs
+            label: "Mục 'Cơ thể bạn cần gì' — các thẻ (nên để 4 thẻ)"
+            label_singular: "thẻ"
+            widget: list
+            max: 8
+            summary: "{{fields.title}} → {{fields.group}}"
+            fields:
+              - { name: title, label: "Tiêu đề thẻ", widget: string }
+              - { name: desc, label: "Mô tả ngắn", widget: string }
+              - { name: icon, label: "Biểu tượng", widget: select, default: drop, options: [ { label: "Đầu", value: head }, { label: "Giọt nước & sóng", value: drop }, { label: "Cổ vai", value: neck }, { label: "Lưng", value: back }, { label: "Khuôn mặt", value: face }, { label: "Ngôi sao", value: star } ] }
+              - { name: group, label: "Bấm vào thì tới nhóm dịch vụ", widget: select, options: &groups [ "Dịch vụ gội đầu", "Dịch vụ massage body thư giãn", "Dịch vụ massage dưỡng sinh & phục hồi sức khỏe", "Dịch vụ chăm sóc tai & mặt" ], hint: "Nhóm phải trùng với 'Nhóm dịch vụ' của các liệu trình trong Bảng giá." }
 
   # ---------------- SEO TOÀN WEBSITE ----------------
   - name: seo
@@ -101,7 +115,7 @@ collections:
             fields:
               - { name: id, label: "Mã (không trùng, viết liền không dấu)", widget: string }
               - { name: name, label: "Tên liệu trình", widget: string }
-              - { name: group, label: "Nhóm dịch vụ (bảng giá hiển thị theo nhóm)", widget: select, options: [ "Dịch vụ gội đầu", "Dịch vụ massage body thư giãn", "Dịch vụ massage dưỡng sinh & phục hồi sức khỏe", "Dịch vụ chăm sóc tai & mặt" ], default: "Dịch vụ gội đầu" }
+              - { name: group, label: "Nhóm dịch vụ (bảng giá hiển thị theo nhóm)", widget: select, options: *groups, default: "Dịch vụ gội đầu" }
               - &slug { name: slug, label: "Đường dẫn (URL)", widget: string, required: false, hint: "Để trống = tự tạo từ tên. Đã đăng thì không nên đổi." }
               - { name: tag, label: "Nhãn (vd Phổ biến)", widget: string, required: false }
               - { name: icon, label: "Biểu tượng (khi chưa có ảnh)", widget: select, options: [ { label: "Cổ vai", value: neck }, { label: "Lưng", value: back }, { label: "Đầu", value: head }, { label: "Giọt nước", value: drop }, { label: "Khuôn mặt", value: face }, { label: "Ngôi sao", value: star } ], default: drop }

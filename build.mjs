@@ -82,6 +82,7 @@ home = home
   .replace(/(<(\w+)\b[^>]*\bdata-cfg-html="(\w+)"[^>]*>)[\s\S]*?(<\/\2>)/g, (all, open, tag, key, close) => SITE[key] ? open + titleHTML(SITE[key]) + close : all)
   .replace(/data-cfg-href="(\w+)" href="#"/g, (all, k) => `data-cfg-href="${k}" href="${esc(LINKS[k] || "#")}"`)
   .replace('<div class="svc-groups" id="services"></div>', `<div class="svc-groups" id="services">${R.servicesHTML(SERVICES)}</div>`)
+  .replace('<div class="needs" id="needs"></div>', `<div class="needs" id="needs">${R.needsHTML(SITE.needs)}</div>`)
   .replace('<div class="faq" id="faq"></div>', `<div class="faq" id="faq">${R.faqHTML(FAQ)}</div>`)
   .replace('<div class="gallery" id="gallery"></div>', `<div class="gallery" id="gallery">${R.galleryHTML(GALLERY)}</div>`)
   .replace('<div class="posts" id="home-posts"></div>', `<div class="posts" id="home-posts">${POSTS.slice(0, 3).map(R.postCard).join("")}</div>`);

@@ -10,5 +10,14 @@
   "heroLead": "Thiên Hà Wellness là khoảng lặng giữa nhịp sống vội — nơi đôi tay kỹ thuật viên, hương thảo mộc ấm và tiếng nước chảy giúp cơ thể thả lỏng, tâm trí dịu lại.",
   "reviewUrl": "https://www.google.com/maps/search/?api=1&query=Thi%C3%AAn+H%C3%A0+Wellness",
   "email": "lienhe@thienhawellness.vn",
-  "heroTitle": "Thả trôi mệt mỏi, *như dòng nước* tìm về biển lặng."
+  "heroTitle": "Thả trôi mệt mỏi, *như dòng nước* tìm về biển lặng.",
+  "needsEyebrow": "Bắt đầu từ cơ thể bạn",
+  "needsTitle": "Hôm nay, cơ thể bạn *cần điều gì?*",
+  "needsSub": "Chọn vùng đang mỏi mệt nhất — chúng tôi gợi ý liệu pháp phù hợp.",
+  "needs": [
+    { "title": "Đầu & tóc", "desc": "Căng thẳng, nặng đầu — gội dưỡng sinh thảo mộc.", "icon": "head", "group": "Dịch vụ gội đầu" },
+    { "title": "Toàn thân & đôi chân", "desc": "Uể oải, chân mỏi — massage body, foot, đá nóng.", "icon": "drop", "group": "Dịch vụ massage body thư giãn" },
+    { "title": "Cổ vai gáy & lưng", "desc": "Ngồi lâu, cứng cổ, mỏi lưng — massage dưỡng sinh.", "icon": "neck", "group": "Dịch vụ massage dưỡng sinh & phục hồi sức khỏe" },
+    { "title": "Tai & mặt", "desc": "Muốn thư giãn nhẹ nhàng vùng tai, gương mặt.", "icon": "face", "group": "Dịch vụ chăm sóc tai & mặt" }
+  ]
 }
