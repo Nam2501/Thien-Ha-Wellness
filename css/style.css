@@ -62,7 +62,9 @@ h3 { font-size: 24px; color: var(--navy); }
 .header.scrolled { background: rgba(7, 20, 38, .88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 1px 0 rgba(217,235,243,.08); }
 .header-in { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 84px; }
 .logo { display: flex; align-items: center; gap: 12px; color: var(--ice); }
-.logo-mark { width: 44px; height: 44px; color: var(--mist); }
+.logo-mark { width: auto; height: 60px; }
+.logo-full { display: inline-block; }
+.logo-full img { width: 230px; height: auto; }
 .logo-text { font-family: var(--serif); font-size: 26px; font-weight: 600; line-height: 1; display: flex; flex-direction: column; color: #fff; }
 .logo-text small { font-family: var(--sans); font-size: 10.5px; font-weight: 500; letter-spacing: .42em; text-transform: uppercase; color: var(--mist); margin-top: 6px; }
 .nav { display: flex; gap: 34px; font-size: 14.5px; }
@@ -382,7 +384,7 @@ h3 { font-size: 24px; color: var(--navy); }
   .header-in { height: 72px; }
   .nav { inset: 72px 0 auto; }
   .logo-text { font-size: 22px; }
-  .logo-mark { width: 38px; height: 38px; }
+  .logo-mark { height: 46px; }
   .hero { min-height: 0; }
   .hero-in { padding: 130px 0 150px; margin-left: 16px; margin-right: 16px; }
   .hero-lead { font-size: 16.5px; }

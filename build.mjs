@@ -107,7 +107,9 @@ function page({ meta, schemas, hero, body }) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 ${headTags(meta, schemas)}
   <meta name="theme-color" content="#071426">
-  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/images/favicon-48.png" sizes="48x48" type="image/png">
+  <link rel="icon" href="/images/favicon-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   ${FONTS}
 </head>
 <body class="subpage">
