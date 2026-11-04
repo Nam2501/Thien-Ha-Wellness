@@ -60,6 +60,7 @@
   const NEED_ICONS = {
     head: '<circle cx="32" cy="28" r="12"/><path d="M20 26c4-4 8-6 12-6s8 2 12 6"/><path d="M18 48c4-3 9-4 14-4s10 1 14 4" class="glow"/><path d="M24 52c2-1 5-2 8-2s6 1 8 2" class="glow"/>',
     drop: '<path d="M32 10c6 8 10 14 10 20a10 10 0 0 1-20 0c0-6 4-12 10-20Z"/><path d="M14 48c4-3 8-3 12 0s8 3 12 0 8-3 12 0" class="glow"/><path d="M18 55c3-2 6-2 9 0s6 2 9 0 6-2 9 0" class="glow"/>',
+    body: '<circle cx="32" cy="12" r="5"/><path d="M25 22c2-1.5 4.5-2 7-2s5 .5 7 2"/><path d="M25 22c-2 5-4 10-6 15M39 22c2 5 4 10 6 15"/><path d="M27 24c0 6 1 11 1 16l-2 14M37 24c0 6-1 11-1 16l2 14M32 44v10"/><path d="M13 26c-2 4-2 9 0 13M51 26c2 4 2 9 0 13" class="glow"/>',
     neck: '<path d="M32 14a7 7 0 1 1 0 14 7 7 0 0 1 0-14Z"/><path d="M14 50c2-11 9-17 18-17s16 6 18 17"/><path d="M20 36c3 2 7 3 12 3s9-1 12-3" class="glow"/>',
     back: '<path d="M32 12v40"/><path d="M24 18c-4 8-4 20 0 30M40 18c4 8 4 20 0 30"/><path d="M27 24h10M26 32h12M27 40h10" class="glow"/>',
     face: '<circle cx="32" cy="30" r="14"/><path d="M26 34c2 2 4 3 6 3s4-1 6-3"/><path d="M14 26c-3 3-3 9 0 12M50 26c3 3 3 9 0 12" class="glow"/><path d="M27 26h.1M37 26h.1"/>',

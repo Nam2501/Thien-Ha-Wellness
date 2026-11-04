@@ -59,7 +59,7 @@ collections:
             fields:
               - { name: title, label: "Tiêu đề thẻ", widget: string }
               - { name: desc, label: "Mô tả ngắn", widget: string }
-              - { name: icon, label: "Biểu tượng", widget: select, default: drop, options: [ { label: "Đầu", value: head }, { label: "Giọt nước & sóng", value: drop }, { label: "Cổ vai", value: neck }, { label: "Lưng", value: back }, { label: "Khuôn mặt", value: face }, { label: "Ngôi sao", value: star } ] }
+              - { name: icon, label: "Biểu tượng", widget: select, default: drop, options: [ { label: "Đầu", value: head }, { label: "Cơ thể (body)", value: body }, { label: "Giọt nước & sóng", value: drop }, { label: "Cổ vai", value: neck }, { label: "Lưng", value: back }, { label: "Khuôn mặt", value: face }, { label: "Ngôi sao", value: star } ] }
               - { name: group, label: "Bấm vào thì tới nhóm dịch vụ", widget: select, options: &groups [ "Dịch vụ gội đầu", "Dịch vụ massage body thư giãn", "Dịch vụ massage dưỡng sinh & phục hồi sức khỏe", "Dịch vụ chăm sóc tai & mặt" ], hint: "Nhóm phải trùng với 'Nhóm dịch vụ' của các liệu trình trong Bảng giá." }
 
   # ---------------- SEO TOÀN WEBSITE ----------------
