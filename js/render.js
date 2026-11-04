@@ -52,7 +52,7 @@
   // min = 0 → gói không tính theo thời lượng ("Trọn gói")
   const prices = s => (s.prices || []).filter(p => p && (p.min || p.price)).map(p => ({ min: Number(p.min) || 0, price: Number(p.price) || 0 }));
   const durText = min => min ? `${min} phút` : "Trọn gói";
-  const priceHTML = p => `${money(p.price)}${p.min ? `<small>/ ${p.min}'</small>` : ""}`;
+  const priceHTML = p => `<span class="price-label">Giá · ${durText(p.min)}</span><span class="price-num">${money(p.price).replace(/đ$/, "")}<sup>đ</sup></span>`;
 
   // Bảng giá chia nhóm theo trường "group" (giữ thứ tự xuất hiện)
   function servicesHTML(list) {
