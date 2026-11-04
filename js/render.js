@@ -64,7 +64,7 @@
       g.items.push(s);
     });
     let i = 0;
-    return groups.map(g => `<div class="svc-group"><h3 class="svc-group-title">${esc(g.name)}</h3>
+    return groups.map(g => `<div class="svc-group" id="nhom-${slugify(g.name.replace(/^dịch vụ\s+/i, ""))}"><h3 class="svc-group-title">${esc(g.name)}</h3>
       <div class="services">${g.items.map(s => serviceCard(s, i++)).join("")}</div></div>`).join("");
   }
 

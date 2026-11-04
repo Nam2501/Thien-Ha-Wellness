@@ -53,11 +53,14 @@
     }
   });
 
-  // Thẻ "Cơ thể bạn cần gì" -> làm nổi liệu trình tương ứng
+  // Thẻ "Cơ thể bạn cần gì" -> cuộn tới nhóm dịch vụ và làm nổi các liệu trình trong nhóm
   $$("[data-pick]").forEach(a => a.addEventListener("click", () => {
     $$(".svc").forEach(c => c.classList.remove("pick"));
-    const card = $("#svc-" + a.dataset.pick);
-    if (card) { card.classList.add("pick"); setTimeout(() => card.classList.remove("pick"), 3500); }
+    const target = $("#" + a.dataset.pick) || $("#svc-" + a.dataset.pick);
+    if (!target) return;
+    const cards = target.classList.contains("svc") ? [target] : $$(".svc", target);
+    cards.forEach(c => c.classList.add("reveal", "in", "pick"));
+    setTimeout(() => cards.forEach(c => c.classList.remove("pick")), 3500);
   }));
 
   /* ---------- Form đặt lịch ---------- */
