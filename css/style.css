@@ -18,6 +18,7 @@
   --line: #dde5eb;
   --radius: 22px;
   --shadow: 0 18px 50px rgba(7, 20, 38, .10);
+  --ice-bg: #e8f2f7;     /* nền xanh băng nhạt — các khối xen kẽ */
   --serif: "Cormorant Garamond", "Times New Roman", serif;
   --sans: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
@@ -98,7 +99,7 @@ h3 { font-size: 24px; color: var(--navy); }
 .hero-waves { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 160px; z-index: 1; }
 .hero-waves .w1 { fill: rgba(44,122,160,.22); animation: wave 9s ease-in-out infinite alternate; }
 .hero-waves .w2 { fill: rgba(156,195,214,.18); animation: wave 12s ease-in-out infinite alternate-reverse; }
-.hero-waves .w3 { fill: var(--white); }
+.hero-waves .w3 { fill: var(--ice-bg); }
 @keyframes wave { to { transform: translateX(-40px); } }
 
 /* Dải thông tin */
@@ -116,6 +117,26 @@ h3 { font-size: 24px; color: var(--navy); }
 .section-deep { background: linear-gradient(180deg, var(--navy), var(--abyss)); color: var(--ice); overflow: hidden; }
 .section-deep h2 { color: #fff; }
 .section-deep h2 em { color: var(--mist); }
+.section-deep .eyebrow { color: var(--mist); }
+.section-deep .sub, .section-deep .note { color: rgba(217,235,243,.75); }
+
+/* Khối xanh băng: nền nhạt có vệt sáng và gợn sóng mờ */
+.section-ice { background: var(--ice-bg); }
+.section-ice::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(40% 50% at 12% 30%, rgba(255,255,255,.75), transparent 70%), radial-gradient(35% 45% at 90% 65%, rgba(156,195,214,.28), transparent 70%); }
+.section-ice > .wrap { position: relative; z-index: 1; }
+/* Khối đêm có vầng sáng xanh biển */
+.section-glow { background: radial-gradient(70% 60% at 85% 10%, rgba(44,122,160,.35), transparent 70%), radial-gradient(60% 50% at 5% 90%, rgba(23,75,109,.45), transparent 70%), linear-gradient(180deg, var(--navy), var(--abyss)); }
+.section-glow > .wrap { position: relative; z-index: 1; }
+
+/* Đường sóng nước nối sang khối sau (màu = nền khối kế tiếp) */
+.wave-white, .wave-ice, .wave-deep { padding-bottom: 170px; }
+.wave-white::after, .wave-ice::after, .wave-deep::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 90px; pointer-events: none; z-index: 2;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 90' preserveAspectRatio='none'%3E%3Cpath d='M0 46 C 200 10 420 12 640 44 S 1060 86 1260 56 1400 26 1440 34 V90 H0Z'/%3E%3C/svg%3E") bottom / 100% 100% no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 90' preserveAspectRatio='none'%3E%3Cpath d='M0 46 C 200 10 420 12 640 44 S 1060 86 1260 56 1400 26 1440 34 V90 H0Z'/%3E%3C/svg%3E") bottom / 100% 100% no-repeat; }
+.wave-white::after { background: var(--white); }
+.wave-ice::after { background: var(--ice-bg); }
+.wave-deep::after { background: var(--navy); }
 .head-center { text-align: center; max-width: 760px; margin: 0 auto 64px; }
 .head-center .eyebrow::after { content: ""; width: 34px; height: 1px; background: currentColor; opacity: .6; }
 .head-center .sub { margin: 18px auto 0; }
@@ -453,6 +474,8 @@ h3 { font-size: 24px; color: var(--navy); }
   .booking-form { grid-template-columns: 1fr; padding: 24px; }
   .posts, .blog-list { grid-template-columns: 1fr; }
   .page-hero { padding: 120px 0 64px; }
+  .wave-white, .wave-ice, .wave-deep { padding-bottom: 120px; }
+  .wave-white::after, .wave-ice::after, .wave-deep::after { height: 48px; }
   .review-cta { padding: 28px 20px; }
   .footer-grid { grid-template-columns: 1fr; }
   .float-contact { bottom: 84px; right: 14px; }
