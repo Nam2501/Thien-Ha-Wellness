@@ -47,11 +47,11 @@
       $("[data-price]", card).innerHTML = priceHTML(p);
     }
     const book = e.target.closest("[data-book]");
-    if (book && $("#f-service")) {
+    if (book) {
+      const card = book.closest(".svc"), m = $("[data-min].on", card)?.dataset.min, dv = `${book.dataset.book}|${m}`;
       e.preventDefault();
-      const card = book.closest(".svc"), m = $("[data-min].on", card)?.dataset.min;
-      $("#f-service").value = `${book.dataset.book}|${m}`;
-      $("#dat-lich").scrollIntoView({ behavior: "smooth" });
+      if ($("#f-service")) { $("#f-service").value = dv; $("#dat-lich").scrollIntoView({ behavior: "smooth" }); }
+      else location.href = `/?dv=${encodeURIComponent(dv)}#dat-lich`;   // trang /bang-gia/
     }
   });
 
@@ -68,10 +68,11 @@
   // Trang bảng giá: mở bằng /bang-gia/#nhom-... thì làm nổi nhóm đó vài giây
   const pickHash = () => {
     const g = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
-    if (!g || !g.classList.contains("pl-group")) return;
-    g.classList.add("pick"); setTimeout(() => g.classList.remove("pick"), 2500);
+    if (!g || !g.classList.contains("svc-group") || !$(".pl-nav")) return;
+    const cards = $$(".svc", g); cards.forEach(c => c.classList.add("reveal", "in", "pick"));
+    setTimeout(() => cards.forEach(c => c.classList.remove("pick")), 3000);
   };
-  if ($(".pl-group")) { pickHash(); addEventListener("hashchange", pickHash); }
+  if ($(".pl-nav")) { pickHash(); addEventListener("hashchange", pickHash); }
 
   /* ---------- Form đặt lịch ---------- */
   const form = $("#booking-form");

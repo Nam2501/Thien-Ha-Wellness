@@ -157,7 +157,7 @@ function pricingPage() {
       itemOffered: { "@type": "Service", name: s.name, url: full(urlFor("services", s)), provider: { "@id": full("/#spa") } } })) };
   return page({ meta: m, schemas: [crumbs(list), catalog],
     hero: `${crumbHTML(list)}<p class="eyebrow light">Liệu trình &amp; bảng giá</p><h1>${esc(pg.h1 || "Bảng giá dịch vụ")}</h1>
-      <p class="lead">${esc(pg.lead || `${SERVICES.length} liệu trình, giá từ ${money(Math.min(...all))}. Bấm vào mức giá để đặt lịch đúng liệu trình và thời lượng.`)}</p>`,
+      <p class="lead">${esc(pg.lead || `${SERVICES.length} liệu trình, giá từ ${money(Math.min(...all))}. Chọn thời lượng để xem giá, bấm Đặt lịch để giữ chỗ.`)}</p>`,
     body: `<div class="pricing">${R.pricingHTML(SERVICES)}
       <div class="pl-help"><div><h3>Chưa biết chọn liệu trình nào?</h3><p>Để lại số điện thoại hoặc gọi cho chúng tôi, kỹ thuật viên sẽ tư vấn theo thể trạng của bạn, miễn phí.</p></div>
         <div class="pl-help-act"><a class="btn btn-navy" href="/#dat-lich">Đặt lịch tư vấn</a><a class="btn btn-line" href="${esc(LINKS.tel)}">Gọi ${esc(SITE.phone)}</a></div></div>

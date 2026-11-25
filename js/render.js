@@ -101,7 +101,6 @@
     return groups;
   }
   const shortGroup = name => String(name || "").replace(/^dịch vụ\s+/i, "").replace(/^./, c => c.toUpperCase());
-  const bookHref = (s, min) => `/?dv=${encodeURIComponent(s.id + "|" + min)}#dat-lich`;
   const minPrice = items => Math.min(...items.flatMap(s => prices(s).map(p => p.price)).filter(Boolean));
 
   // TRANG CHỦ: tóm tắt mỗi nhóm 1 thẻ → bấm sang trang /bang-gia/
@@ -113,17 +112,11 @@
       <span class="link-more">Xem giá chi tiết →</span>
     </a>`).join("");
 
-  // TRANG /bang-gia/: toàn bộ bảng giá, mỗi liệu trình 1 dòng, bấm vào giá để đặt lịch đúng thời lượng
+  // TRANG /bang-gia/: thanh chọn nhóm + thẻ liệu trình giống bảng giá trang chủ cũ (chọn thời lượng, đặt lịch)
   function pricingHTML(list) {
     const groups = groupsOf(list);
     const nav = `<nav class="pl-nav" aria-label="Nhóm dịch vụ">${groups.map(g => `<a href="#${groupId(g.name)}">${esc(shortGroup(g.name))}<small>${g.items.length}</small></a>`).join("")}</nav>`;
-    const rows = g => g.items.map(s => `<div class="pl-row" id="svc-${esc(s.id)}">
-          <div class="pl-name"><h3><a href="${urlFor("services", s)}">${esc(s.name)}</a>${s.tag ? ` <span class="pl-tag">${esc(s.tag)}</span>` : ""}</h3>${s.desc ? `<p>${esc(s.desc)}</p>` : ""}</div>
-          <div class="pl-prices">${prices(s).map(p => `<a class="pl-price" href="${bookHref(s, p.min)}" aria-label="Đặt lịch ${esc(s.name)} ${durText(p.min)}, ${money(p.price)}"><span>${durText(p.min)}</span><b>${money(p.price).replace(/đ$/, "")}<sup>đ</sup></b><i>Đặt lịch →</i></a>`).join("")}</div>
-        </div>`).join("");
-    return nav + groups.map(g => `<section class="pl-group" id="${groupId(g.name)}">
-        <h2 class="svc-group-title">${esc(shortGroup(g.name))}</h2>
-        <div class="pl-list">${rows(g)}</div></section>`).join("");
+    return nav + `<div class="svc-groups" id="services">${servicesHTML(list)}</div>`;
   }
 
   function serviceCard(s, i = 0) {

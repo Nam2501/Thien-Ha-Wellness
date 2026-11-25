@@ -188,29 +188,10 @@ h3 { font-size: 24px; color: var(--navy); }
 .pl-nav a { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--pearl); color: var(--navy); font-size: 14.5px; font-weight: 500; transition: .2s; }
 .pl-nav a:hover { border-color: var(--tide); background: var(--white); }
 .pl-nav small { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: var(--navy); color: #fff; font-size: 11.5px; }
-.pl-group { scroll-margin-top: 160px; }
-.pl-list { transition: box-shadow .4s; }
-.pl-group + .pl-group { margin-top: 56px; }
-.pl-group.pick .pl-list { box-shadow: 0 0 0 2px var(--tide), var(--shadow); }
-.pl-group .svc-group-title { font-size: 32px; margin-bottom: 14px; }
-.pl-list { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-.pl-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 24px; padding: 20px 26px; }
-.pl-row + .pl-row { border-top: 1px solid var(--line); }
-.pl-row:hover { background: var(--pearl); }
-.pl-name h3 { font-size: 23px; color: var(--navy); display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-.pl-name h3 a:hover { color: var(--tide); }
-.pl-name p { margin-top: 4px; color: var(--muted); font-size: 14.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 640px; }
-.pl-tag { padding: 3px 10px; border-radius: 999px; background: var(--ice); color: var(--navy); font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
-.pl-prices { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
-.pl-price { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 120px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--white); color: var(--navy); line-height: 1; transition: .2s; }
-.pl-price span { font-size: 11.5px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.pl-price b { font-family: var(--serif); font-size: 27px; font-weight: 600; font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; }
-.pl-price sup { font-family: var(--sans); font-size: .5em; font-weight: 500; color: var(--tide); margin-left: 2px; vertical-align: .55em; }
-.pl-price i { font-style: normal; font-size: 12px; color: var(--tide); opacity: 0; max-height: 0; transition: .2s; }
-.pl-price:hover { border-color: var(--navy); background: var(--navy); color: #fff; }
-.pl-price:hover span, .pl-price:hover sup, .pl-price:hover i { color: var(--mist); }
-.pl-price:hover i { opacity: 1; max-height: 20px; }
-.pl-help { margin-top: 56px; display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap; padding: 32px 36px; border-radius: var(--radius); background: var(--pearl); border: 1px solid var(--line); }
+.section:has(> .wrap > .pricing) { background: var(--pearl); }
+.pricing .pl-nav { background: rgba(243,246,248,.94); }
+.pricing .svc-group { scroll-margin-top: 160px; }
+.pl-help { margin-top: 64px; display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap; padding: 32px 36px; border-radius: var(--radius); background: var(--white); border: 1px solid var(--line); }
 .pl-help h3 { font-size: 28px; color: var(--navy); margin-bottom: 6px; }
 .pl-help p { color: var(--muted); max-width: 560px; }
 .pl-help-act { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -457,11 +438,7 @@ h3 { font-size: 24px; color: var(--navy); }
   .pl-sum { grid-template-columns: 1fr; gap: 16px; }
   .pl-nav { top: 72px; flex-wrap: nowrap; overflow-x: auto; margin-inline: -16px; padding-inline: 16px; scrollbar-width: none; }
   .pl-nav a { flex: none; }
-  .pl-group { scroll-margin-top: 140px; }
-  .pl-row { grid-template-columns: 1fr; gap: 14px; padding: 18px; }
-  .pl-prices { justify-content: flex-start; }
-  .pl-price { flex: 1; min-width: 0; }
-  .pl-price i { opacity: 1; max-height: 20px; }
+  .pricing .svc-group { scroll-margin-top: 140px; }
   .pl-help { padding: 24px 20px; }
   .pl-help-act .btn { flex: 1; }
   .values { grid-template-columns: 1fr; }
