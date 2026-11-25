@@ -81,7 +81,7 @@ home = home
   .replace(/(<(\w+)\b[^>]*\bdata-cfg="(\w+)"[^>]*>)[\s\S]*?(<\/\2>)/g, (all, open, tag, key, close) => SITE[key] != null ? open + esc(SITE[key]) + close : all)
   .replace(/(<(\w+)\b[^>]*\bdata-cfg-html="(\w+)"[^>]*>)[\s\S]*?(<\/\2>)/g, (all, open, tag, key, close) => SITE[key] ? open + titleHTML(SITE[key]) + close : all)
   .replace(/data-cfg-href="(\w+)" href="#"/g, (all, k) => `data-cfg-href="${k}" href="${esc(LINKS[k] || "#")}"`)
-  .replace('<div class="svc-groups" id="services"></div>', `<div class="svc-groups" id="services">${R.servicesHTML(SERVICES)}</div>`)
+  .replace('<div class="pl-sum" id="price-summary"></div>', `<div class="pl-sum" id="price-summary">${R.priceSummaryHTML(SERVICES)}</div>`)
   .replace('<div class="needs" id="needs"></div>', `<div class="needs" id="needs">${R.needsHTML(SITE.needs)}</div>`)
   .replace('<div class="faq" id="faq"></div>', `<div class="faq" id="faq">${R.faqHTML(FAQ)}</div>`)
   .replace('<div class="gallery" id="gallery"></div>', `<div class="gallery" id="gallery">${R.galleryHTML(GALLERY)}</div>`)
@@ -132,7 +132,7 @@ const crumbHTML = list => `<nav class="crumb" aria-label="breadcrumb">${list.sli
 /* ---------- Trang liệu trình ---------- */
 function servicePage(s) {
   const url = urlFor("services", s), m = { ...Check.meta("services", s, ctx), ogType: "website" }, ps = prices(s);
-  const list = [["Trang chủ", "/"], ["Liệu trình", "/#bang-gia"], [s.name, url]];
+  const list = [["Trang chủ", "/"], ["Bảng giá", "/bang-gia/"], [s.name, url]];
   const schemas = [crumbs([["Trang chủ", "/"], [s.name, url]]), { "@context": "https://schema.org", "@type": "Service", name: s.name, description: m.description, serviceType: "Spa & massage",
     image: s.img ? img(s.img) : undefined, provider: { "@id": full("/#spa"), ...SPA }, areaServed: B.city || undefined,
     offers: ps.length ? { "@type": "AggregateOffer", priceCurrency: "VND", lowPrice: Math.min(...ps.map(p => p.price)), highPrice: Math.max(...ps.map(p => p.price)), offerCount: ps.length } : undefined }];
@@ -144,6 +144,24 @@ function servicePage(s) {
       <aside class="side"><div class="side-card"><h3>Bảng giá</h3><table class="price-table">${ps.map(p => `<tr><td>${R.durText(p.min)}</td><td>${money(p.price)}</td></tr>`).join("")}</table>
         <a class="btn btn-navy" href="/?dv=${encodeURIComponent(s.id + "|" + (ps[0]?.min || ""))}#dat-lich">Đặt lịch liệu trình này</a><a class="btn btn-line" href="${esc(LINKS.tel)}">Gọi ${esc(SITE.phone)}</a></div>
         <div class="side-card"><h3>Liệu trình khác</h3><ul class="side-list">${others.map(x => `<li><a href="${urlFor("services", x)}">${esc(x.name)}</a></li>`).join("")}</ul></div></aside></div>` });
+}
+
+/* ---------- Trang bảng giá /bang-gia/ ---------- */
+function pricingPage() {
+  const pg = SEO.pages?.pricing || {};
+  const m = Check.meta("page", { key: "pricing", path: "/bang-gia/", title: "Bảng giá", ...pg }, ctx);
+  const all = SERVICES.flatMap(s => prices(s).map(p => p.price)).filter(Boolean);
+  const list = [["Trang chủ", "/"], ["Bảng giá", "/bang-gia/"]];
+  const catalog = { "@context": "https://schema.org", "@type": "OfferCatalog", name: `Bảng giá ${SITE.name}`, url: m.url,
+    itemListElement: SERVICES.map(s => ({ "@type": "Offer", priceCurrency: "VND", price: prices(s)[0]?.price || undefined,
+      itemOffered: { "@type": "Service", name: s.name, url: full(urlFor("services", s)), provider: { "@id": full("/#spa") } } })) };
+  return page({ meta: m, schemas: [crumbs(list), catalog],
+    hero: `${crumbHTML(list)}<p class="eyebrow light">Liệu trình &amp; bảng giá</p><h1>${esc(pg.h1 || "Bảng giá dịch vụ")}</h1>
+      <p class="lead">${esc(pg.lead || `${SERVICES.length} liệu trình, giá từ ${money(Math.min(...all))}. Bấm vào mức giá để đặt lịch đúng liệu trình và thời lượng.`)}</p>`,
+    body: `<div class="pricing">${R.pricingHTML(SERVICES)}
+      <div class="pl-help"><div><h3>Chưa biết chọn liệu trình nào?</h3><p>Để lại số điện thoại hoặc gọi cho chúng tôi, kỹ thuật viên sẽ tư vấn theo thể trạng của bạn, miễn phí.</p></div>
+        <div class="pl-help-act"><a class="btn btn-navy" href="/#dat-lich">Đặt lịch tư vấn</a><a class="btn btn-line" href="${esc(LINKS.tel)}">Gọi ${esc(SITE.phone)}</a></div></div>
+      <p class="note">Bảng giá tham khảo, có thể thay đổi theo chương trình. Liệu trình mang tính thư giãn, chăm sóc cơ thể; không thay thế chẩn đoán hay điều trị y khoa.</p></div>` });
 }
 
 /* ---------- Bài viết ---------- */
@@ -181,6 +199,7 @@ for (const f of ["_headers", "_redirects"]) if (fs.existsSync(path.join(ROOT, f)
 write("index.html", home);
 const urls = [{ u: "/", noindex: homeMeta.noindex }];
 SERVICES.forEach(s => { write(path.join("lieu-trinh", s.slug, "index.html"), servicePage(s)); urls.push({ u: urlFor("services", s), noindex: !!s.seo?.noindex }); });
+write(path.join("bang-gia", "index.html"), pricingPage()); urls.push({ u: "/bang-gia/", noindex: !!SEO.pages?.pricing?.noindex });
 write(path.join("bai-viet", "index.html"), blogPage()); urls.push({ u: "/bai-viet/" });
 // Trang cảm ơn khi trình duyệt tắt JavaScript (form gửi kiểu truyền thống) — không đưa vào sitemap
 write(path.join("dat-lich-thanh-cong", "index.html"), page({
@@ -194,7 +213,7 @@ write("404.html", page({
   meta: { title: `Không tìm thấy trang | ${SITE.name}`, description: "Trang bạn tìm không tồn tại hoặc đã được chuyển.", url: full("/404.html"), noindex: true },
   schemas: [],
   hero: `<p class="eyebrow light">Lỗi 404</p><h1>Không tìm thấy trang</h1><p class="lead">Trang bạn tìm không tồn tại hoặc đã được chuyển sang địa chỉ khác.</p>`,
-  body: `<div class="prose"><p><a class="btn btn-navy" href="/">Về trang chủ</a> &nbsp; <a href="/#bang-gia">Xem bảng giá</a> · <a href="/#dat-lich">Đặt lịch</a></p></div>`
+  body: `<div class="prose"><p><a class="btn btn-navy" href="/">Về trang chủ</a> &nbsp; <a href="/bang-gia/">Xem bảng giá</a> · <a href="/#dat-lich">Đặt lịch</a></p></div>`
 }));
 POSTS.forEach(p => { write(path.join("bai-viet", p.slug, "index.html"), postPage(p)); urls.push({ u: urlFor("posts", p), lastmod: isoDate(p.updated || p.date), noindex: !!p.seo?.noindex }); });
 

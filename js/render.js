@@ -89,6 +89,43 @@
       <div class="services">${g.items.map(s => serviceCard(s, i++)).join("")}</div></div>`).join("");
   }
 
+  // Gom liệu trình theo nhóm (giữ thứ tự xuất hiện)
+  function groupsOf(list) {
+    const groups = [];
+    (list || []).forEach(s => {
+      const name = s.group || "Liệu trình khác";
+      let g = groups.find(x => x.name === name);
+      if (!g) groups.push(g = { name, items: [] });
+      g.items.push(s);
+    });
+    return groups;
+  }
+  const shortGroup = name => String(name || "").replace(/^dịch vụ\s+/i, "").replace(/^./, c => c.toUpperCase());
+  const bookHref = (s, min) => `/?dv=${encodeURIComponent(s.id + "|" + min)}#dat-lich`;
+  const minPrice = items => Math.min(...items.flatMap(s => prices(s).map(p => p.price)).filter(Boolean));
+
+  // TRANG CHỦ: tóm tắt mỗi nhóm 1 thẻ → bấm sang trang /bang-gia/
+  const priceSummaryHTML = list => groupsOf(list).map(g => `<a class="pl-card" id="${groupId(g.name)}" href="/bang-gia/#${groupId(g.name)}">
+      <span class="pl-card-k">${g.items.length} liệu trình</span>
+      <h3>${esc(shortGroup(g.name))}</h3>
+      <ul>${g.items.slice(0, 4).map(s => `<li>${esc(s.name)}</li>`).join("")}${g.items.length > 4 ? `<li class="more">+ ${g.items.length - 4} liệu trình khác</li>` : ""}</ul>
+      <span class="pl-from">Giá từ <b>${money(minPrice(g.items))}</b></span>
+      <span class="link-more">Xem giá chi tiết →</span>
+    </a>`).join("");
+
+  // TRANG /bang-gia/: toàn bộ bảng giá, mỗi liệu trình 1 dòng, bấm vào giá để đặt lịch đúng thời lượng
+  function pricingHTML(list) {
+    const groups = groupsOf(list);
+    const nav = `<nav class="pl-nav" aria-label="Nhóm dịch vụ">${groups.map(g => `<a href="#${groupId(g.name)}">${esc(shortGroup(g.name))}<small>${g.items.length}</small></a>`).join("")}</nav>`;
+    const rows = g => g.items.map(s => `<div class="pl-row" id="svc-${esc(s.id)}">
+          <div class="pl-name"><h3><a href="${urlFor("services", s)}">${esc(s.name)}</a>${s.tag ? ` <span class="pl-tag">${esc(s.tag)}</span>` : ""}</h3>${s.desc ? `<p>${esc(s.desc)}</p>` : ""}</div>
+          <div class="pl-prices">${prices(s).map(p => `<a class="pl-price" href="${bookHref(s, p.min)}" aria-label="Đặt lịch ${esc(s.name)} ${durText(p.min)}, ${money(p.price)}"><span>${durText(p.min)}</span><b>${money(p.price).replace(/đ$/, "")}<sup>đ</sup></b><i>Đặt lịch →</i></a>`).join("")}</div>
+        </div>`).join("");
+    return nav + groups.map(g => `<section class="pl-group" id="${groupId(g.name)}">
+        <h2 class="svc-group-title">${esc(shortGroup(g.name))}</h2>
+        <div class="pl-list">${rows(g)}</div></section>`).join("");
+  }
+
   function serviceCard(s, i = 0) {
     const ps = prices(s), first = ps[0] || { min: 0, price: 0 };
     const media = s.img ? `<img src="${esc(absPath(s.img))}" alt="${esc(s.name)}" loading="lazy">` : `<svg viewBox="0 0 64 64" aria-hidden="true">${ICONS[s.icon] || ICONS.drop}</svg>`;
@@ -111,6 +148,6 @@
     <div class="post-body"><span class="post-date">${esc(p.date)}</span><h3><a href="${urlFor("posts", p)}">${esc(p.title)}</a></h3><p>${esc(p.excerpt)}</p>
     <a class="link-more" href="${urlFor("posts", p)}">Đọc tiếp →</a></div></article>`;
 
-  const API = { esc, money, slugify, absPath, SECTIONS, nameOf, assignSlugs, urlFor, titleHTML, bodyHTML, ICONS, prices, durText, priceHTML, servicesHTML, needsHTML, serviceCard, faqHTML, galleryHTML, postCard };
+  const API = { esc, money, slugify, absPath, SECTIONS, nameOf, assignSlugs, urlFor, titleHTML, bodyHTML, ICONS, prices, durText, priceHTML, servicesHTML, needsHTML, serviceCard, priceSummaryHTML, pricingHTML, groupId, faqHTML, galleryHTML, postCard };
   if (typeof module === "object" && module.exports) module.exports = API; else root.Render = API;
 })(typeof window !== "undefined" ? window : globalThis);

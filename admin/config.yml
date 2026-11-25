@@ -99,6 +99,7 @@ collections:
                   { name: description, label: "Mô tả", widget: text },
                   { name: keyword, label: "Từ khóa chính", widget: string, required: false },
                   { name: image, label: "Ảnh chia sẻ", widget: image, required: false } ] }
+              - { name: pricing, label: "Trang bảng giá (/bang-gia/)", widget: object, collapsed: true, fields: *pagefields }
               - { name: blog, label: "Trang danh sách bài viết", widget: object, collapsed: true, fields: *pagefields }
 
   # ---------------- NỘI DUNG ----------------

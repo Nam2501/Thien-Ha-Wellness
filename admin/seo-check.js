@@ -86,7 +86,7 @@
   }
 
   /* ---------- Chấm toàn site ---------- */
-  const PAGES = [["home", "/", "Trang chủ"], ["blog", "/bai-viet/", "Danh sách bài viết"]];
+  const PAGES = [["home", "/", "Trang chủ"], ["pricing", "/bang-gia/", "Bảng giá"], ["blog", "/bai-viet/", "Danh sách bài viết"]];
   function analyzeSite(data) {
     const seo = data.seo || {}, entries = [];
     for (const [key, path, label] of PAGES) entries.push(["page", { key, path, label, title: label, ...(seo.pages?.[key] || {}) }]);

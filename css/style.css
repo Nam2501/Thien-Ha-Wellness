@@ -167,6 +167,54 @@ h3 { font-size: 24px; color: var(--navy); }
 .price-num sup { font-family: var(--sans); font-size: .5em; font-weight: 500; color: var(--tide); margin-left: 3px; vertical-align: .55em; }
 .price small { font-family: var(--sans); font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 4px; }
 
+/* ---------- Bảng giá: tóm tắt ở trang chủ ---------- */
+.pl-sum { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.pl-card { display: flex; flex-direction: column; gap: 10px; padding: 28px 26px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); transition: transform .35s, box-shadow .35s; }
+.pl-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+.pl-card.pick { box-shadow: 0 0 0 2px var(--tide), var(--shadow); }
+.pl-card-k { font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--tide); }
+.pl-card h3 { font-size: 27px; color: var(--navy); }
+.pl-card ul { list-style: none; display: grid; gap: 6px; margin: 4px 0 8px; color: var(--muted); font-size: 14.5px; }
+.pl-card li { padding-left: 16px; position: relative; }
+.pl-card li::before { content: ""; position: absolute; left: 0; top: .72em; width: 6px; height: 6px; border-radius: 50%; background: var(--mist); }
+.pl-card li.more { padding-left: 0; font-style: italic; }
+.pl-card li.more::before { display: none; }
+.pl-from { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+.pl-from b { font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--navy); margin-left: 4px; font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; }
+.pl-cta { text-align: center; margin-top: 40px; }
+
+/* ---------- Trang /bang-gia/ ---------- */
+.pl-nav { position: sticky; top: 84px; z-index: 5; display: flex; gap: 10px; flex-wrap: wrap; padding: 14px 0; margin-bottom: 30px; background: rgba(255,255,255,.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.pl-nav a { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--pearl); color: var(--navy); font-size: 14.5px; font-weight: 500; transition: .2s; }
+.pl-nav a:hover { border-color: var(--tide); background: var(--white); }
+.pl-nav small { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: var(--navy); color: #fff; font-size: 11.5px; }
+.pl-group { scroll-margin-top: 160px; }
+.pl-list { transition: box-shadow .4s; }
+.pl-group + .pl-group { margin-top: 56px; }
+.pl-group.pick .pl-list { box-shadow: 0 0 0 2px var(--tide), var(--shadow); }
+.pl-group .svc-group-title { font-size: 32px; margin-bottom: 14px; }
+.pl-list { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.pl-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 24px; padding: 20px 26px; }
+.pl-row + .pl-row { border-top: 1px solid var(--line); }
+.pl-row:hover { background: var(--pearl); }
+.pl-name h3 { font-size: 23px; color: var(--navy); display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.pl-name h3 a:hover { color: var(--tide); }
+.pl-name p { margin-top: 4px; color: var(--muted); font-size: 14.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 640px; }
+.pl-tag { padding: 3px 10px; border-radius: 999px; background: var(--ice); color: var(--navy); font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.pl-prices { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+.pl-price { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 120px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--white); color: var(--navy); line-height: 1; transition: .2s; }
+.pl-price span { font-size: 11.5px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.pl-price b { font-family: var(--serif); font-size: 27px; font-weight: 600; font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; }
+.pl-price sup { font-family: var(--sans); font-size: .5em; font-weight: 500; color: var(--tide); margin-left: 2px; vertical-align: .55em; }
+.pl-price i { font-style: normal; font-size: 12px; color: var(--tide); opacity: 0; max-height: 0; transition: .2s; }
+.pl-price:hover { border-color: var(--navy); background: var(--navy); color: #fff; }
+.pl-price:hover span, .pl-price:hover sup, .pl-price:hover i { color: var(--mist); }
+.pl-price:hover i { opacity: 1; max-height: 20px; }
+.pl-help { margin-top: 56px; display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap; padding: 32px 36px; border-radius: var(--radius); background: var(--pearl); border: 1px solid var(--line); }
+.pl-help h3 { font-size: 28px; color: var(--navy); margin-bottom: 6px; }
+.pl-help p { color: var(--muted); max-width: 560px; }
+.pl-help-act { display: flex; gap: 12px; flex-wrap: wrap; }
+
 /* Ảnh minh họa trừu tượng (thay bằng ảnh thật khi có) */
 .art { position: relative; overflow: hidden; background: radial-gradient(120% 90% at 20% 10%, #3b8fb5 0%, #174b6d 40%, #0d2440 100%); }
 .art::before { content: ""; position: absolute; inset: -40%; background:
@@ -359,6 +407,7 @@ h3 { font-size: 24px; color: var(--navy); }
   .nav { gap: 22px; }
   .header-phone { display: none; }
   .services { grid-template-columns: repeat(2, 1fr); }
+  .pl-sum { grid-template-columns: repeat(2, 1fr); }
   .values { grid-template-columns: repeat(3, 1fr); }
   .value:nth-child(4) { border-left: 0; }
   .about { gap: 50px; }
@@ -405,6 +454,16 @@ h3 { font-size: 24px; color: var(--navy); }
   .need h3 { font-size: 21px; }
   .need p { font-size: 13.5px; }
   .services { grid-template-columns: 1fr; }
+  .pl-sum { grid-template-columns: 1fr; gap: 16px; }
+  .pl-nav { top: 72px; flex-wrap: nowrap; overflow-x: auto; margin-inline: -16px; padding-inline: 16px; scrollbar-width: none; }
+  .pl-nav a { flex: none; }
+  .pl-group { scroll-margin-top: 140px; }
+  .pl-row { grid-template-columns: 1fr; gap: 14px; padding: 18px; }
+  .pl-prices { justify-content: flex-start; }
+  .pl-price { flex: 1; min-width: 0; }
+  .pl-price i { opacity: 1; max-height: 20px; }
+  .pl-help { padding: 24px 20px; }
+  .pl-help-act .btn { flex: 1; }
   .values { grid-template-columns: 1fr; }
   .value + .value { border-left: 0; border-top: 1px solid rgba(217,235,243,.15); }
   .value { padding: 24px 4px; }

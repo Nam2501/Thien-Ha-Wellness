@@ -4,7 +4,7 @@
    sửa tại trang quản trị /admin. build.mjs nhúng sẵn dữ liệu vào trang.
    ========================================================= */
 (async function () {
-  const { esc, money, prices, durText, priceHTML, servicesHTML, needsHTML, faqHTML, galleryHTML, postCard, titleHTML, assignSlugs } = Render;
+  const { esc, money, prices, durText, priceHTML, servicesHTML, priceSummaryHTML, needsHTML, faqHTML, galleryHTML, postCard, titleHTML, assignSlugs } = Render;
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const toast = msg => { const t = $("#toast"); if (!t) return; t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 4200); };
@@ -30,6 +30,7 @@
     const fill = (id, html) => { const el = $(id); if (el && !el.children.length) el.innerHTML = html; };
     fill("#needs", needsHTML(CFG.needs));
     fill("#services", servicesHTML(SERVICES));
+    fill("#price-summary", priceSummaryHTML(SERVICES));
     fill("#faq", faqHTML(DATA.faq));
     fill("#gallery", galleryHTML(DATA.gallery));
     fill("#home-posts", (DATA.posts || []).slice(0, 3).map(postCard).join(""));
@@ -59,10 +60,18 @@
     $$(".svc").forEach(c => c.classList.remove("pick"));
     const target = $("#" + a.dataset.pick) || $("#svc-" + a.dataset.pick);
     if (!target) return;
-    const cards = target.classList.contains("svc") ? [target] : $$(".svc", target);
+    const inner = $$(".svc", target), cards = target.classList.contains("svc") || !inner.length ? [target] : inner;
     cards.forEach(c => c.classList.add("reveal", "in", "pick"));
     setTimeout(() => cards.forEach(c => c.classList.remove("pick")), 3500);
   }));
+
+  // Trang bảng giá: mở bằng /bang-gia/#nhom-... thì làm nổi nhóm đó vài giây
+  const pickHash = () => {
+    const g = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (!g || !g.classList.contains("pl-group")) return;
+    g.classList.add("pick"); setTimeout(() => g.classList.remove("pick"), 2500);
+  };
+  if ($(".pl-group")) { pickHash(); addEventListener("hashchange", pickHash); }
 
   /* ---------- Form đặt lịch ---------- */
   const form = $("#booking-form");
