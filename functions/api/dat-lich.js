@@ -55,7 +55,8 @@ export async function onRequestPost({ request: req, env }) {
     if (t < 9 * 60 || t > 20 * 60 || t % 30) return reply(req, 422, { ok: false, error: "Giờ nhận khách từ 09:00 đến 20:00." });
     if ((d.ngay || today) === today && t < nowMin) return reply(req, 422, { ok: false, error: "Giờ này đã qua, vui lòng chọn giờ khác." });
   }
-  const date = d.ngay ? d.ngay.split("-").reverse().join("/") : "Linh hoạt";
+  const THU = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+  const date = d.ngay ? `${THU[new Date(d.ngay).getUTCDay()]}, ${d.ngay.split("-").reverse().join("/")}` : "Linh hoạt";
   const text = [
     "🌊 <b>LỊCH MỚI — Thiên Hà Wellness</b>",
     `👤 ${esc(d.ho_ten)}`,

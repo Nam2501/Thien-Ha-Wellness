@@ -82,6 +82,18 @@
     const fDate = $("#f-date"), fTime = $("#f-time");
     const slotsFor = date => { const now = vnNow(); return date === now.date ? times.filter(t => toMin(t) >= now.min + LEAD_MIN) : times; };
     const firstDay = () => { const now = vnNow(); return slotsFor(now.date).length ? now.date : addDays(now.date, 1); };
+    // Danh sách ngày hiển thị cố định dd/mm/yyyy (ô lịch của trình duyệt đổi định dạng theo ngôn ngữ máy → dễ nhầm)
+    const THU = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+    const dmy = iso => iso.split("-").reverse().join("/");
+    const renderDates = () => {
+      const keep = fDate.value, today = vnNow().date, start = firstDay(), opts = [];
+      for (let i = 0; i <= MAX_DAYS; i++) {
+        const iso = addDays(today, i); if (iso < start) continue;
+        const name = i === 0 ? "Hôm nay" : i === 1 ? "Ngày mai" : THU[new Date(iso).getUTCDay()];
+        opts.push(`<option value="${iso}"${iso === keep ? " selected" : ""}>${name} · ${dmy(iso)}</option>`);
+      }
+      fDate.innerHTML = `<option value="">Linh hoạt — spa gọi tư vấn</option>` + opts.join("");
+    };
     const renderTimes = () => {
       const keep = fTime.value, list = slotsFor(fDate.value || firstDay());
       fTime.innerHTML = `<option value="">Giờ bất kỳ</option>` + list.map(t => `<option${t === keep ? " selected" : ""}>${t}</option>`).join("");
@@ -89,15 +101,15 @@
     // Kiểm tra ngày/giờ: trả về câu báo lỗi, hoặc "" nếu hợp lệ
     const checkWhen = () => {
       const d = fDate.value, min = firstDay(), max = addDays(vnNow().date, MAX_DAYS);
-      if (d && d < min) return "Ngày đã qua, vui lòng chọn từ " + min.split("-").reverse().join("/") + " trở đi.";
+      if (d && d < min) return "Ngày đã qua, vui lòng chọn từ " + dmy(min) + " trở đi.";
       if (d && d > max) return `Chỉ nhận đặt lịch trong vòng ${MAX_DAYS} ngày tới.`;
       if (fTime.value && !slotsFor(d || min).includes(fTime.value)) return "Giờ này đã qua, vui lòng chọn giờ khác.";
       return "";
     };
-    const syncLimits = () => { fDate.min = firstDay(); fDate.max = addDays(vnNow().date, MAX_DAYS); };
+    const syncLimits = renderDates;
     syncLimits(); renderTimes();
-    fDate.addEventListener("change", () => { syncLimits(); renderTimes(); const m = checkWhen(); fDate.classList.toggle("invalid", !!m); $("#form-msg").textContent = m; });
-    fDate.addEventListener("focus", syncLimits);
+    fDate.addEventListener("change", () => { renderTimes(); const m = checkWhen(); fDate.classList.toggle("invalid", !!m); $("#form-msg").textContent = m; });
+    fDate.addEventListener("focus", syncLimits);   // trang mở qua nửa đêm: cập nhật lại danh sách ngày
     fTime.addEventListener("focus", renderTimes);   // trang mở lâu: cập nhật lại các giờ đã qua
     // Từ trang liệu trình: /?dv=co-vai-gay|60#dat-lich
     const dv = new URLSearchParams(location.search).get("dv");
@@ -115,16 +127,17 @@
       $("#f-name").classList.toggle("invalid", !name);
       $("#f-phone").classList.toggle("invalid", !phoneOk);
       if (!name || !phoneOk) { $("#form-msg").textContent = "Vui lòng nhập họ tên và số điện thoại hợp lệ."; (name ? $("#f-phone") : $("#f-name")).focus(); return; }
+      const pickedDate = fDate.value;
       syncLimits(); renderTimes();
-      const whenErr = checkWhen();
-      fDate.classList.toggle("invalid", !!whenErr && !!fDate.value && (fDate.value < fDate.min || fDate.value > fDate.max));
+      const whenErr = pickedDate && fDate.value !== pickedDate ? "Ngày đã qua, vui lòng chọn lại ngày." : checkWhen();
+      fDate.classList.toggle("invalid", !!whenErr && (!fDate.value && !!pickedDate || /Ngày|ngày/.test(whenErr)));
       fTime.classList.toggle("invalid", !!whenErr && !fDate.classList.contains("invalid"));
       if (whenErr) { $("#form-msg").textContent = whenErr; (fDate.classList.contains("invalid") ? fDate : fTime).focus(); return; }
 
       // Ghi liệu trình dạng chữ dễ đọc để spa thấy ngay trong tin Telegram
       const sel = $("#f-service"), service = sel.value ? sel.selectedOptions[0].text : "Chưa chọn — cần tư vấn";
       $("#f-service-text").value = service;
-      const date = $("#f-date").value ? $("#f-date").value.split("-").reverse().join("/") : "Linh hoạt";
+      const date = fDate.value ? fDate.selectedOptions[0].text : "Linh hoạt";
       const when = `${date}${$("#f-time").value ? " · " + $("#f-time").value : ""}`;
 
       btn.disabled = true; btn.textContent = "Đang gửi…"; $("#form-msg").textContent = "";
