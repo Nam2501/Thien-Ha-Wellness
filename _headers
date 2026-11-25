@@ -1,0 +1,6 @@
+# Cloudflare Pages: trang quản trị không cho Google lập chỉ mục
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+
+/api/*
+  X-Robots-Tag: noindex

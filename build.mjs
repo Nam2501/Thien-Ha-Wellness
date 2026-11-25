@@ -175,6 +175,8 @@ const write = (rel, s) => { const p = path.join(DIST, rel); fs.mkdirSync(path.di
 if (!DIST.startsWith(ROOT)) throw new Error("Sai thư mục dist");
 fs.rmSync(DIST, { recursive: true, force: true });
 for (const d of COPY) if (fs.existsSync(path.join(ROOT, d))) fs.cpSync(path.join(ROOT, d), path.join(DIST, d), { recursive: true });
+// Cloudflare Pages: header (noindex /admin) và chuyển hướng 301 phải nằm trong dist
+for (const f of ["_headers", "_redirects"]) if (fs.existsSync(path.join(ROOT, f))) fs.copyFileSync(path.join(ROOT, f), path.join(DIST, f));
 
 write("index.html", home);
 const urls = [{ u: "/", noindex: homeMeta.noindex }];
