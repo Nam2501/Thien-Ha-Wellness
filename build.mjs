@@ -189,6 +189,13 @@ write(path.join("dat-lich-thanh-cong", "index.html"), page({
   hero: `<p class="eyebrow light">Đặt lịch</p><h1>Thiên Hà đã nhận lịch của bạn</h1><p class="lead">Cảm ơn bạn! Chúng tôi sẽ gọi điện xác nhận lịch trong giờ làm việc.</p>`,
   body: `<div class="prose"><p>Cần đổi lịch hoặc muốn trao đổi ngay, vui lòng gọi <a href="${esc(LINKS.tel)}">${esc(SITE.phone)}</a> hoặc <a href="${esc(LINKS.zalo)}" target="_blank" rel="noopener">nhắn Zalo</a>.</p><p><a class="btn btn-navy" href="/">Về trang chủ</a></p></div>`
 }));
+// Trang 404 (Cloudflare Pages tự trả mã 404 khi có file 404.html; thiếu file này mọi đường dẫn sai sẽ ra trang chủ – lỗi "soft 404")
+write("404.html", page({
+  meta: { title: `Không tìm thấy trang | ${SITE.name}`, description: "Trang bạn tìm không tồn tại hoặc đã được chuyển.", url: full("/404.html"), noindex: true },
+  schemas: [],
+  hero: `<p class="eyebrow light">Lỗi 404</p><h1>Không tìm thấy trang</h1><p class="lead">Trang bạn tìm không tồn tại hoặc đã được chuyển sang địa chỉ khác.</p>`,
+  body: `<div class="prose"><p><a class="btn btn-navy" href="/">Về trang chủ</a> &nbsp; <a href="/#bang-gia">Xem bảng giá</a> · <a href="/#dat-lich">Đặt lịch</a></p></div>`
+}));
 POSTS.forEach(p => { write(path.join("bai-viet", p.slug, "index.html"), postPage(p)); urls.push({ u: urlFor("posts", p), lastmod: isoDate(p.updated || p.date), noindex: !!p.seo?.noindex }); });
 
 const sm = urls.filter(x => !x.noindex && !SEO.noindexAll).map(x => `  <url><loc>${esc(full(x.u))}</loc>${x.lastmod ? `<lastmod>${x.lastmod}</lastmod>` : ""}</url>`);
