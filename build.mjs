@@ -1,6 +1,6 @@
 /* =========================================================
    BUILD WEBSITE THIÊN HÀ WELLNESS — chạy: node build.mjs  (kết quả ở dist/)
-   Netlify tự chạy mỗi khi nội dung thay đổi trong /admin.
+   Cloudflare Pages tự chạy mỗi khi nội dung thay đổi trong /admin.
    - Ghép dữ liệu data/*.json vào trang chủ (Google đọc được ngay, không cần JavaScript)
    - Tạo trang riêng cho từng liệu trình và bài viết
    - Thẻ meta, Open Graph, schema DaySpa / FAQ / Service / Article, sitemap.xml, robots.txt

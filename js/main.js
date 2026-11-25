@@ -92,7 +92,7 @@
       $("#f-phone").classList.toggle("invalid", !phoneOk);
       if (!name || !phoneOk) { $("#form-msg").textContent = "Vui lòng nhập họ tên và số điện thoại hợp lệ."; (name ? $("#f-phone") : $("#f-name")).focus(); return; }
 
-      // Ghi liệu trình dạng chữ dễ đọc để spa thấy ngay trong email / Netlify
+      // Ghi liệu trình dạng chữ dễ đọc để spa thấy ngay trong tin Telegram
       const sel = $("#f-service"), service = sel.value ? sel.selectedOptions[0].text : "Chưa chọn — cần tư vấn";
       $("#f-service-text").value = service;
       const date = $("#f-date").value ? $("#f-date").value.split("-").reverse().join("/") : "Linh hoạt";

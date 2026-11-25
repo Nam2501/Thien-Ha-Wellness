@@ -4,8 +4,8 @@ THIÊN HÀ WELLNESS — HƯỚNG DẪN SỬ DỤNG
    - Bấm đúp file xem-web.bat → trình duyệt mở http://localhost:8080
    - (Cần đã cài Node.js và Python.)
 
-2. TRANG QUẢN TRỊ /admin  (sau khi đưa web lên Netlify)
-   - Mở https://<tên-miền>/admin → đăng nhập GitHub.
+2. TRANG QUẢN TRỊ /admin
+   - Mở https://thien-ha-wellness.pages.dev/admin → Login with GitHub (tài khoản Nam2501).
    - Thông tin spa:   hotline, Zalo, địa chỉ, giờ mở cửa, link Google Maps, chữ trên banner.
    - SEO toàn website: tên miền, mã Search Console, GA4, thông tin doanh nghiệp cho Google.
    - Nội dung:
@@ -21,11 +21,20 @@ THIÊN HÀ WELLNESS — HƯỚNG DẪN SỬ DỤNG
    - Mở cửa sổ lệnh trong thư mục này, gõ:  npx decap-server@3.11.3
    - Chạy xem-web.bat, vào http://localhost:8080/admin  (sửa xong chạy lại xem-web.bat để build)
 
-4. ĐƯA LÊN MẠNG LẦN ĐẦU
-   - Tạo kho GitHub (vd thien-ha-wellness), đưa toàn bộ thư mục này lên.
-   - Sửa dòng "repo:" trong admin/config.yml thành <tài-khoản>/<tên-kho>.
-   - Netlify → Add new site → Import từ GitHub (Netlify tự đọc netlify.toml).
-   - Bật đăng nhập admin: Netlify → Site configuration → Access & security → OAuth → GitHub.
+4. NƠI CHẠY WEBSITE: CLOUDFLARE PAGES (chuyển từ Netlify ngày 25/11/2026)
+   - Kho GitHub: Nam2501/Thien-Ha-Wellness → Cloudflare dự án "thien-ha-wellness"
+     → https://thien-ha-wellness.pages.dev
+   - Cài đặt build: lệnh  node build.mjs , thư mục  dist , Node 20 (file .node-version).
+   - Mỗi lần có thay đổi trên GitHub (kể cả bấm Xuất bản trong /admin) Cloudflare tự build, 1–2 phút.
+   - Biến môi trường: Cloudflare → thien-ha-wellness → Settings → Variables and Secrets:
+       GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET (Secret) — đăng nhập /admin
+       TELEGRAM_BOT_TOKEN (Secret), TELEGRAM_CHAT_ID — nhận lịch đặt
+     Đổi biến xong phải vào Deployments → ⋯ → Retry deployment.
+   - Đăng nhập /admin dùng GitHub OAuth App "Thien Ha Wellness Admin"
+     (callback https://thien-ha-wellness.pages.dev/api/callback); code: functions/api/auth.js, callback.js.
+   - Chặn Google ở /admin, /api: file _headers.  Chuyển hướng 301 liệu trình cũ: file _redirects.
+   - Gắn tên miền riêng: Cloudflare → Custom domains; sau đó sửa "Tên miền chính" trong
+     admin → SEO toàn website, và base_url trong admin/config.yml, callback của OAuth App.
 
 4b. NHẬN LỊCH ĐẶT QUA TELEGRAM (khách điền form → bot nhắn ngay cho spa)
    - Telegram: chat với @BotFather → /newbot → đặt tên → nhận MÃ BOT (token). Giữ bí mật, không gửi cho ai.
@@ -33,11 +42,11 @@ THIÊN HÀ WELLNESS — HƯỚNG DẪN SỬ DỤNG
      (Muốn cả nhóm nhân viên cùng nhận: thêm bot vào nhóm Telegram rồi nhắn 1 câu trong nhóm.)
    - Lấy ID người nhận: mở trên trình duyệt  https://api.telegram.org/bot<MÃ BOT>/getUpdates
      → tìm "chat":{"id": ... }  (nhóm có ID bắt đầu bằng dấu -)
-   - Netlify → Site configuration → Environment variables → thêm:
-       TELEGRAM_BOT_TOKEN = mã bot
+   - Cloudflare → thien-ha-wellness → Settings → Variables and Secrets → thêm:
+       TELEGRAM_BOT_TOKEN = mã bot (chọn loại Secret)
        TELEGRAM_CHAT_ID   = ID người nhận (nhiều nơi: cách nhau bằng dấu phẩy)
-   - Deploys → Trigger deploy → Deploy site. Đặt thử 1 lịch trên web để kiểm tra.
-   - Code xử lý: netlify/functions/dat-lich.mjs (đường dẫn /api/dat-lich).
+   - Deployments → ⋯ → Retry deployment. Đặt thử 1 lịch trên web để kiểm tra.
+   - Code xử lý: functions/api/dat-lich.js (đường dẫn /api/dat-lich).
 
 5. NGUYÊN TẮC SEO CHO SPA
    - Tên, địa chỉ, số điện thoại trên web phải GIỐNG HỆT Google Business Profile.
