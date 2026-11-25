@@ -101,16 +101,12 @@
     return groups;
   }
   const shortGroup = name => String(name || "").replace(/^dịch vụ\s+/i, "").replace(/^./, c => c.toUpperCase());
-  const minPrice = items => Math.min(...items.flatMap(s => prices(s).map(p => p.price)).filter(Boolean));
 
-  // TRANG CHỦ: tóm tắt mỗi nhóm 1 thẻ → bấm sang trang /bang-gia/
-  const priceSummaryHTML = list => groupsOf(list).map(g => `<a class="pl-card" id="${groupId(g.name)}" href="/bang-gia/#${groupId(g.name)}">
-      <span class="pl-card-k">${g.items.length} liệu trình</span>
-      <h3>${esc(shortGroup(g.name))}</h3>
-      <ul>${g.items.slice(0, 4).map(s => `<li>${esc(s.name)}</li>`).join("")}${g.items.length > 4 ? `<li class="more">+ ${g.items.length - 4} liệu trình khác</li>` : ""}</ul>
-      <span class="pl-from">Giá từ <b>${money(minPrice(g.items))}</b></span>
-      <span class="link-more">Xem giá chi tiết →</span>
-    </a>`).join("");
+  // TRANG CHỦ: mỗi nhóm 1 thẻ liệu trình tiêu biểu (ưu tiên liệu trình có nhãn: Phổ biến, Đặc trưng…), cùng kiểu thẻ trang /bang-gia/
+  const featuredHTML = list => `<div class="services">${groupsOf(list).map((g, i) => {
+    const s = g.items.find(x => x.tag) || g.items[0];
+    return `<div class="svc-slot" id="${groupId(g.name)}"><a class="svc-slot-k" href="/bang-gia/#${groupId(g.name)}">${esc(shortGroup(g.name))} · ${g.items.length} liệu trình</a>${serviceCard(s, i)}</div>`;
+  }).join("")}</div>`;
 
   // TRANG /bang-gia/: thanh chọn nhóm + thẻ liệu trình giống bảng giá trang chủ cũ (chọn thời lượng, đặt lịch)
   function pricingHTML(list) {
@@ -141,6 +137,6 @@
     <div class="post-body"><span class="post-date">${esc(p.date)}</span><h3><a href="${urlFor("posts", p)}">${esc(p.title)}</a></h3><p>${esc(p.excerpt)}</p>
     <a class="link-more" href="${urlFor("posts", p)}">Đọc tiếp →</a></div></article>`;
 
-  const API = { esc, money, slugify, absPath, SECTIONS, nameOf, assignSlugs, urlFor, titleHTML, bodyHTML, ICONS, prices, durText, priceHTML, servicesHTML, needsHTML, serviceCard, priceSummaryHTML, pricingHTML, groupId, faqHTML, galleryHTML, postCard };
+  const API = { esc, money, slugify, absPath, SECTIONS, nameOf, assignSlugs, urlFor, titleHTML, bodyHTML, ICONS, prices, durText, priceHTML, servicesHTML, needsHTML, serviceCard, featuredHTML, pricingHTML, groupId, faqHTML, galleryHTML, postCard };
   if (typeof module === "object" && module.exports) module.exports = API; else root.Render = API;
 })(typeof window !== "undefined" ? window : globalThis);

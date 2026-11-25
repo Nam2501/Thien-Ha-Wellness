@@ -188,20 +188,13 @@ h3 { font-size: 24px; color: var(--navy); }
 .price-num sup { font-family: var(--sans); font-size: .5em; font-weight: 500; color: var(--tide); margin-left: 3px; vertical-align: .55em; }
 .price small { font-family: var(--sans); font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 4px; }
 
-/* ---------- Bảng giá: tóm tắt ở trang chủ ---------- */
-.pl-sum { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
-.pl-card { display: flex; flex-direction: column; gap: 10px; padding: 28px 26px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); transition: transform .35s, box-shadow .35s; }
-.pl-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
-.pl-card.pick { box-shadow: 0 0 0 2px var(--tide), var(--shadow); }
-.pl-card-k { font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--tide); }
-.pl-card h3 { font-size: 27px; color: var(--navy); }
-.pl-card ul { list-style: none; display: grid; gap: 6px; margin: 4px 0 8px; color: var(--muted); font-size: 14.5px; }
-.pl-card li { padding-left: 16px; position: relative; }
-.pl-card li::before { content: ""; position: absolute; left: 0; top: .72em; width: 6px; height: 6px; border-radius: 50%; background: var(--mist); }
-.pl-card li.more { padding-left: 0; font-style: italic; }
-.pl-card li.more::before { display: none; }
-.pl-from { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
-.pl-from b { font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--navy); margin-left: 4px; font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; }
+/* ---------- Bảng giá trang chủ: 4 thẻ tiêu biểu, mỗi thẻ có nhãn nhóm ---------- */
+.svc-slot { display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 110px; }
+.svc-slot .svc { flex: 1; }
+.svc-slot-k { min-height: 40px; display: flex; align-items: flex-end; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--tide); }
+.section-deep .svc-slot-k { color: var(--mist); }
+.svc-slot-k:hover { color: var(--navy); }
+.section-deep .svc-slot-k:hover { color: #fff; }
 .pl-cta { text-align: center; margin-top: 40px; }
 
 /* ---------- Trang /bang-gia/ ---------- */
@@ -409,7 +402,6 @@ h3 { font-size: 24px; color: var(--navy); }
   .nav { gap: 22px; }
   .header-phone { display: none; }
   .services { grid-template-columns: repeat(2, 1fr); }
-  .pl-sum { grid-template-columns: repeat(2, 1fr); }
   .values { grid-template-columns: repeat(3, 1fr); }
   .value:nth-child(4) { border-left: 0; }
   .about { gap: 50px; }
@@ -456,7 +448,6 @@ h3 { font-size: 24px; color: var(--navy); }
   .need h3 { font-size: 21px; }
   .need p { font-size: 13.5px; }
   .services { grid-template-columns: 1fr; }
-  .pl-sum { grid-template-columns: 1fr; gap: 16px; }
   .pl-nav { top: 72px; flex-wrap: nowrap; overflow-x: auto; margin-inline: -16px; padding-inline: 16px; scrollbar-width: none; }
   .pl-nav a { flex: none; }
   .pricing .svc-group { scroll-margin-top: 140px; }

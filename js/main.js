@@ -4,7 +4,7 @@
    sửa tại trang quản trị /admin. build.mjs nhúng sẵn dữ liệu vào trang.
    ========================================================= */
 (async function () {
-  const { esc, money, prices, durText, priceHTML, servicesHTML, priceSummaryHTML, needsHTML, faqHTML, galleryHTML, postCard, titleHTML, assignSlugs } = Render;
+  const { esc, money, prices, durText, priceHTML, servicesHTML, featuredHTML, needsHTML, faqHTML, galleryHTML, postCard, titleHTML, assignSlugs } = Render;
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const toast = msg => { const t = $("#toast"); if (!t) return; t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 4200); };
@@ -29,8 +29,7 @@
     $$("[data-cfg-href]").forEach(el => { el.href = LINKS[el.dataset.cfgHref] || "#"; });
     const fill = (id, html) => { const el = $(id); if (el && !el.children.length) el.innerHTML = html; };
     fill("#needs", needsHTML(CFG.needs));
-    fill("#services", servicesHTML(SERVICES));
-    fill("#price-summary", priceSummaryHTML(SERVICES));
+    fill("#services", $(".pl-nav") ? servicesHTML(SERVICES) : featuredHTML(SERVICES));
     fill("#faq", faqHTML(DATA.faq));
     fill("#gallery", galleryHTML(DATA.gallery));
     fill("#home-posts", (DATA.posts || []).slice(0, 3).map(postCard).join(""));
