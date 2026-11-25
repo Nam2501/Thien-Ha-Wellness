@@ -6,6 +6,9 @@ backend:
   name: github
   repo: Nam2501/Thien-Ha-Wellness
   branch: main
+  # Đăng nhập GitHub qua hàm Cloudflare: functions/api/auth.js + callback.js
+  base_url: https://thien-ha-wellness.pages.dev
+  auth_endpoint: api/auth
   commit_messages:
     create: "Thêm {{collection}} “{{slug}}”"
     update: "Cập nhật {{collection}} “{{slug}}”"
