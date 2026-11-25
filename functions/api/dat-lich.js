@@ -44,7 +44,18 @@ export async function onRequestPost({ request: req, env }) {
   const token = env.TELEGRAM_BOT_TOKEN, chats = String(env.TELEGRAM_CHAT_ID || "").split(",").map(s => s.trim()).filter(Boolean);
   if (!token || !chats.length) { console.error("Thiếu TELEGRAM_BOT_TOKEN hoặc TELEGRAM_CHAT_ID"); return reply(req, 500, { ok: false, error: "Hệ thống đặt lịch chưa được cấu hình." }); }
 
-  const date = /^\d{4}-\d{2}-\d{2}$/.test(d.ngay) ? d.ngay.split("-").reverse().join("/") : (d.ngay || "Linh hoạt");
+  // Ngày/giờ: chặn ngày đã qua, giờ đã qua (theo giờ Việt Nam), ngoài giờ nhận khách 09:00–20:00, quá 60 ngày
+  const vn = new Date(Date.now() + 7 * 3600e3), today = vn.toISOString().slice(0, 10), nowMin = vn.getUTCHours() * 60 + vn.getUTCMinutes();
+  const maxDay = new Date(Date.parse(today) + 60 * 864e5).toISOString().slice(0, 10);
+  if (d.ngay && (!/^\d{4}-\d{2}-\d{2}$/.test(d.ngay) || isNaN(Date.parse(d.ngay)))) return reply(req, 422, { ok: false, error: "Ngày không hợp lệ." });
+  if (d.ngay && d.ngay < today) return reply(req, 422, { ok: false, error: "Ngày đã qua, vui lòng chọn ngày khác." });
+  if (d.ngay && d.ngay > maxDay) return reply(req, 422, { ok: false, error: "Chỉ nhận đặt lịch trong vòng 60 ngày tới." });
+  if (d.gio) {
+    const m = /^(\d{2}):(\d{2})$/.exec(d.gio), t = m ? +m[1] * 60 + +m[2] : -1;
+    if (t < 9 * 60 || t > 20 * 60 || t % 30) return reply(req, 422, { ok: false, error: "Giờ nhận khách từ 09:00 đến 20:00." });
+    if ((d.ngay || today) === today && t < nowMin) return reply(req, 422, { ok: false, error: "Giờ này đã qua, vui lòng chọn giờ khác." });
+  }
+  const date = d.ngay ? d.ngay.split("-").reverse().join("/") : "Linh hoạt";
   const text = [
     "🌊 <b>LỊCH MỚI — Thiên Hà Wellness</b>",
     `👤 ${esc(d.ho_ten)}`,

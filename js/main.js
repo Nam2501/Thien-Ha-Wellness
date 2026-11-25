@@ -71,10 +71,34 @@
     $("#f-service").innerHTML = `<option value="">— Chưa chọn, cần tư vấn —</option>` + groups.map(g =>
       `<optgroup label="${esc(g)}">${SERVICES.filter(s => (s.group || "Liệu trình khác") === g).map(s => prices(s).map(p =>
         `<option value="${esc(s.id)}|${p.min}">${esc(s.name)} · ${durText(p.min)} · ${money(p.price)}</option>`).join("")).join("")}</optgroup>`).join("");
+    /* Ngày & giờ đặt lịch — luôn tính theo giờ Việt Nam (khách ở múi giờ khác vẫn đúng)
+       - Chỉ đặt từ hôm nay tới MAX_DAYS ngày tới; giờ nhận khách 09:00–20:00, mỗi 30 phút
+       - Hôm nay: ẩn các giờ đã qua (cần báo trước ít nhất LEAD_MIN phút); hết giờ thì tự chuyển sang ngày mai */
+    const MAX_DAYS = 60, LEAD_MIN = 30;
     const times = []; for (let h = 9; h <= 20; h++) for (const mm of ["00", "30"]) if (!(h === 20 && mm === "30")) times.push(`${String(h).padStart(2, "0")}:${mm}`);
-    $("#f-time").innerHTML = `<option value="">Giờ bất kỳ</option>` + times.map(t => `<option>${t}</option>`).join("");
-    const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-    $("#f-date").min = today.toISOString().slice(0, 10);
+    const vnNow = () => { const d = new Date(Date.now() + 7 * 3600e3); return { date: d.toISOString().slice(0, 10), min: d.getUTCHours() * 60 + d.getUTCMinutes() }; };
+    const addDays = (iso, n) => new Date(Date.parse(iso) + n * 864e5).toISOString().slice(0, 10);
+    const toMin = t => +t.slice(0, 2) * 60 + +t.slice(3);
+    const fDate = $("#f-date"), fTime = $("#f-time");
+    const slotsFor = date => { const now = vnNow(); return date === now.date ? times.filter(t => toMin(t) >= now.min + LEAD_MIN) : times; };
+    const firstDay = () => { const now = vnNow(); return slotsFor(now.date).length ? now.date : addDays(now.date, 1); };
+    const renderTimes = () => {
+      const keep = fTime.value, list = slotsFor(fDate.value || firstDay());
+      fTime.innerHTML = `<option value="">Giờ bất kỳ</option>` + list.map(t => `<option${t === keep ? " selected" : ""}>${t}</option>`).join("");
+    };
+    // Kiểm tra ngày/giờ: trả về câu báo lỗi, hoặc "" nếu hợp lệ
+    const checkWhen = () => {
+      const d = fDate.value, min = firstDay(), max = addDays(vnNow().date, MAX_DAYS);
+      if (d && d < min) return "Ngày đã qua, vui lòng chọn từ " + min.split("-").reverse().join("/") + " trở đi.";
+      if (d && d > max) return `Chỉ nhận đặt lịch trong vòng ${MAX_DAYS} ngày tới.`;
+      if (fTime.value && !slotsFor(d || min).includes(fTime.value)) return "Giờ này đã qua, vui lòng chọn giờ khác.";
+      return "";
+    };
+    const syncLimits = () => { fDate.min = firstDay(); fDate.max = addDays(vnNow().date, MAX_DAYS); };
+    syncLimits(); renderTimes();
+    fDate.addEventListener("change", () => { syncLimits(); renderTimes(); const m = checkWhen(); fDate.classList.toggle("invalid", !!m); $("#form-msg").textContent = m; });
+    fDate.addEventListener("focus", syncLimits);
+    fTime.addEventListener("focus", renderTimes);   // trang mở lâu: cập nhật lại các giờ đã qua
     // Từ trang liệu trình: /?dv=co-vai-gay|60#dat-lich
     const dv = new URLSearchParams(location.search).get("dv");
     if (dv && [...$("#f-service").options].some(o => o.value === dv)) $("#f-service").value = dv;
@@ -91,6 +115,11 @@
       $("#f-name").classList.toggle("invalid", !name);
       $("#f-phone").classList.toggle("invalid", !phoneOk);
       if (!name || !phoneOk) { $("#form-msg").textContent = "Vui lòng nhập họ tên và số điện thoại hợp lệ."; (name ? $("#f-phone") : $("#f-name")).focus(); return; }
+      syncLimits(); renderTimes();
+      const whenErr = checkWhen();
+      fDate.classList.toggle("invalid", !!whenErr && !!fDate.value && (fDate.value < fDate.min || fDate.value > fDate.max));
+      fTime.classList.toggle("invalid", !!whenErr && !fDate.classList.contains("invalid"));
+      if (whenErr) { $("#form-msg").textContent = whenErr; (fDate.classList.contains("invalid") ? fDate : fTime).focus(); return; }
 
       // Ghi liệu trình dạng chữ dễ đọc để spa thấy ngay trong tin Telegram
       const sel = $("#f-service"), service = sel.value ? sel.selectedOptions[0].text : "Chưa chọn — cần tư vấn";
@@ -103,6 +132,7 @@
         // Gửi thẳng tới /api/dat-lich → Telegram của spa — khách không phải nhắn lại ở đâu khác
         const res = await fetch("/api/dat-lich", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
         const out = await res.json().catch(() => ({}));
+        if (res.status === 422 && out.error) { $("#form-msg").textContent = out.error; return; }   // dữ liệu chưa hợp lệ (vd giờ vừa trôi qua)
         if (!res.ok || !out.ok) throw new Error(out.error || res.status);
         done.innerHTML = `<span class="done-ic" aria-hidden="true">✓</span>
           <h3>Thiên Hà đã nhận lịch của bạn</h3>
@@ -111,7 +141,7 @@
           <p class="done-note">Cần đổi lịch hoặc muốn trao đổi ngay?</p>${contactBtns}
           <button type="button" class="link-again" id="book-again">Đặt thêm lịch khác</button>`;
         form.hidden = true; done.hidden = false; done.focus();
-        $("#book-again").onclick = () => { form.reset(); $("#f-opened").value = Date.now(); form.hidden = false; done.hidden = true; $("#f-name").focus(); };
+        $("#book-again").onclick = () => { form.reset(); syncLimits(); renderTimes(); $("#f-opened").value = Date.now(); form.hidden = false; done.hidden = true; $("#f-name").focus(); };
         toast("Đã gửi lịch thành công!");
       } catch (_) {
         // Mất mạng / máy chủ lỗi: giữ nguyên thông tin khách đã nhập, đưa cách liên hệ trực tiếp
