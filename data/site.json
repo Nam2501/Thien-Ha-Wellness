@@ -39,5 +39,67 @@
       "group": "Dịch vụ chăm sóc tai & mặt"
     }
   ],
-  "heroTitle": "Thả trôi mệt mỏi, *như dòng nước* tìm về biển lặng."
+  "heroTitle": "Thả trôi mệt mỏi, *như dòng nước* tìm về biển lặng.",
+  "socials": [
+    {
+      "net": "zalo",
+      "url": "",
+      "on": true
+    },
+    {
+      "net": "messenger",
+      "url": "",
+      "on": false
+    },
+    {
+      "net": "facebook",
+      "url": "",
+      "on": false
+    },
+    {
+      "net": "tiktok",
+      "url": "",
+      "on": false
+    },
+    {
+      "net": "instagram",
+      "url": "",
+      "on": false
+    },
+    {
+      "net": "youtube",
+      "url": "",
+      "on": false
+    },
+    {
+      "net": "whatsapp",
+      "url": "",
+      "on": false
+    },
+    {
+      "net": "telegram",
+      "url": "",
+      "on": false
+    },
+    {
+      "net": "kakaotalk",
+      "url": "",
+      "on": false
+    },
+    {
+      "net": "email",
+      "url": "",
+      "on": false
+    },
+    {
+      "net": "maps",
+      "url": "",
+      "on": false
+    },
+    {
+      "net": "phone",
+      "url": "",
+      "on": true
+    }
+  ]
 }

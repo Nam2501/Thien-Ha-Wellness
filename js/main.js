@@ -28,6 +28,7 @@
     $$("[data-cfg-html]").forEach(el => { if (CFG[el.dataset.cfgHtml]) el.innerHTML = titleHTML(CFG[el.dataset.cfgHtml]); });
     $$("[data-cfg-href]").forEach(el => { el.href = LINKS[el.dataset.cfgHref] || "#"; });
     const fill = (id, html) => { const el = $(id); if (el && !el.children.length) el.innerHTML = html; };
+    fill("#float-contact", Render.socialsHTML(CFG));
     fill("#needs", needsHTML(CFG.needs));
     fill("#services", $(".pl-nav") ? servicesHTML(SERVICES) : featuredHTML(SERVICES));
     fill("#faq", faqHTML(DATA.faq));

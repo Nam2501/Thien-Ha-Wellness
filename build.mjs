@@ -68,7 +68,7 @@ const SPA = {
   image: img(SEO.defaultImage) || undefined, priceRange: B.priceRange || undefined, openingHours: B.openingHours || undefined,
   address: { "@type": "PostalAddress", streetAddress: SITE.address, addressLocality: B.city || undefined, addressCountry: "VN" },
   geo: B.latitude && B.longitude ? { "@type": "GeoCoordinates", latitude: Number(B.latitude), longitude: Number(B.longitude) } : undefined,
-  hasMap: SITE.mapUrl || undefined, sameAs: /^https?:/.test(SITE.facebook || "") ? [SITE.facebook] : undefined
+  hasMap: SITE.mapUrl || undefined, sameAs: (() => { const a = [...new Set([SITE.facebook, ...(SITE.socials || []).filter(s => s.on !== false && ["facebook", "tiktok", "instagram", "youtube"].includes(s.net)).map(s => s.url)].filter(u => /^https?:/.test(u || "")))]; return a.length ? a : undefined; })()
 };
 const crumbs = list => ({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: list.map(([name, p], i) => ({ "@type": "ListItem", position: i + 1, name, item: full(p) })) });
 
@@ -81,6 +81,7 @@ home = home
   .replace(/(<(\w+)\b[^>]*\bdata-cfg="(\w+)"[^>]*>)[\s\S]*?(<\/\2>)/g, (all, open, tag, key, close) => SITE[key] != null ? open + esc(SITE[key]) + close : all)
   .replace(/(<(\w+)\b[^>]*\bdata-cfg-html="(\w+)"[^>]*>)[\s\S]*?(<\/\2>)/g, (all, open, tag, key, close) => SITE[key] ? open + titleHTML(SITE[key]) + close : all)
   .replace(/data-cfg-href="(\w+)" href="#"/g, (all, k) => `data-cfg-href="${k}" href="${esc(LINKS[k] || "#")}"`)
+  .replace('<div class="float-contact" id="float-contact" aria-label="Liên hệ nhanh"></div>', `<div class="float-contact" id="float-contact" aria-label="Liên hệ nhanh">${R.socialsHTML(SITE)}</div>`)
   .replace('<div class="svc-groups" id="services"></div>', `<div class="svc-groups" id="services">${R.featuredHTML(SERVICES)}</div>`)
   .replace('<div class="needs" id="needs"></div>', `<div class="needs" id="needs">${R.needsHTML(SITE.needs)}</div>`)
   .replace('<div class="faq" id="faq"></div>', `<div class="faq" id="faq">${R.faqHTML(FAQ)}</div>`)

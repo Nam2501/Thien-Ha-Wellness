@@ -47,6 +47,32 @@ collections:
           - { name: mapUrl, label: "Link Google Maps của spa", widget: string }
           - { name: reviewUrl, label: "Link viết đánh giá Google", widget: string, hint: "Lấy trong Google Business Profile → Xin đánh giá." }
           - { name: facebook, label: "Link Facebook", widget: string, required: false }
+          - name: socials
+            label: "Nút liên hệ nổi (góc phải màn hình)"
+            label_singular: "nút"
+            widget: list
+            collapsed: true
+            hint: "Bật/tắt từng nút và dán link. Thứ tự trong danh sách = thứ tự hiển thị từ trên xuống (kéo để đổi). Nút đã bật mà chưa có link sẽ tự ẩn."
+            summary: "{{fields.net}} — bật: {{fields.on}}"
+            fields:
+              - name: net
+                label: "Kênh"
+                widget: select
+                options:
+                  - { label: "Zalo (để trống link = dùng số/link Zalo ở trên)", value: zalo }
+                  - { label: "Gọi điện (để trống = hotline ở trên)", value: phone }
+                  - { label: "Messenger — vd https://m.me/tentrang", value: messenger }
+                  - { label: "Facebook", value: facebook }
+                  - { label: "TikTok", value: tiktok }
+                  - { label: "Instagram", value: instagram }
+                  - { label: "YouTube", value: youtube }
+                  - { label: "WhatsApp — vd https://wa.me/84901234567", value: whatsapp }
+                  - { label: "Telegram — vd https://t.me/tenkenh", value: telegram }
+                  - { label: "KakaoTalk — link kênh/open chat", value: kakaotalk }
+                  - { label: "Email (để trống = email ở trên)", value: email }
+                  - { label: "Google Maps (để trống = link bản đồ ở trên)", value: maps }
+              - { name: url, label: "Link", widget: string, required: false, hint: "Dán link đầy đủ bắt đầu bằng https://. Gọi điện: nhập số điện thoại. Email: nhập địa chỉ email." }
+              - { name: "on", label: "Hiển thị trên website", widget: boolean, default: true, required: false }
           - { name: heroEyebrow, label: "Banner — dòng chữ nhỏ", widget: string }
           - { name: heroTitle, label: "Banner — tiêu đề lớn", widget: string, hint: "Đặt chữ trong dấu * để in nghiêng, vd: Thả trôi mệt mỏi, *như dòng nước* về biển lặng." }
           - { name: heroLead, label: "Banner — đoạn mô tả", widget: text }

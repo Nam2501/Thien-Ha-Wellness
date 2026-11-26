@@ -137,6 +137,37 @@
     <div class="post-body"><span class="post-date">${esc(p.date)}</span><h3><a href="${urlFor("posts", p)}">${esc(p.title)}</a></h3><p>${esc(p.excerpt)}</p>
     <a class="link-more" href="${urlFor("posts", p)}">Đọc tiếp →</a></div></article>`;
 
-  const API = { esc, money, slugify, absPath, SECTIONS, nameOf, assignSlugs, urlFor, titleHTML, bodyHTML, ICONS, prices, durText, priceHTML, servicesHTML, needsHTML, serviceCard, featuredHTML, pricingHTML, groupId, faqHTML, galleryHTML, postCard };
+  /* ---------- Nút liên hệ nổi (Zalo, gọi, mạng xã hội) — bật/tắt trong admin → site.socials ---------- */
+  const S_ICON = {
+    phone: `<svg viewBox="0 0 24 24" class="st"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg>`,
+    messenger: `<svg viewBox="0 0 24 24"><path d="M12 2C6.4 2 2 6.1 2 11.4c0 2.9 1.3 5.4 3.5 7.1V22l3.2-1.8c1 .3 2.1.4 3.3.4 5.6 0 10-4.1 10-9.3S17.6 2 12 2Zm1.1 12.4-2.6-2.8-5 2.8 5.5-5.9 2.7 2.8 4.9-2.8-5.5 5.9Z"/></svg>`,
+    facebook: `<svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3c-2.8 0-4.5 1.8-4.5 4.6V11H7v4h2.5v7h4v-7H17l.5-4h-4V8.8c0-.5.2-.8.5-.8Z"/></svg>`,
+    tiktok: `<svg viewBox="0 0 24 24"><path d="M16.5 3c.3 2.2 1.7 3.6 3.9 3.8v3.3c-1.4 0-2.7-.4-3.9-1.1v5.9c0 3.5-2.6 5.9-5.8 5.9A5.6 5.6 0 0 1 5 15.2c0-3.3 2.8-5.9 6.3-5.6v3.4c-1.5-.3-3 .8-3 2.3 0 1.3 1.1 2.3 2.4 2.3 1.4 0 2.4-1 2.4-2.6V3h3.4Z"/></svg>`,
+    instagram: `<svg viewBox="0 0 24 24" class="st"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1.1" class="dot"/></svg>`,
+    youtube: `<svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.6 2.6 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.6 2.6 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8c.2.9.9 1.6 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4c.9-.2 1.6-.9 1.8-1.8.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8ZM10 15V9l5.2 3L10 15Z"/></svg>`,
+    whatsapp: `<svg viewBox="0 0 24 24"><path d="M12 2a9.9 9.9 0 0 0-8.6 14.9L2 22l5.3-1.4A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>`,
+    telegram: `<svg viewBox="0 0 24 24"><path d="M21.5 3.5 2.8 10.8c-.9.4-.9 1.6.1 1.9l4.6 1.5 1.8 5.6c.2.7 1.1.9 1.6.4l2.6-2.5 4.8 3.5c.6.4 1.4.1 1.6-.6l3.3-15.6c.2-.9-.7-1.7-1.6-1.3ZM9.6 14.4l8.3-7.6-6.6 8.6-.3 3.1-1.4-4.1Z"/></svg>`,
+    email: `<svg viewBox="0 0 24 24" class="st"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>`,
+    maps: `<svg viewBox="0 0 24 24"><path d="M12 2a7.5 7.5 0 0 0-7.5 7.5C4.5 15 12 22 12 22s7.5-7 7.5-12.5A7.5 7.5 0 0 0 12 2Zm0 10.2a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4Z"/></svg>`
+  };
+  const SOCIAL = {
+    zalo: { label: "Nhắn Zalo", text: "Zalo" }, phone: { label: "Gọi điện" }, messenger: { label: "Nhắn Messenger" }, facebook: { label: "Facebook" },
+    tiktok: { label: "TikTok" }, instagram: { label: "Instagram" }, youtube: { label: "YouTube" }, whatsapp: { label: "Nhắn WhatsApp" },
+    telegram: { label: "Nhắn Telegram" }, kakaotalk: { label: "Nhắn KakaoTalk", text: "TALK" }, email: { label: "Gửi email" }, maps: { label: "Chỉ đường Google Maps" }
+  };
+  // Link mặc định khi để trống: Zalo/gọi/email/bản đồ lấy từ thông tin liên hệ
+  const socialURL = (s, site) => {
+    const u = String(s.url || "").trim();
+    if (u) return s.net === "phone" && !/^tel:/.test(u) ? "tel:" + u.replace(/[^\d+]/g, "") : s.net === "email" && !/^mailto:/.test(u) ? "mailto:" + u : u;
+    return { zalo: site.zaloLink || (site.zalo ? "https://zalo.me/" + site.zalo : ""), phone: site.phone ? "tel:" + String(site.phone).replace(/[^\d+]/g, "") : "",
+      email: site.email ? "mailto:" + site.email : "", maps: site.mapUrl || "", facebook: site.facebook || "" }[s.net] || "";
+  };
+  const DEFAULT_SOCIALS = [{ net: "zalo", on: true }, { net: "phone", on: true }];
+  const socialsHTML = (site = {}) => (Array.isArray(site.socials) && site.socials.length ? site.socials : DEFAULT_SOCIALS)
+    .filter(s => s && s.on !== false && SOCIAL[s.net]).map(s => ({ ...s, href: socialURL(s, site) })).filter(s => s.href)
+    .map(s => { const d = SOCIAL[s.net], ext = !/^(tel|mailto):/.test(s.href);
+      return `<a class="fc ${s.net}" href="${esc(s.href)}"${ext ? ' target="_blank" rel="noopener"' : ""} aria-label="${esc(d.label)}" title="${esc(d.label)}">${d.text ? `<span>${d.text}</span>` : S_ICON[s.net].replace("<svg", '<svg aria-hidden="true"')}</a>`; }).join("");
+
+  const API = { esc, money, slugify, absPath, SECTIONS, nameOf, assignSlugs, urlFor, titleHTML, bodyHTML, ICONS, prices, durText, priceHTML, servicesHTML, needsHTML, serviceCard, featuredHTML, pricingHTML, groupId, faqHTML, galleryHTML, postCard, socialsHTML, socialURL, SOCIAL };
   if (typeof module === "object" && module.exports) module.exports = API; else root.Render = API;
 })(typeof window !== "undefined" ? window : globalThis);
