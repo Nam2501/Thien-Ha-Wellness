@@ -104,9 +104,31 @@
       }
       fDate.innerHTML = `<option value="">Linh hoạt — spa gọi tư vấn</option>` + opts.join("");
     };
+    // Giờ đã có khách (sổ lịch trên máy chủ): làm mờ để khách sau không chọn trùng
+    const BUSY = {};   // ngày → { at, busy, cap, buffer }
+    const durPicked = () => { const m = +String($("#f-service").value).split("|")[1]; return [30, 60, 90].includes(m) ? m : 60; };
+    const isFull = (t, info) => {
+      if (!info || !info.busy) return false;
+      const s = toMin(t), e = s + durPicked(), buf = info.buffer || 0;
+      return info.busy.filter(([bs, be]) => bs < e + buf && be + buf > s).length >= (info.cap || 1);
+    };
+    const loadBusy = async (date, force) => {
+      if (!date) return;
+      const c = BUSY[date];
+      if (!force && c && Date.now() - c.at < 30e3) return;
+      try {
+        const r = await fetch(`/api/lich-trong?ngay=${date}`, { cache: "no-store" }).then(x => x.json());
+        BUSY[date] = { at: Date.now(), busy: r.enabled ? r.busy : [], cap: r.cap, buffer: r.buffer };
+      } catch { /* mất mạng: không làm mờ, máy chủ vẫn chặn trùng khi gửi */ }
+      if (fDate.value === date) renderTimes();
+    };
     const renderTimes = () => {
-      const keep = fTime.value, list = slotsFor(fDate.value || firstDay());
-      fTime.innerHTML = `<option value="">Giờ bất kỳ</option>` + list.map(t => `<option${t === keep ? " selected" : ""}>${t}</option>`).join("");
+      const keep = fTime.value, list = slotsFor(fDate.value || firstDay()), info = fDate.value ? BUSY[fDate.value] : null;
+      const full = new Set(list.filter(t => isFull(t, info)));
+      fTime.innerHTML = `<option value="">Giờ bất kỳ</option>` + list.map(t => full.has(t)
+        ? `<option value="${t}" disabled>${t} (đã kín)</option>`
+        : `<option${t === keep ? " selected" : ""}>${t}</option>`).join("");
+      if (keep && full.has(keep)) $("#form-msg").textContent = `Giờ ${keep} vừa kín, vui lòng chọn giờ khác.`;
     };
     // Kiểm tra ngày/giờ: trả về câu báo lỗi, hoặc "" nếu hợp lệ
     const checkWhen = () => {
@@ -118,9 +140,10 @@
     };
     const syncLimits = renderDates;
     syncLimits(); renderTimes();
-    fDate.addEventListener("change", () => { renderTimes(); const m = checkWhen(); fDate.classList.toggle("invalid", !!m); $("#form-msg").textContent = m; });
+    fDate.addEventListener("change", () => { renderTimes(); loadBusy(fDate.value); const m = checkWhen(); fDate.classList.toggle("invalid", !!m); $("#form-msg").textContent = m; });
     fDate.addEventListener("focus", syncLimits);   // trang mở qua nửa đêm: cập nhật lại danh sách ngày
-    fTime.addEventListener("focus", renderTimes);   // trang mở lâu: cập nhật lại các giờ đã qua
+    fTime.addEventListener("focus", () => { renderTimes(); loadBusy(fDate.value); });   // trang mở lâu: cập nhật giờ đã qua / đã kín
+    $("#f-service").addEventListener("change", renderTimes);   // đổi thời lượng → khung giờ trống thay đổi
     // Từ trang liệu trình: /?dv=co-vai-gay|60#dat-lich
     const dv = new URLSearchParams(location.search).get("dv");
     if (dv && [...$("#f-service").options].some(o => o.value === dv)) $("#f-service").value = dv;
@@ -129,6 +152,16 @@
     $("#f-opened").value = Date.now();   // chống bot: gửi quá nhanh sau khi mở trang sẽ bị bỏ qua
     if (new URLSearchParams(location.search).get("loi") === "dat-lich") $("#form-msg").textContent = "Chưa gửi được lịch, vui lòng thử lại hoặc gọi hotline.";
     const contactBtns = `<span class="form-actions"><a class="btn btn-pearl btn-sm" href="${esc(LINKS.tel)}">Gọi ${esc(CFG.phone || "")}</a><a class="btn btn-ghost btn-sm" href="${esc(LINKS.zalo)}" target="_blank" rel="noopener">Nhắn Zalo</a></span>`;
+
+    // Cloudflare Turnstile — ô "không phải robot" (thường tự xác minh, khách không phải bấm). Bật khi có Site key trong admin.
+    let tsId = null;
+    const tsReset = () => { if (window.turnstile && tsId != null) turnstile.reset(tsId); };
+    if (CFG.turnstileKey && $("#f-captcha")) {
+      window.onTurnstileLoad = () => { tsId = turnstile.render("#f-captcha", { sitekey: CFG.turnstileKey, language: "vi", theme: "light" }); };
+      const s = document.createElement("script");
+      s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad"; s.async = true; s.defer = true;
+      document.head.append(s);
+    }
 
     form.addEventListener("submit", async e => {
       e.preventDefault();
@@ -155,19 +188,26 @@
         // Gửi thẳng tới /api/dat-lich → Telegram của spa — khách không phải nhắn lại ở đâu khác
         const res = await fetch("/api/dat-lich", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
         const out = await res.json().catch(() => ({}));
-        if (res.status === 422 && out.error) { $("#form-msg").textContent = out.error; return; }   // dữ liệu chưa hợp lệ (vd giờ vừa trôi qua)
+        // 422: dữ liệu chưa hợp lệ · 409: giờ vừa có khách khác đặt / đã đặt rồi · 429: gửi quá nhiều
+        if ([409, 422, 429].includes(res.status) && out.error) {
+          $("#form-msg").textContent = out.error; tsReset();
+          if (out.conflict) { await loadBusy(fDate.value, true); fTime.classList.add("invalid"); fTime.focus(); }
+          return;
+        }
         if (!res.ok || !out.ok) throw new Error(out.error || res.status);
         done.innerHTML = `<span class="done-ic" aria-hidden="true">✓</span>
           <h3>Thiên Hà đã nhận lịch của bạn</h3>
           <p>Cảm ơn <b>${esc(name)}</b>! Chúng tôi sẽ gọi tới <b>${esc(phone)}</b> để xác nhận lịch trong giờ làm việc.</p>
-          <dl class="done-sum"><dt>Liệu trình</dt><dd>${esc(service)}</dd><dt>Thời gian</dt><dd>${esc(when)}</dd></dl>
+          <dl class="done-sum">${out.code ? `<dt>Mã lịch</dt><dd><b>${esc(out.code)}</b></dd>` : ""}<dt>Liệu trình</dt><dd>${esc(service)}</dd><dt>Thời gian</dt><dd>${esc(when)}</dd></dl>
           <p class="done-note">Cần đổi lịch hoặc muốn trao đổi ngay?</p>${contactBtns}
           <button type="button" class="link-again" id="book-again">Đặt thêm lịch khác</button>`;
         form.hidden = true; done.hidden = false; done.focus();
-        $("#book-again").onclick = () => { form.reset(); syncLimits(); renderTimes(); $("#f-opened").value = Date.now(); form.hidden = false; done.hidden = true; $("#f-name").focus(); };
+        $("#book-again").onclick = () => { form.reset(); syncLimits(); renderTimes(); tsReset(); $("#f-opened").value = Date.now(); form.hidden = false; done.hidden = true; $("#f-name").focus(); };
+        Object.keys(BUSY).forEach(k => delete BUSY[k]);   // lịch vừa đặt đã chiếm giờ → tải lại khi đặt tiếp
         toast("Đã gửi lịch thành công!");
       } catch (_) {
         // Mất mạng / máy chủ lỗi: giữ nguyên thông tin khách đã nhập, đưa cách liên hệ trực tiếp
+        tsReset();
         $("#form-msg").innerHTML = `Chưa gửi được do lỗi kết nối. Vui lòng bấm gửi lại, hoặc liên hệ trực tiếp:${contactBtns}`;
       } finally {
         btn.disabled = false; btn.textContent = "Gửi yêu cầu đặt lịch";

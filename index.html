@@ -246,10 +246,12 @@
           <p class="hp" aria-hidden="true"><label>Không điền ô này <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
           <div class="field"><label for="f-name">Họ và tên *</label><input id="f-name" name="ho_ten" required autocomplete="name"></div>
           <div class="field"><label for="f-phone">Số điện thoại *</label><input id="f-phone" name="so_dien_thoai" type="tel" required autocomplete="tel" inputmode="tel"></div>
-          <div class="field full"><label for="f-service">Liệu trình</label><select id="f-service"></select></div>
+          <div class="field full"><label for="f-service">Liệu trình</label><select id="f-service" name="dv"></select></div>
           <div class="field"><label for="f-date">Ngày</label><select id="f-date" name="ngay"></select></div>
           <div class="field"><label for="f-time">Giờ</label><select id="f-time" name="gio"></select></div>
           <div class="field full"><label for="f-note">Ghi chú</label><textarea id="f-note" name="ghi_chu" rows="3" placeholder="Vùng cần tập trung, mong muốn kỹ thuật viên nam/nữ…"></textarea></div>
+          <div class="field full captcha" id="f-captcha"></div>
+          <p class="full consent">Bằng việc gửi, bạn đồng ý để Thiên Hà Wellness dùng họ tên và số điện thoại này <b>chỉ để xác nhận lịch hẹn</b>. Xem <a href="/chinh-sach-bao-mat/">chính sách bảo mật</a>.</p>
           <button class="btn btn-pearl full" type="submit" id="f-submit">Gửi yêu cầu đặt lịch</button>
           <p class="form-msg" id="form-msg" role="status"></p>
         </form>

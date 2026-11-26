@@ -42,6 +42,7 @@ collections:
           - { name: zalo, label: "Số Zalo (viết liền)", widget: string }
           - { name: zaloLink, label: "Link Zalo đầy đủ (nên điền)", widget: string, required: false, hint: "Link zalo.me/<số> chỉ mở được khi tài khoản cho phép người lạ tìm bằng số điện thoại. Dán link chia sẻ trang cá nhân hoặc link Zalo OA vào đây để luôn mở được." }
           - { name: email, label: "Email", widget: string, required: false }
+          - { name: turnstileKey, label: "Chống bot đặt lịch giả — Turnstile Site key", widget: string, required: false, hint: "Lấy trong Cloudflare → Turnstile. Điền cùng lúc với biến bí mật TURNSTILE_SECRET trên Cloudflare. Để trống = tắt. Sổ lịch đặt: /admin/lich-dat/" }
           - { name: address, label: "Địa chỉ", widget: string, hint: "Ghi đầy đủ, giống hệt địa chỉ trên Google Business Profile." }
           - { name: hours, label: "Giờ mở cửa (hiển thị)", widget: string }
           - { name: mapUrl, label: "Link Google Maps của spa", widget: string }

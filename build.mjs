@@ -209,6 +209,24 @@ write(path.join("dat-lich-thanh-cong", "index.html"), page({
   hero: `<p class="eyebrow light">Đặt lịch</p><h1>Thiên Hà đã nhận lịch của bạn</h1><p class="lead">Cảm ơn bạn! Chúng tôi sẽ gọi điện xác nhận lịch trong giờ làm việc.</p>`,
   body: `<div class="prose"><p>Cần đổi lịch hoặc muốn trao đổi ngay, vui lòng gọi <a href="${esc(LINKS.tel)}">${esc(SITE.phone)}</a> hoặc <a href="${esc(LINKS.zalo)}" target="_blank" rel="noopener">nhắn Zalo</a>.</p><p><a class="btn btn-navy" href="/">Về trang chủ</a></p></div>`
 }));
+// Chính sách bảo mật thông tin khách đặt lịch (Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân)
+write(path.join("chinh-sach-bao-mat", "index.html"), page({
+  meta: { title: `Chính sách bảo mật | ${SITE.name}`, description: `Cách ${SITE.name} thu thập, sử dụng và bảo vệ thông tin khách hàng khi đặt lịch trên website.`, url: full("/chinh-sach-bao-mat/") },
+  schemas: [],
+  hero: `<p class="eyebrow light">Thông tin khách hàng</p><h1>Chính sách bảo mật</h1>`,
+  body: `<div class="prose">
+    <h2>Thông tin chúng tôi thu thập</h2>
+    <p>Khi bạn đặt lịch trên website, ${esc(SITE.name)} nhận: họ tên, số điện thoại, liệu trình, ngày giờ mong muốn và ghi chú (nếu có).</p>
+    <h2>Mục đích sử dụng</h2>
+    <ul><li>Gọi điện hoặc nhắn tin xác nhận, đổi, hủy lịch hẹn.</li><li>Sắp xếp kỹ thuật viên, phòng, tránh trùng giờ giữa các khách.</li></ul>
+    <p>Chúng tôi <b>không</b> bán, cho thuê hay chia sẻ thông tin của bạn cho bên thứ ba vì mục đích quảng cáo.</p>
+    <h2>Nơi lưu và thời gian lưu</h2>
+    <p>Thông tin được lưu trên máy chủ Cloudflare (có mã hóa) và gửi vào nhóm Telegram nội bộ của nhân viên lễ tân. Sau 12 tháng kể từ ngày hẹn, họ tên và số điện thoại được tự động xóa khỏi sổ lịch.</p>
+    <h2>Quyền của bạn</h2>
+    <p>Bạn có thể yêu cầu xem, sửa hoặc xóa thông tin của mình bất cứ lúc nào bằng cách gọi <a href="${esc(LINKS.tel)}">${esc(SITE.phone)}</a>${SITE.email ? ` hoặc gửi email tới <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a>` : ""}. Khi yêu cầu, vui lòng cho biết mã lịch hoặc số điện thoại đã đặt.</p>
+    <p><a class="btn btn-navy" href="/#dat-lich">Quay lại đặt lịch</a></p></div>`
+}));
+urls.push({ u: "/chinh-sach-bao-mat/" });
 // Trang 404 (Cloudflare Pages tự trả mã 404 khi có file 404.html; thiếu file này mọi đường dẫn sai sẽ ra trang chủ – lỗi "soft 404")
 write("404.html", page({
   meta: { title: `Không tìm thấy trang | ${SITE.name}`, description: "Trang bạn tìm không tồn tại hoặc đã được chuyển.", url: full("/404.html"), noindex: true },
