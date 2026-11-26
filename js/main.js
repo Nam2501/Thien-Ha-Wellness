@@ -185,6 +185,16 @@
   });
   $$("#nav a").forEach(a => a.addEventListener("click", () => { nav.classList.remove("open"); menuBtn.setAttribute("aria-expanded", false); header.classList.remove("menu-open"); }));
 
+  /* ---------- Nút sao chép hotline ở dải thông tin ---------- */
+  $$("[data-copy-phone]").forEach(btn => btn.addEventListener("click", async () => {
+    const num = (btn.closest(".ib-v")?.querySelector("a")?.textContent || "").replace(/\s+/g, "");
+    if (!num) return;
+    try { await navigator.clipboard.writeText(num); }
+    catch { const t = document.createElement("textarea"); t.value = num; document.body.append(t); t.select(); document.execCommand("copy"); t.remove(); }
+    btn.classList.add("done"); btn.setAttribute("title", "Đã sao chép");
+    setTimeout(() => { btn.classList.remove("done"); btn.setAttribute("title", "Sao chép số"); }, 1800);
+  }));
+
   /* ---------- Hiệu ứng xuất hiện khi cuộn ---------- */
   $$(".head-center, .head-split, .need, .svc, .about-copy, .about-art, .value, .journey li, .gallery figure, .reviews > *, .faq details, .booking > *, .post").forEach(el => el.classList.add("reveal"));
   const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }), { rootMargin: "0px 0px -8% 0px" }) : null;

@@ -103,13 +103,26 @@ h3 { font-size: 24px; color: var(--navy); }
 @keyframes wave { to { transform: translateX(-40px); } }
 
 /* Dải thông tin */
-.infobar { position: relative; z-index: 3; list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); margin-top: -64px;
-  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line); }
-.infobar li { padding: 24px 28px; }
-.infobar li + li { border-left: 1px solid var(--line); }
-.infobar span { display: block; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-.infobar b { font-weight: 500; color: var(--navy); font-size: 15.5px; }
+.infobar { --gold: #b8913a; position: relative; z-index: 3; list-style: none; display: grid; grid-template-columns: 1.45fr 1fr 1fr 1fr; margin-top: -64px;
+  background: #f8f5ee; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid #ebe4d4; padding: 8px 0; }
+.infobar li { position: relative; padding: 18px 28px; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.infobar li + li::before { content: ""; position: absolute; left: 0; top: 18%; bottom: 18%; width: 1px; background: #e2dccd; }
+.infobar .ib-k { display: block; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: #6f6a60; margin-bottom: 8px; }
+.infobar b { font-weight: 500; color: var(--ink); font-size: 17px; line-height: 1.35; }
+.infobar .ib-hours { flex-direction: row; align-items: center; gap: 16px; }
+.ib-clock { width: 58px; height: 52px; flex: none; fill: none; stroke: var(--gold); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.ib-clock .ib-dot { fill: var(--gold); stroke: none; }
+.ib-clock text { font: 600 9px var(--sans); fill: var(--ink); stroke: none; }
+.ib-v { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ib-ic { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--gold); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ib-ic .fill { fill: var(--gold); stroke: none; }
+.ib-copy { margin-left: auto; display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 10px; background: transparent; cursor: pointer; color: #8a857a; transition: background .2s, color .2s; }
+.ib-copy svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.ib-copy:hover { background: #efe8d8; color: var(--gold); }
+.ib-copy.done { color: #3d7a3a; }
 .infobar a:hover { color: var(--tide); }
+.infobar .ib-link { color: var(--gold); font-weight: 600; font-size: 17px; }
+.infobar .ib-link:hover { color: #8f6d22; }
 
 /* ---------- Section chung ---------- */
 .section { position: relative; padding: 130px 0; }
@@ -417,8 +430,8 @@ h3 { font-size: 24px; color: var(--navy); }
   .nav-cta-mobile { display: block; color: var(--mist) !important; }
   .header.menu-open { background: rgba(7,20,38,.97); }
   .infobar { grid-template-columns: 1fr 1fr; }
-  .infobar li:nth-child(3) { border-left: 0; }
-  .infobar li:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .infobar li:nth-child(3)::before { display: none; }
+  .infobar li:nth-child(n+3) { border-top: 1px solid #e2dccd; }
   .needs { grid-template-columns: repeat(2, 1fr); }
   .about, .reviews, .faq-wrap, .booking, .detail { grid-template-columns: 1fr; }
   .side { position: static; }
@@ -442,8 +455,12 @@ h3 { font-size: 24px; color: var(--navy); }
   .hero-lead { font-size: 16.5px; }
   .hero-cta .btn { flex: 1; }
   .infobar { grid-template-columns: 1fr; margin-top: -40px; }
+  .infobar { padding: 0; }
   .infobar li { padding: 16px 20px; }
-  .infobar li + li { border-left: 0; border-top: 1px solid var(--line); }
+  .infobar li + li::before { display: none; }
+  .infobar li + li { border-top: 1px solid #e2dccd; }
+  .infobar b, .infobar .ib-link { font-size: 16px; }
+  .ib-clock { width: 50px; height: 44px; }
   .needs { gap: 18px; }
   .need h3 { font-size: 21px; }
   .need p { font-size: 13.5px; }
