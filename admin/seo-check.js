@@ -27,7 +27,7 @@
     return { title, description, descAuto: !page && !norm(s.description), keyword: norm(page ? it.keyword : s.keyword),
       image: s.image || it.image || it.img || "", path, url: String(seo.siteUrl || "").replace(/\/+$/, "") + path, noindex: !!(s.noindex || seo.noindexAll) };
   }
-  const bodyText = (type, it) => type === "page" ? (it.description || "") : [it.desc, it.content].filter(Boolean).join("\n\n");
+  const bodyText = (type, it) => type === "page" ? (it.description || "") : [it.desc, type === "posts" ? R.postText(it) : it.content].filter(Boolean).join("\n\n");
 
   /* ---------- Chấm 1 trang ---------- */
   function analyze(type, it, ctx = {}) {
@@ -60,7 +60,7 @@
       const [good, min] = MIN_WORDS[type];
       add("words", "Độ dài nội dung", wc >= good ? "good" : wc >= min ? "warn" : "bad", `${wc} chữ — nên từ ${good} chữ trở lên.`);
       add("img", "Ảnh đại diện", m.image ? "good" : "warn", m.image ? "Có ảnh." : "Chưa có ảnh — nên dùng ảnh thật chụp tại spa.", 5);
-      const hasH2 = /(^|\n)## /.test(it.content || "");
+      const hasH2 = /(^|\n)## /.test(type === "posts" ? R.postText(it) : it.content || "");
       add("h2", "Tiêu đề phụ (##)", hasH2 ? "good" : "warn", hasH2 ? "Nội dung có chia mục." : "Nên chia nội dung bằng tiêu đề phụ (dòng bắt đầu bằng ## ).", 5);
     }
     if (type === "services") {

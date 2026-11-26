@@ -29,16 +29,43 @@
   // "Thả trôi *như dòng nước* về biển" -> chữ trong dấu * thành nghiêng
   const titleHTML = s => esc(s).replace(/\*([^*]+)\*/g, "<em>$1</em>");
 
-  // Nội dung dài: dòng trống ngăn đoạn, "## " tiêu đề phụ, "- " danh sách
+  // Định dạng trong dòng (Markdown của trình soạn thảo): **đậm**, _nghiêng_, [link](url), ![ảnh](url), `mã`
+  const safeURL = u => /^(https?:|mailto:|tel:|\/|#)/i.test(u.trim()) ? u.trim() : "#";
+  function inlineMD(s) {
+    const keep = [];
+    let t = String(s).replace(/\\([\\`*_{}\[\]()#+\-.!>|~])/g, (m, c) => `\u0000${keep.push(c) - 1}\u0000`);
+    t = esc(t)
+      .replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+&quot;[^&]*&quot;)?\)/g, (m, a, u) => `<img src="${safeURL(u)}" alt="${a}" loading="lazy">`)
+      .replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+&quot;[^&]*&quot;)?\)/g, (m, x, u) => { const h = safeURL(u); return `<a href="${h}"${/^https?:/i.test(h) ? ' target="_blank" rel="noopener"' : ""}>${x}</a>`; })
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*(.+?)\*\*|__(.+?)__/g, (m, a, b) => `<strong>${a || b}</strong>`)
+      .replace(/(^|[^\w*])\*(?!\s)(.+?)\*(?!\w)|(^|[^\w_])_(?!\s)(.+?)_(?!\w)/g, (m, p1, a, p2, b) => `${p1 ?? p2 ?? ""}<em>${a ?? b}</em>`);
+    return t.replace(/\u0000(\d+)\u0000/g, (m, i) => esc(keep[i]));
+  }
+
+  // Nội dung dài: dòng trống ngăn đoạn, "## " tiêu đề phụ, "- " / "1. " danh sách, "> " trích dẫn
   function bodyHTML(text) {
-    return String(text || "").split(/\n\s*\n/).map(b => b.trim()).filter(Boolean).map(b => {
+    return String(text || "").replace(/\r/g, "").split(/\n\s*\n/).map(b => b.trim()).filter(Boolean).map(b => {
       const lines = b.split("\n").map(l => l.trim());
-      if (b.startsWith("### ")) return `<h3>${esc(b.slice(4))}</h3>`;
-      if (b.startsWith("## ")) return `<h2>${esc(lines[0].slice(3))}</h2>` + (lines.length > 1 ? bodyHTML(lines.slice(1).join("\n")) : "");
-      if (lines.every(l => /^[-•] /.test(l))) return `<ul>${lines.map(l => `<li>${esc(l.slice(2))}</li>`).join("")}</ul>`;
-      return `<p>${esc(b).replace(/\n/g, "<br>")}</p>`;
+      const h = /^(#{1,4})\s+(.*)$/.exec(lines[0]);
+      if (h) { const lv = Math.max(2, h[1].length); return `<h${lv}>${inlineMD(h[2])}</h${lv}>` + (lines.length > 1 ? bodyHTML(lines.slice(1).join("\n")) : ""); }
+      if (/^(-{3,}|\*{3,})$/.test(b)) return "<hr>";
+      if (lines.every(l => /^[-•*+] /.test(l))) return `<ul>${lines.map(l => `<li>${inlineMD(l.slice(2))}</li>`).join("")}</ul>`;
+      if (lines.every(l => /^\d+[.)] /.test(l))) return `<ol>${lines.map(l => `<li>${inlineMD(l.replace(/^\d+[.)] /, ""))}</li>`).join("")}</ol>`;
+      if (lines.every(l => l.startsWith(">"))) return `<blockquote>${bodyHTML(lines.map(l => l.replace(/^>\s?/, "")).join("\n"))}</blockquote>`;
+      if (lines.length === 1 && /^!\[[^\]]*\]\([^)]+\)$/.test(b)) return `<figure>${inlineMD(b)}</figure>`;
+      return `<p>${lines.map(inlineMD).join("<br>")}</p>`;
     }).join("\n");
   }
+
+  // Bài viết: chọn "Trình soạn thảo" (Markdown) hoặc "HTML" trong admin
+  const cleanHTML = h => String(h || "")
+    .replace(/<script\b[\s\S]*?<\/script>/gi, "").replace(/<(iframe|object|embed)\b(?![^>]*\bsrc="https:\/\/(www\.)?(youtube\.com|youtube-nocookie\.com|player\.vimeo\.com|www\.google\.com\/maps))[^>]*>[\s\S]*?<\/\1>/gi, "")
+    .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "").replace(/(href|src)\s*=\s*(["'])\s*javascript:[^"']*\2/gi, '$1="#"');
+  const isHTMLPost = p => p && p.mode === "html" && String(p.html || "").trim();
+  const postBodyHTML = p => isHTMLPost(p) ? cleanHTML(p.html) : bodyHTML(p && p.content);
+  const postText = p => isHTMLPost(p) ? String(p.html).replace(/<(h[1-6])\b[^>]*>/gi, "\n\n## ").replace(/<\/(p|div|h[1-6]|li|ul|ol|blockquote)>|<br\s*\/?>/gi, "\n\n").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/[ \t]+/g, " ").replace(/\n\s*\n\s*/g, "\n\n").trim()
+    : String((p && p.content) || "").replace(/!\[[^\]]*\]\([^)]*\)/g, "").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/[*_`\\]/g, "");
 
   const ICONS = {
     neck: '<path d="M32 12a7 7 0 1 1 0 14 7 7 0 0 1 0-14Z"/><path d="M14 50c2-11 9-17 18-17s16 6 18 17"/>',
@@ -168,6 +195,6 @@
     .map(s => { const d = SOCIAL[s.net], ext = !/^(tel|mailto):/.test(s.href);
       return `<a class="fc ${s.net}" href="${esc(s.href)}"${ext ? ' target="_blank" rel="noopener"' : ""} aria-label="${esc(d.label)}" title="${esc(d.label)}">${d.text ? `<span>${d.text}</span>` : S_ICON[s.net].replace("<svg", '<svg aria-hidden="true"')}</a>`; }).join("");
 
-  const API = { esc, money, slugify, absPath, SECTIONS, nameOf, assignSlugs, urlFor, titleHTML, bodyHTML, ICONS, prices, durText, priceHTML, servicesHTML, needsHTML, serviceCard, featuredHTML, pricingHTML, groupId, faqHTML, galleryHTML, postCard, socialsHTML, socialURL, SOCIAL };
+  const API = { esc, money, slugify, absPath, SECTIONS, nameOf, assignSlugs, urlFor, titleHTML, bodyHTML, inlineMD, postBodyHTML, postText, ICONS, prices, durText, priceHTML, servicesHTML, needsHTML, serviceCard, featuredHTML, pricingHTML, groupId, faqHTML, galleryHTML, postCard, socialsHTML, socialURL, SOCIAL };
   if (typeof module === "object" && module.exports) module.exports = API; else root.Render = API;
 })(typeof window !== "undefined" ? window : globalThis);

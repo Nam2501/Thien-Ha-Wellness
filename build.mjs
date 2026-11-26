@@ -175,7 +175,7 @@ function postPage(p) {
   const src = (p.sources || []).filter(Boolean);
   return page({ meta: m, schemas,
     hero: `${crumbHTML(list)}<h1>${esc(p.title)}</h1><div class="meta"><span>${esc(p.author || SITE.name)}</span>${p.date ? `<span>Đăng ${esc(p.date)}</span>` : ""}${p.updated ? `<span>Cập nhật ${esc(p.updated)}</span>` : ""}</div>`,
-    body: `<div class="detail"><article class="prose">${p.img ? `<figure><img src="${esc(absPath(p.img))}" alt="${esc(p.title)}" width="1200" height="675"></figure>` : ""}${bodyHTML(p.content)}
+    body: `<div class="detail"><article class="prose">${p.img ? `<figure><img src="${esc(absPath(p.img))}" alt="${esc(p.title)}" width="1200" height="675"></figure>` : ""}${R.postBodyHTML(p)}
       ${p.reviewer ? `<p><em>Nội dung được tham vấn bởi ${esc(p.reviewer)}.</em></p>` : ""}
       ${src.length ? `<h2>Nguồn tham khảo</h2><ol>${src.map(x => `<li>${/^https?:/.test(x) ? `<a href="${esc(x)}" rel="nofollow noopener" target="_blank">${esc(x)}</a>` : esc(x)}</li>`).join("")}</ol>` : ""}
       <div class="disclaimer">Thông tin mang tính tham khảo, không thay thế tư vấn y khoa.</div></article>
