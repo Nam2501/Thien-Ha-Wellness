@@ -189,8 +189,8 @@ h3 { font-size: 24px; color: var(--navy); }
 .svc-body { padding: 26px 26px 28px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
 .svc-body h3 { font-size: 27px; }
 .svc-body p { color: var(--muted); font-size: 15px; }
-.durations { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-.durations button { padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--pearl); font-size: 13.5px; cursor: pointer; transition: .2s; color: var(--muted); }
+.durations { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; margin-top: 4px; }
+.durations button { padding: 7px 4px; white-space: nowrap; border-radius: 999px; border: 1px solid var(--line); background: var(--pearl); font-size: 13.5px; cursor: pointer; transition: .2s; color: var(--muted); }
 .durations button:hover { border-color: var(--tide); color: var(--navy); }
 .durations button.on { background: var(--navy); border-color: var(--navy); color: #fff; }
 .svc-body .durations { margin-top: auto; }

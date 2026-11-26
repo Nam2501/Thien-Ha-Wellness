@@ -4,7 +4,7 @@
    ========================================================= */
 (function (root) {
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const money = n => (Number(n) || 0).toLocaleString("vi-VN") + "đ";
+  const money = n => Number(n) ? Number(n).toLocaleString("vi-VN") + "đ" : "Liên hệ";   // giá 0 / trống = Liên hệ
   const slugify = s => String(s ?? "").toLowerCase().replace(/đ/g, "d").normalize("NFD").replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80).replace(/-+$/, "");
   const absPath = p => !p ? "" : /^(https?:)?\/\//.test(p) || p.startsWith("/") || p.startsWith("data:") ? p : "/" + p;
@@ -52,7 +52,7 @@
   // min = 0 → gói không tính theo thời lượng ("Trọn gói")
   const prices = s => (s.prices || []).filter(p => p && (p.min || p.price)).map(p => ({ min: Number(p.min) || 0, price: Number(p.price) || 0 }));
   const durText = min => min ? `${min} phút` : "Trọn gói";
-  const priceHTML = p => `<span class="price-label">Giá · ${durText(p.min)}</span><span class="price-num">${money(p.price).replace(/đ$/, "")}<sup>đ</sup></span>`;
+  const priceHTML = p => `<span class="price-label">Giá · ${durText(p.min)}</span><span class="price-num">${p.price ? `${money(p.price).replace(/đ$/, "")}<sup>đ</sup>` : "Liên hệ"}</span>`;
 
   const groupId = name => "nhom-" + slugify(String(name || "").replace(/^dịch vụ\s+/i, ""));
 

@@ -127,13 +127,19 @@ collections:
               - { name: desc, label: "Mô tả ngắn (hiện trên thẻ)", widget: text }
               - { name: content, label: "Nội dung trang chi tiết", widget: text, hint: "Cách 1 dòng trống giữa các đoạn. Tiêu đề phụ: '## '. Danh sách: mỗi dòng '- '." }
               - name: prices
-                label: "Bảng giá theo thời lượng"
+                label: "Giá theo thời lượng (30 · 60 · 90 phút)"
                 label_singular: "mức giá"
                 widget: list
-                summary: "{{fields.min}} phút — {{fields.price}}đ (0 phút = trọn gói)"
+                allow_add: false
+                allow_remove: false
+                allow_reorder: false
+                collapsed: true
+                hint: "Mỗi liệu trình luôn có 3 mức 30, 60, 90 phút — chỉ cần sửa ô Giá."
+                summary: "{{fields.min}} phút — {{fields.price}}đ"
+                default: [ { min: 30, price: 0 }, { min: 60, price: 0 }, { min: 90, price: 0 } ]
                 fields:
-                  - { name: min, label: "Thời lượng (phút)", widget: number, value_type: int, min: 0, hint: "Nhập 0 nếu là gói trọn gói, không tính theo phút." }
-                  - { name: price, label: "Giá (đồng)", widget: number, value_type: int, min: 0 }
+                  - { name: min, label: "Thời lượng (phút)", widget: hidden }
+                  - { name: price, label: "Giá (đồng)", widget: number, value_type: int, min: 0, hint: "Nhập số, không dấu chấm. Vd 250000" }
               - &seo
                 name: seo
                 label: "SEO"
