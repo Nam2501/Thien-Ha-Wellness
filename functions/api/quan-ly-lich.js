@@ -7,6 +7,7 @@
    ========================================================= */
 import { ensureSchema, setStatus, purgeOld, vnNow, STATUS, capacity, buffer, webhookSecret, tg, hhmm, dmy, editTelegram } from "../../lib/lich.js";
 import { accessUser } from "../../lib/access.js";
+import { pushSheet } from "../../lib/sheet.js";
 
 const json = (body, status = 200) => Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
 const isDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s || "");
@@ -39,7 +40,7 @@ export async function onRequestGet({ request, env }) {
   return json({ ok: true, user: g.user, tu, den, cap: capacity(env), buffer: buffer(env), status: STATUS, items: results });
 }
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   const g = await guard(request, env); if (g.res) return g.res;
   let body = {}; try { body = await request.json(); } catch {}
 
@@ -54,5 +55,6 @@ export async function onRequestPost({ request, env }) {
   const r = await setStatus(env, code, status, g.user);
   if (!r.ok) return json(r, 409);
   await editTelegram(env, r.booking).catch(() => {});   // cập nhật luôn tin Telegram nếu biết tin nào
+  waitUntil(pushSheet(env, [r.booking]));
   return json({ ok: true, booking: r.booking });
 }

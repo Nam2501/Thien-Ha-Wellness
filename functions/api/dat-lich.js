@@ -8,6 +8,7 @@
    ========================================================= */
 import { ensureSchema, capacity, buffer, makeCode, hhmm, dmy, vnNow, hashIP, chatIds, tg, buttons, bookingText,
   DEFAULT_MIN, MAX_PER_PHONE, MAX_PER_IP, IP_WINDOW_MIN } from "../../lib/lich.js";
+import { pushSheet } from "../../lib/sheet.js";
 
 const LIMITS = { ho_ten: 80, so_dien_thoai: 20, lieu_trinh: 160, dv: 80, ngay: 20, gio: 10, ghi_chu: 600 };
 const esc = s => String(s ?? "").replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
@@ -37,7 +38,7 @@ async function humanOK(env, token, ip) {
   return !!r.success;
 }
 
-export async function onRequestPost({ request: req, env }) {
+export async function onRequestPost({ request: req, env, waitUntil }) {
 
   // Chỉ nhận lịch gửi từ chính website (chặn trang khác lợi dụng để spam Telegram)
   const origin = req.headers.get("origin");
@@ -134,6 +135,8 @@ export async function onRequestPost({ request: req, env }) {
     if (rowId != null) await env.DB.prepare(`DELETE FROM bookings WHERE id = ?`).bind(rowId).run().catch(() => {});
     return reply(req, 502, { ok: false, error: "Chưa gửi được lịch, vui lòng gọi hotline." });
   }
+  // Ghi sang Google Sheet để thống kê (chạy nền, không làm chậm khách)
+  if (code) waitUntil(pushSheet(env, [{ code, name: d.ho_ten, phone, service: d.lieu_trinh, min: dur, date: d.ngay, start, end, note, status: "moi", created: stamp, updated: stamp }]));
   return reply(req, 200, { ok: true, code });
 }
 
