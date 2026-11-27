@@ -28,8 +28,25 @@
   .wpe-slug { font: 13px/1.6 system-ui, sans-serif; color: #50575e; padding: 6px 0; }
   .wpe-slug a { color: #2271b1; word-break: break-all; }
   .wpe-slug button { margin-left: 6px; padding: 2px 8px; border: 1px solid #2271b1; border-radius: 3px; background: #fff; color: #2271b1; font-size: 12px; cursor: pointer; }
-  .wpe-slug input { font: inherit; padding: 3px 6px; border: 1px solid #8c8f94; border-radius: 3px; min-width: 260px; }`;
+  .wpe-slug input { font: inherit; padding: 3px 6px; border: 1px solid #8c8f94; border-radius: 3px; min-width: 260px; }
+  .wpe-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+  .wpe-slug .wpe-preview { margin: 0; padding: 7px 16px; border: 1px solid #2271b1; border-radius: 4px; background: #2271b1; color: #fff; font: 600 13px system-ui, sans-serif; cursor: pointer; }
+  .wpe-slug .wpe-preview:hover { background: #135e96; }
+  .wpe-slug .wpe-seo { margin: 0; padding: 6px 14px; border: 1px solid; border-radius: 4px; background: #fff; font: 600 13px system-ui, sans-serif; cursor: pointer; }
+  .wpe-tip { color: #8c8f94; font-size: 12px; }
+  /* Trang soạn Bài viết: ẩn khung xem trước bên phải, ô soạn rộng hết màn hình (xem trước bằng nút như WordPress) */
+  .th-posts .SplitPane > .Pane2, .th-posts .SplitPane > .Resizer, .th-posts button[class*="EditorToggle"] { display: none !important; }
+  .th-posts .SplitPane > .Pane1 { width: 100% !important; max-width: none !important; flex: 1 1 auto !important; }`;
   document.head.appendChild(style);
+  // Nút "Xem trước" cố định trên thanh trên cùng (cạnh nút Công bố), như WordPress
+  const topBtn = document.createElement("button");
+  topBtn.type = "button"; topBtn.textContent = "👁 Xem trước";
+  topBtn.style.cssText = "position:fixed;top:15px;left:440px;z-index:300;display:none;padding:8px 16px;border:1px solid #2271b1;border-radius:5px;background:#fff;color:#2271b1;font:600 14px system-ui,sans-serif;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)";
+  topBtn.onclick = () => { const L = window.__TH_LATEST; if (L && L.data && window.TH_PREVIEW) TH_PREVIEW.article(L.data, L.getAsset, L.file); };
+  document.addEventListener("DOMContentLoaded", () => document.body.appendChild(topBtn));
+  if (document.body) document.body.appendChild(topBtn);
+  const markPosts = () => { const on = /^#\/collections\/posts\/(new|entries\/)/.test(location.hash); document.documentElement.classList.toggle("th-posts", on); topBtn.style.display = on ? "block" : "none"; };
+  addEventListener("hashchange", markPosts); markPosts();
 
   // Dùng đúng hàm tạo đường dẫn của website (js/render.js) để địa chỉ hiển thị khớp địa chỉ thật
   const slugify = s => window.Render ? Render.slugify(s) : String(s || "").toLowerCase().replace(/đ/g, "d").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -127,25 +144,38 @@
   // Ô đường dẫn: "Đường dẫn: https://…/bai-viet/<slug>/ [Chỉnh sửa]" (để trống = tự tạo từ tiêu đề)
   const SlugURL = createClass({
     getInitialState() { return { edit: false, title: "" }; },
+    // Vẽ lại khi bất kỳ ô nào của bài đổi → điểm SEO trên nút luôn mới, nút Xem trước lấy đúng nội dung đang soạn
+    shouldComponentUpdate(next, nextState) { return nextState !== undefined || next.entry !== this.props.entry || next.value !== this.props.value; },
     // Ô tiêu đề nằm ở widget khác → nghe sự kiện gõ trên trang để cập nhật đường dẫn theo tiêu đề ngay khi gõ
     componentDidMount() {
       this._on = e => { if (e.target && /^title-field/.test(e.target.id || "")) this.setState({ title: e.target.value }); };
+      this._tick = () => this.setState({ tick: Date.now() });   // nội dung bài vừa đổi (preview.js báo) → cập nhật điểm SEO
       document.addEventListener("input", this._on, true);
+      addEventListener("th-post-change", this._tick);
       const t = document.querySelector('input[id^="title-field"]'); if (t) this.setState({ title: t.value });
     },
-    componentWillUnmount() { document.removeEventListener("input", this._on, true); },
+    componentWillUnmount() { document.removeEventListener("input", this._on, true); removeEventListener("th-post-change", this._tick); },
+    latest() { const L = window.__TH_LATEST; return L && L.data ? L : { data: this.props.entry && this.props.entry.get("data"), file: this.props.entry && this.props.entry.get("slug"), getAsset: this.props.getAsset }; },
     render() {
-      const title = this.state.title || (this.props.entry && this.props.entry.getIn(["data", "title"]));
+      const title = this.state.title || (this.latest().data && this.latest().data.get("title")) || (this.props.entry && this.props.entry.getIn(["data", "title"]));
       const slug = this.props.value || slugify(title) || "…";
       const base = (this.props.field.get("prefix") || "/bai-viet/"), url = location.origin + base + slug + "/";
       if (this.state.edit) return h("div", { className: "wpe-slug", id: this.props.forID },
         "Đường dẫn: " + location.origin + base,
         h("input", { value: this.props.value || slugify(title), onChange: e => this.props.onChange(slugify(e.target.value) || e.target.value.toLowerCase()), autoFocus: true }),
         "/", h("button", { type: "button", onClick: () => this.setState({ edit: false }) }, "OK"));
-      return h("div", { className: "wpe-slug", id: this.props.forID }, "Đường dẫn: ",
-        h("a", { href: url, target: "_blank", rel: "noopener" }, url),
-        h("button", { type: "button", onClick: () => this.setState({ edit: true }) }, "Chỉnh sửa"),
-        this.props.value ? null : h("span", { style: { marginLeft: 8, color: "#8c8f94" } }, "(tự tạo từ tiêu đề)"));
+      const P = window.TH_PREVIEW, L = this.latest(), data = L.data, file = L.file;
+      let score = null; try { score = P && data ? P.score(data, file) : null; } catch {}
+      const tone = score == null ? "#646970" : score >= 80 ? "#2f7d4f" : score >= 50 ? "#a86b00" : "#b3261e";
+      return h("div", { className: "wpe-slug", id: this.props.forID },
+        h("div", null, "Đường dẫn: ",
+          h("a", { href: url, target: "_blank", rel: "noopener" }, url),
+          h("button", { type: "button", onClick: () => this.setState({ edit: true }) }, "Chỉnh sửa"),
+          this.props.value ? null : h("span", { style: { marginLeft: 8, color: "#8c8f94" } }, "(tự tạo từ tiêu đề)")),
+        P ? h("div", { className: "wpe-actions" },
+          h("button", { type: "button", className: "wpe-preview", onClick: () => { const x = this.latest(); P.article(x.data, x.getAsset, x.file); } }, "👁 Xem trước"),
+          h("button", { type: "button", className: "wpe-seo", style: { color: tone, borderColor: tone }, onClick: () => { const x = this.latest(); P.seo(x.data, x.file); } }, `Điểm SEO: ${score ?? "…"}`),
+          h("span", { className: "wpe-tip" }, "Mở trong tab mới — chưa đăng lên web cho tới khi bấm Công bố.")) : null);
     }
   });
   CMS.registerWidget("slugurl", SlugURL);

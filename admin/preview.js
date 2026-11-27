@@ -75,6 +75,45 @@
       <style>.reveal{opacity:1!important;transform:none!important}</style>${frame.foot}`;
   }
 
+  /* Nút "Xem trước" / "Điểm SEO" kiểu WordPress (admin/editor.js gọi): mở tab mới, không chiếm chỗ màn hình soạn */
+  const toAsset = getAsset => path => {
+    if (!path || /^(https?:|data:|blob:)/.test(path)) return path || "";
+    try { const a = getAsset && getAsset(path); const u = a && a.toString(); if (u && u !== "[object Object]") return u; } catch {}
+    return Render.absPath(path);
+  };
+  const curPost = (data, file) => {
+    const others = Render.assignSlugs(PUBLISHED.filter(o => o._file !== file));
+    const [cur] = Render.assignSlugs([{ ...data, id: data.id || file || "moi" }]);
+    return { cur, r: analyze("posts", cur, { seo: SETTINGS, ...dupMaps([...others, cur].map(x => analyze("posts", x, { seo: SETTINGS }))) }) };
+  };
+  const openDoc = html => { const w = window.open("", "_blank"); if (!w) { alert("Trình duyệt đang chặn cửa sổ mới. Hãy cho phép cửa sổ bật lên (pop-up) cho trang quản trị."); return; } w.document.open(); w.document.write(html); w.document.close(); };
+  window.TH_PREVIEW = {
+    score: (data, file) => curPost(toJS(data), file).r.score,
+    async article(data, getAsset, file) {
+      const w = window.open("", "_blank");
+      if (!w) { alert("Trình duyệt đang chặn cửa sổ mới. Hãy cho phép cửa sổ bật lên (pop-up) cho trang quản trị."); return; }
+      w.document.write("<p style='font:16px system-ui;padding:30px'>Đang tạo bản xem trước…</p>");
+      const frame = await loadFrame();
+      w.document.open(); w.document.write(articleDoc(curPost(toJS(data), file).cur, frame, toAsset(getAsset))); w.document.close();
+    },
+    seo(data, file) {
+      const { cur, r } = curPost(toJS(data), file);
+      openDoc(`<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><title>Điểm SEO: ${e2(cur.title)}</title><link rel="stylesheet" href="${location.origin}/admin/seo-admin.css">
+        <style>body{margin:0;background:#f3f6f8;font-family:system-ui,sans-serif}.sx-preview{max-width:860px;margin:0 auto;padding:24px}</style></head>
+        <body><div class="sx-preview"><h2>Điểm SEO của bài này ${scoreHTML(r.score)}</h2><p class="sx-lead">Tính theo nội dung đang soạn (chưa cần bấm Công bố). Sửa xong bấm lại nút “Điểm SEO” để chấm lại.</p>${block(r, cur.title, true)}</div></body></html>`);
+    }
+  };
+
+  // Khung xem trước của Bài viết được ẩn (admin/editor.js) — chỉ dùng để luôn nắm nội dung MỚI NHẤT đang soạn
+  // cho nút "Xem trước" và "Điểm SEO" kiểu WordPress ở dưới tiêu đề.
+  const PostLatest = createClass({
+    render() {
+      window.__TH_LATEST = { data: this.props.entry.get("data"), file: this.props.entry.get("slug"), getAsset: this.props.getAsset };
+      setTimeout(() => window.dispatchEvent(new Event("th-post-change")), 0);
+      return h("div", null);
+    }
+  });
+
   const PostPreview = createClass({
     getInitialState() { return { tab: "view", frame: null }; },
     componentDidMount() { loadFrame().then(frame => this.setState({ frame })); },
@@ -103,6 +142,6 @@
           : box(`<h2>Điểm SEO của bài này ${scoreHTML(r.score)}</h2><p class="sx-lead">Điểm cập nhật ngay khi bạn gõ.</p>${block(r, cur.title, true)}`));
     }
   });
-  CMS.registerPreviewTemplate("posts", PostPreview);
+  CMS.registerPreviewTemplate("posts", PostLatest);
   CMS.registerPreviewTemplate("seo", SettingsPreview);
 })();
