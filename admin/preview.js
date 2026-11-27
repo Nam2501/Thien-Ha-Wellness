@@ -108,7 +108,7 @@
   // cho nút "Xem trước" và "Điểm SEO" kiểu WordPress ở dưới tiêu đề.
   const PostLatest = createClass({
     render() {
-      window.__TH_LATEST = { data: this.props.entry.get("data"), file: this.props.entry.get("slug"), getAsset: this.props.getAsset };
+      window.__TH_LATEST = { data: this.props.entry.get("data"), file: this.props.entry.get("slug"), getAsset: this.props.getAsset, hash: location.hash };
       setTimeout(() => window.dispatchEvent(new Event("th-post-change")), 0);
       return h("div", null);
     }

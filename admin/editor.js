@@ -42,8 +42,13 @@
   const topBtn = document.createElement("button");
   topBtn.type = "button"; topBtn.textContent = "👁 Xem trước";
   topBtn.style.cssText = "flex:0 0 auto;align-self:center;margin-left:10px;padding:8px 14px;border:1px solid #2271b1;border-radius:5px;background:#fff;color:#2271b1;font:600 14px system-ui,sans-serif;white-space:nowrap;cursor:pointer";
-  topBtn.onclick = () => { const L = window.__TH_LATEST; if (L && L.data && window.TH_PREVIEW) TH_PREVIEW.article(L.data, L.getAsset, L.file); };
+  topBtn.onclick = () => { const L = window.__TH_LATEST; if (L && L.data && L.hash === location.hash && window.TH_PREVIEW) TH_PREVIEW.article(L.data, L.getAsset, L.file); else alert("Chưa đọc được nội dung bài. Bấm Ctrl + F5 tải lại trang rồi thử lại."); };
   const isPosts = () => /^#\/collections\/posts\/(new|entries\/)/.test(location.hash);
+  // Nút Xem trước lấy nội dung từ khung xem trước (đã ẩn). Decap nhớ lần tắt khung đó trong trình duyệt (cms.right-pane = none)
+  // → khung không chạy, nút không có nội dung. Luôn bật lại; đổi bài thì xoá nội dung bài cũ để không xem nhầm.
+  const keepPane = () => { try { if (localStorage.getItem("cms.right-pane") !== "preview") localStorage.setItem("cms.right-pane", "preview"); } catch {} };
+  keepPane();
+  addEventListener("hashchange", keepPane, true);
   const placeTop = () => {
     if (!isPosts()) { topBtn.remove(); return; }
     const sec = document.querySelector('[class*="ToolbarSubSectionFirst"]');
@@ -160,7 +165,7 @@
       const t = document.querySelector('input[id^="title-field"]'); if (t) this.setState({ title: t.value });
     },
     componentWillUnmount() { document.removeEventListener("input", this._on, true); removeEventListener("th-post-change", this._tick); },
-    latest() { const L = window.__TH_LATEST; return L && L.data ? L : { data: this.props.entry && this.props.entry.get("data"), file: this.props.entry && this.props.entry.get("slug"), getAsset: this.props.getAsset }; },
+    latest() { const L = window.__TH_LATEST; return L && L.data && L.hash === location.hash ? L : { data: this.props.entry && this.props.entry.get("data"), file: this.props.entry && this.props.entry.get("slug"), getAsset: this.props.getAsset }; },
     render() {
       const title = this.state.title || (this.latest().data && this.latest().data.get("title")) || (this.props.entry && this.props.entry.getIn(["data", "title"]));
       const slug = this.props.value || slugify(title) || "…";
