@@ -1,0 +1,54 @@
+{
+  "menu": [
+    {
+      "label": "Trang chủ",
+      "link": "/"
+    },
+    {
+      "label": "Bảng giá",
+      "link": "/bang-gia/"
+    },
+    {
+      "label": "Về Thiên Hà",
+      "link": "#ve-chung-toi"
+    },
+    {
+      "label": "Không gian",
+      "link": "#khong-gian"
+    },
+    {
+      "label": "Hỏi đáp",
+      "link": "#hoi-dap"
+    },
+    {
+      "label": "Bài viết",
+      "link": "/bai-viet/"
+    }
+  ],
+  "headerBtn": "Đặt lịch",
+  "footerAbout": "Spa & massage trị liệu thư giãn — nơi nhịp sống chậm lại như dòng nước tìm về biển lặng.",
+  "hoursNote": "Nhận khách cuối trước giờ đóng cửa 90 phút",
+  "linksTitle": "Khám phá",
+  "links": [
+    {
+      "label": "Bảng giá",
+      "link": "/bang-gia/"
+    },
+    {
+      "label": "Về Thiên Hà",
+      "link": "#ve-chung-toi"
+    },
+    {
+      "label": "Hỏi đáp",
+      "link": "#hoi-dap"
+    },
+    {
+      "label": "Đặt lịch",
+      "link": "#dat-lich"
+    }
+  ],
+  "copyright": "Thiên Hà Wellness. Bảo lưu mọi quyền.",
+  "disclaimer": "Dịch vụ mang tính thư giãn, chăm sóc sức khỏe; không thay thế chẩn đoán hay điều trị y khoa.",
+  "mobileCall": "Gọi ngay",
+  "mobileBook": "Đặt lịch"
+}

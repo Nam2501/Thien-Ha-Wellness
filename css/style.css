@@ -237,6 +237,7 @@ h3 { font-size: 24px; color: var(--navy); }
 .about { display: grid; grid-template-columns: 1fr 1fr; gap: 90px; align-items: center; }
 .about-art { position: relative; height: 620px; }
 .art-tall { position: absolute; left: 0; top: 0; width: 72%; height: 88%; border-radius: 220px 220px var(--radius) var(--radius); }
+.art-tall .art-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; z-index: 1; }
 .art-small { position: absolute; right: 0; bottom: 0; width: 48%; height: 46%; border-radius: var(--radius); border: 8px solid var(--white); display: grid; place-items: center; background: linear-gradient(160deg, #d9ebf3, #9cc3d6); }
 .art-small::before, .art-small::after { display: none; }
 .art-small svg { width: 38%; fill: none; stroke: var(--ocean); stroke-width: 2; position: relative; }

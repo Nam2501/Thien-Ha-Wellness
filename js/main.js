@@ -183,7 +183,7 @@
       const date = fDate.value ? fDate.selectedOptions[0].text : "Linh hoạt";
       const when = `${date}${$("#f-time").value ? " · " + $("#f-time").value : ""}`;
 
-      btn.disabled = true; btn.textContent = "Đang gửi…"; $("#form-msg").textContent = "";
+      const label = btn.textContent; btn.disabled = true; btn.textContent = "Đang gửi…"; $("#form-msg").textContent = "";
       try {
         // Gửi thẳng tới /api/dat-lich → Telegram của spa — khách không phải nhắn lại ở đâu khác
         const res = await fetch("/api/dat-lich", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
@@ -210,7 +210,7 @@
         tsReset();
         $("#form-msg").innerHTML = `Chưa gửi được do lỗi kết nối. Vui lòng bấm gửi lại, hoặc liên hệ trực tiếp:${contactBtns}`;
       } finally {
-        btn.disabled = false; btn.textContent = "Gửi yêu cầu đặt lịch";
+        btn.disabled = false; btn.textContent = label;
       }
     });
   }

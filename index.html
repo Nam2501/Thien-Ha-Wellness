@@ -26,7 +26,7 @@
         <img class="logo-mark" src="/images/logo-mark.png" alt="" width="400" height="209">
         <span class="logo-text">Thiên Hà<small>Wellness</small></span>
       </a>
-      <nav class="nav" id="nav" aria-label="Điều hướng chính">
+      <nav class="nav" id="nav" aria-label="Điều hướng chính" data-l="chrome.menu">
         <a href="/">Trang chủ</a>
         <a href="/bang-gia/">Bảng giá</a>
         <a href="#ve-chung-toi">Về Thiên Hà</a>
@@ -37,7 +37,7 @@
       </nav>
       <div class="header-actions">
         <a class="header-phone" data-cfg-href="tel" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg><span data-cfg="phone"></span></a>
-        <a href="#dat-lich" class="btn btn-pearl btn-sm">Đặt lịch</a>
+        <a href="#dat-lich" class="btn btn-pearl btn-sm" data-t="chrome.headerBtn">Đặt lịch</a>
         <button class="menu-btn" id="menu-btn" aria-label="Mở menu" aria-expanded="false"><span></span><span></span></button>
       </div>
     </div>
@@ -50,12 +50,12 @@
       <canvas class="stars" id="stars" aria-hidden="true"></canvas>
       <div class="galaxy" aria-hidden="true"></div>
       <div class="wrap hero-in">
-        <p class="eyebrow light" data-cfg="heroEyebrow">Spa &amp; Massage trị liệu · Tinh thần của nước</p>
-        <h1 data-cfg-html="heroTitle">Thả trôi mệt mỏi, <em>như dòng nước</em> tìm về biển lặng.</h1>
-        <p class="hero-lead" data-cfg="heroLead">Thiên Hà Wellness là khoảng lặng giữa nhịp sống vội — nơi đôi tay kỹ thuật viên, hương thảo mộc ấm và tiếng nước chảy giúp cơ thể thả lỏng, tâm trí dịu lại.</p>
+        <p class="eyebrow light" data-t="home.hero.eyebrow">Spa &amp; Massage trị liệu · Tinh thần của nước</p>
+        <h1 data-t="home.hero.title">Thả trôi mệt mỏi, <em>như dòng nước</em> tìm về biển lặng.</h1>
+        <p class="hero-lead" data-t="home.hero.lead">Thiên Hà Wellness là khoảng lặng giữa nhịp sống vội — nơi đôi tay kỹ thuật viên, hương thảo mộc ấm và tiếng nước chảy giúp cơ thể thả lỏng, tâm trí dịu lại.</p>
         <div class="hero-cta">
-          <a href="#dat-lich" class="btn btn-pearl">Đặt lịch trải nghiệm</a>
-          <a href="/bang-gia/" class="btn btn-ghost">Xem bảng giá <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="#dat-lich" class="btn btn-pearl" data-h="home.hero.btn1.link"><span data-t="home.hero.btn1.text">Đặt lịch trải nghiệm</span></a>
+          <a href="/bang-gia/" class="btn btn-ghost" data-h="home.hero.btn2.link"><span data-t="home.hero.btn2.text">Xem bảng giá</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </div>
       </div>
       <svg class="hero-waves" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true">
@@ -66,6 +66,7 @@
     </section>
 
     <!-- Dải thông tin nhanh -->
+    <!--b:home.infobar-->
     <div class="wrap">
       <ul class="infobar">
         <li class="ib-hours">
@@ -87,67 +88,75 @@
         </li>
       </ul>
     </div>
+    <!--/b:home.infobar-->
 
+    <!--b:home.needs-->
     <!-- ============ NHU CẦU ============ -->
     <section class="section section-ice wave-deep" id="nhu-cau">
       <div class="wrap">
         <div class="head-center">
-          <p class="eyebrow" data-cfg="needsEyebrow">Bắt đầu từ cơ thể bạn</p>
-          <h2 data-cfg-html="needsTitle">Hôm nay, cơ thể bạn <em>cần điều gì?</em></h2>
-          <p class="sub" data-cfg="needsSub">Chọn vùng đang mỏi mệt nhất — chúng tôi gợi ý liệu pháp phù hợp.</p>
+          <p class="eyebrow" data-t="home.needs.eyebrow">Bắt đầu từ cơ thể bạn</p>
+          <h2 data-t="home.needs.title">Hôm nay, cơ thể bạn <em>cần điều gì?</em></h2>
+          <p class="sub" data-t="home.needs.sub">Chọn vùng đang mỏi mệt nhất — chúng tôi gợi ý liệu pháp phù hợp.</p>
         </div>
         <div class="needs" id="needs"></div>
       </div>
     </section>
+    <!--/b:home.needs-->
 
+    <!--b:home.pricing-->
     <!-- ============ BẢNG GIÁ ============ -->
     <section class="section section-deep section-glow wave-white" id="bang-gia">
       <div class="wrap">
         <div class="head-split">
           <div>
-            <p class="eyebrow">Liệu trình &amp; bảng giá</p>
-            <h2>Chọn liệu trình <em>vừa vặn</em> với bạn</h2>
+            <p class="eyebrow" data-t="home.pricing.eyebrow">Liệu trình &amp; bảng giá</p>
+            <h2 data-t="home.pricing.title">Chọn liệu trình <em>vừa vặn</em> với bạn</h2>
           </div>
-          <p class="sub">Mỗi nhóm dịch vụ gồm nhiều liệu trình và thời lượng. Xem bảng giá đầy đủ để so sánh và đặt lịch nhanh. Chưa biết chọn gì? Để lại số điện thoại, chúng tôi tư vấn miễn phí.</p>
+          <p class="sub" data-t="home.pricing.sub">Mỗi nhóm dịch vụ gồm nhiều liệu trình và thời lượng. Xem bảng giá đầy đủ để so sánh và đặt lịch nhanh. Chưa biết chọn gì? Để lại số điện thoại, chúng tôi tư vấn miễn phí.</p>
         </div>
         <div class="svc-groups" id="services"></div>
-        <div class="pl-cta"><a href="/bang-gia/" class="btn btn-pearl">Xem bảng giá đầy đủ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
-        <p class="note">Bảng giá tham khảo, có thể thay đổi theo chương trình. Vui lòng liên hệ để được tư vấn liệu trình phù hợp với thể trạng.</p>
+        <div class="pl-cta"><a href="/bang-gia/" class="btn btn-pearl"><span data-t="home.pricing.btn">Xem bảng giá đầy đủ</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        <p class="note" data-t="home.pricing.note">Bảng giá tham khảo, có thể thay đổi theo chương trình. Vui lòng liên hệ để được tư vấn liệu trình phù hợp với thể trạng.</p>
       </div>
     </section>
+    <!--/b:home.pricing-->
 
+    <!--b:home.about-->
     <!-- ============ VỀ CHÚNG TÔI ============ -->
     <section class="section wave-deep" id="ve-chung-toi">
       <div class="wrap about">
         <div class="about-art" aria-hidden="true">
           <!-- Thay bằng ảnh thật: <img src="images/ve-chung-toi.jpg" alt="..."> -->
-          <div class="art art-tall"><span class="ripple"></span><span class="ripple r2"></span><span class="ripple r3"></span></div>
+          <div class="art art-tall" data-art="home.about.image"><span class="ripple"></span><span class="ripple r2"></span><span class="ripple r3"></span></div>
           <div class="art art-small"><svg viewBox="0 0 120 120"><path d="M60 22c14 18 22 30 22 42a22 22 0 0 1-44 0c0-12 8-24 22-42Z"/></svg></div>
-          <div class="about-badge"><b>Thủy</b><span>mềm mại<br>mà bền bỉ</span></div>
+          <div class="about-badge"><b data-t="home.about.badgeBig">Thủy</b><span data-t="home.about.badgeSmall">mềm mại<br>mà bền bỉ</span></div>
         </div>
         <div class="about-copy">
-          <p class="eyebrow">Về Thiên Hà Wellness</p>
-          <h2>Chăm sóc cơ thể bằng <em>sự tĩnh lặng</em> của nước</h2>
-          <p>Nước không vội vàng, nhưng luôn tìm được đường đi. Chúng tôi đặt tên mình theo dải ngân hà — dòng sông của bầu trời — với mong muốn mỗi khách hàng tìm thấy nhịp chậm lại cho chính mình.</p>
-          <p>Mỗi buổi trị liệu bắt đầu bằng cuộc trò chuyện ngắn để hiểu thể trạng, chọn lực tay và vùng cần tập trung. Không gian riêng tư, âm thanh nhẹ, khăn ấm và trà thảo mộc sau liệu trình — để bạn ra về nhẹ nhõm hơn khi đến.</p>
-          <ul class="ticks">
+          <p class="eyebrow" data-t="home.about.eyebrow">Về Thiên Hà Wellness</p>
+          <h2 data-t="home.about.title">Chăm sóc cơ thể bằng <em>sự tĩnh lặng</em> của nước</h2>
+          <div data-p="home.about.text"><p>Nước không vội vàng, nhưng luôn tìm được đường đi. Chúng tôi đặt tên mình theo dải ngân hà — dòng sông của bầu trời — với mong muốn mỗi khách hàng tìm thấy nhịp chậm lại cho chính mình.</p>
+          <p>Mỗi buổi trị liệu bắt đầu bằng cuộc trò chuyện ngắn để hiểu thể trạng, chọn lực tay và vùng cần tập trung. Không gian riêng tư, âm thanh nhẹ, khăn ấm và trà thảo mộc sau liệu trình — để bạn ra về nhẹ nhõm hơn khi đến.</p></div>
+          <ul class="ticks" data-l="home.about.ticks">
             <li>Tư vấn thể trạng trước mỗi liệu trình</li>
             <li>Phòng riêng, sạch sẽ, khăn dùng một lần mỗi khách</li>
             <li>Tinh dầu và thảo mộc có nguồn gốc rõ ràng</li>
           </ul>
-          <a href="#dat-lich" class="btn btn-navy">Đặt lịch tư vấn</a>
+          <a href="#dat-lich" class="btn btn-navy" data-h="home.about.btn.link"><span data-t="home.about.btn.text">Đặt lịch tư vấn</span></a>
         </div>
       </div>
     </section>
+    <!--/b:home.about-->
 
+    <!--b:home.values-->
     <!-- ============ GIÁ TRỊ (nền tối) ============ -->
     <section class="section section-deep wave-ice">
       <div class="wrap">
         <div class="head-center">
-          <p class="eyebrow light">Vì sao khách quay lại</p>
-          <h2>Tay nghề, sự riêng tư và <em>không ép mua gói</em></h2>
+          <p class="eyebrow light" data-t="home.values.eyebrow">Vì sao khách quay lại</p>
+          <h2 data-t="home.values.title">Tay nghề, sự riêng tư và <em>không ép mua gói</em></h2>
         </div>
-        <div class="values">
+        <div class="values" data-l="home.values.items">
           <div class="value"><span class="num">01</span><h3>Kỹ thuật viên tận tâm</h3><p>Lắng nghe trước khi bắt đầu, điều chỉnh lực tay suốt buổi.</p></div>
           <div class="value"><span class="num">02</span><h3>Yên tĩnh &amp; riêng tư</h3><p>Phòng riêng, ánh sáng dịu, âm thanh nước chảy nhẹ nhàng.</p></div>
           <div class="value"><span class="num">03</span><h3>Không ép mua gói</h3><p>Bạn chọn từng buổi theo nhu cầu, không bị chèo kéo.</p></div>
@@ -156,15 +165,17 @@
         </div>
       </div>
     </section>
+    <!--/b:home.values-->
 
+    <!--b:home.journey-->
     <!-- ============ HÀNH TRÌNH ============ -->
     <section class="section section-ice wave-white">
       <div class="wrap">
         <div class="head-center">
-          <p class="eyebrow">Một buổi tại Thiên Hà</p>
-          <h2>Hành trình <em>bốn nhịp</em> thư thái</h2>
+          <p class="eyebrow" data-t="home.journey.eyebrow">Một buổi tại Thiên Hà</p>
+          <h2 data-t="home.journey.title">Hành trình <em>bốn nhịp</em> thư thái</h2>
         </div>
-        <ol class="journey">
+        <ol class="journey" data-l="home.journey.items">
           <li><span class="dot"></span><b>Đón tiếp &amp; tư vấn</b><p>Trà ấm, hỏi thăm thể trạng và vùng cần chăm sóc.</p></li>
           <li><span class="dot"></span><b>Ngâm chân thảo mộc</b><p>Làm ấm cơ thể, giúp bạn thả lỏng trước trị liệu.</p></li>
           <li><span class="dot"></span><b>Trị liệu chuyên sâu</b><p>Thực hiện liệu trình đã chọn trong phòng riêng.</p></li>
@@ -172,68 +183,78 @@
         </ol>
       </div>
     </section>
+    <!--/b:home.journey-->
 
+    <!--b:home.gallery-->
     <!-- ============ KHÔNG GIAN ============ -->
     <section class="section wave-ice" id="khong-gian">
       <div class="wrap">
         <div class="head-split">
-          <div><p class="eyebrow">Không gian</p><h2>Nơi một ngày <em>chậm lại</em></h2></div>
-          <p class="sub">Tông xanh biển sâu, ánh sáng dịu và tiếng nước — từng chi tiết được chọn để bạn quên đi nhịp phố bên ngoài.</p>
+          <div><p class="eyebrow" data-t="home.gallery.eyebrow">Không gian</p><h2 data-t="home.gallery.title">Nơi một ngày <em>chậm lại</em></h2></div>
+          <p class="sub" data-t="home.gallery.sub">Tông xanh biển sâu, ánh sáng dịu và tiếng nước — từng chi tiết được chọn để bạn quên đi nhịp phố bên ngoài.</p>
         </div>
         <!-- Ảnh không gian quản lý trong trang quản trị (/admin → Không gian) -->
         <div class="gallery" id="gallery"></div>
       </div>
     </section>
+    <!--/b:home.gallery-->
 
+    <!--b:home.reviews-->
     <!-- ============ ĐÁNH GIÁ ============ -->
     <section class="section section-ice wave-white">
       <div class="wrap reviews">
         <div>
-          <p class="eyebrow">Cảm nhận khách hàng</p>
-          <h2>Lắng nghe <em>những người đã đến</em></h2>
-          <p class="sub">Đánh giá thật từ khách hàng được hiển thị trên Google Maps. Sau buổi trải nghiệm, bạn cũng có thể để lại cảm nhận để Thiên Hà phục vụ tốt hơn.</p>
+          <p class="eyebrow" data-t="home.reviews.eyebrow">Cảm nhận khách hàng</p>
+          <h2 data-t="home.reviews.title">Lắng nghe <em>những người đã đến</em></h2>
+          <p class="sub" data-t="home.reviews.sub">Đánh giá thật từ khách hàng được hiển thị trên Google Maps. Sau buổi trải nghiệm, bạn cũng có thể để lại cảm nhận để Thiên Hà phục vụ tốt hơn.</p>
         </div>
         <div class="review-cta">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.5 7 .9-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.9z"/></svg>
-          <p>Xem đánh giá và chỉ đường trên Google Maps</p>
+          <p data-t="home.reviews.box">Xem đánh giá và chỉ đường trên Google Maps</p>
           <div class="review-btns">
-            <a class="btn btn-navy" data-cfg-href="map" href="#" target="_blank" rel="noopener">Xem trên Google Maps</a>
-            <a class="btn btn-line" data-cfg-href="review" href="#" target="_blank" rel="noopener">Viết đánh giá</a>
+            <a class="btn btn-navy" data-cfg-href="map" href="#" target="_blank" rel="noopener" data-t="home.reviews.btnMap">Xem trên Google Maps</a>
+            <a class="btn btn-line" data-cfg-href="review" href="#" target="_blank" rel="noopener" data-t="home.reviews.btnReview">Viết đánh giá</a>
           </div>
         </div>
       </div>
     </section>
+    <!--/b:home.reviews-->
 
+    <!--b:home.posts-->
     <!-- ============ BÀI VIẾT ============ -->
     <section class="section wave-ice" id="bai-viet">
       <div class="wrap">
         <div class="head-split">
-          <div><p class="eyebrow">Góc chăm sóc cơ thể</p><h2>Hiểu cơ thể, <em>chăm sóc đúng cách</em></h2></div>
-          <a class="btn btn-line" href="/bai-viet/">Xem tất cả bài viết</a>
+          <div><p class="eyebrow" data-t="home.posts.eyebrow">Góc chăm sóc cơ thể</p><h2 data-t="home.posts.title">Hiểu cơ thể, <em>chăm sóc đúng cách</em></h2></div>
+          <a class="btn btn-line" href="/bai-viet/" data-t="home.posts.btn">Xem tất cả bài viết</a>
         </div>
         <div class="posts" id="home-posts"></div>
       </div>
     </section>
+    <!--/b:home.posts-->
 
-    <!-- ============ HỎI ĐÁP ============ -->    <section class="section section-ice wave-deep" id="hoi-dap">
+    <!--b:home.faq-->
+    <!-- ============ HỎI ĐÁP ============ -->
+    <section class="section section-ice wave-deep" id="hoi-dap">
       <div class="wrap faq-wrap">
         <div>
-          <p class="eyebrow">Trước khi đặt lịch</p>
-          <h2>Câu hỏi <em>thường gặp</em></h2>
-          <p class="sub">Không thấy câu trả lời bạn cần? Gọi hoặc nhắn Zalo cho chúng tôi.</p>
+          <p class="eyebrow" data-t="home.faq.eyebrow">Trước khi đặt lịch</p>
+          <h2 data-t="home.faq.title">Câu hỏi <em>thường gặp</em></h2>
+          <p class="sub" data-t="home.faq.sub">Không thấy câu trả lời bạn cần? Gọi hoặc nhắn Zalo cho chúng tôi.</p>
         </div>
         <div class="faq" id="faq"></div>
       </div>
     </section>
+    <!--/b:home.faq-->
 
     <!-- ============ ĐẶT LỊCH ============ -->
     <section class="section section-deep booking-section" id="dat-lich">
       <div class="galaxy small" aria-hidden="true"></div>
       <div class="wrap booking">
         <div class="booking-copy">
-          <p class="eyebrow light">Đặt lịch</p>
-          <h2>Dành một chút thời gian <em>cho cơ thể bạn.</em></h2>
-          <p>Điền thông tin, chúng tôi sẽ gọi lại xác nhận trong giờ làm việc. Hoặc liên hệ trực tiếp:</p>
+          <p class="eyebrow light" data-t="home.booking.eyebrow">Đặt lịch</p>
+          <h2 data-t="home.booking.title">Dành một chút thời gian <em>cho cơ thể bạn.</em></h2>
+          <p data-t="home.booking.text">Điền thông tin, chúng tôi sẽ gọi lại xác nhận trong giờ làm việc. Hoặc liên hệ trực tiếp:</p>
           <div class="booking-contacts">
             <a class="contact-pill" data-cfg-href="tel" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg><span data-cfg="phone"></span></a>
             <a class="contact-pill" data-cfg-href="zalo" href="#" target="_blank" rel="noopener"><b class="zalo-txt">Zalo</b><span>Nhắn tin tư vấn</span></a>
@@ -252,7 +273,7 @@
           <div class="field full"><label for="f-note">Ghi chú</label><textarea id="f-note" name="ghi_chu" rows="3" placeholder="Vùng cần tập trung, mong muốn kỹ thuật viên nam/nữ…"></textarea></div>
           <div class="field full captcha" id="f-captcha"></div>
           <p class="full consent">Bằng việc gửi, bạn đồng ý để Thiên Hà Wellness dùng họ tên và số điện thoại này <b>chỉ để xác nhận lịch hẹn</b>. Xem <a href="/chinh-sach-bao-mat/">chính sách bảo mật</a>.</p>
-          <button class="btn btn-pearl full" type="submit" id="f-submit">Gửi yêu cầu đặt lịch</button>
+          <button class="btn btn-pearl full" type="submit" id="f-submit" data-t="home.booking.submit">Gửi yêu cầu đặt lịch</button>
           <p class="form-msg" id="form-msg" role="status"></p>
         </form>
         <div class="booking-done" id="booking-done" hidden tabindex="-1"></div>
@@ -265,13 +286,13 @@
     <div class="wrap footer-grid">
       <div>
         <a href="#top" class="logo-full" aria-label="Thiên Hà Wellness — về đầu trang"><img src="/images/logo.png" alt="Logo Thiên Hà Wellness — Dưỡng sinh, massage, chăm sóc sức khỏe" width="900" height="671" loading="lazy"></a>
-        <p class="footer-about">Spa &amp; massage trị liệu thư giãn — nơi nhịp sống chậm lại như dòng nước tìm về biển lặng.</p>
+        <p class="footer-about" data-t="chrome.footerAbout">Spa &amp; massage trị liệu thư giãn — nơi nhịp sống chậm lại như dòng nước tìm về biển lặng.</p>
       </div>
       <div><h4>Liên hệ</h4><ul><li><a data-cfg-href="tel" href="#" data-cfg="phone"></a></li><li data-cfg="email"></li><li data-cfg="address"></li></ul></div>
-      <div><h4>Giờ mở cửa</h4><ul><li data-cfg="hours"></li><li>Nhận khách cuối trước giờ đóng cửa 90 phút</li></ul></div>
-      <div><h4>Khám phá</h4><ul><li><a href="/bang-gia/">Bảng giá</a></li><li><a href="#ve-chung-toi">Về Thiên Hà</a></li><li><a href="#hoi-dap">Hỏi đáp</a></li><li><a href="#dat-lich">Đặt lịch</a></li></ul></div>
+      <div><h4>Giờ mở cửa</h4><ul><li data-cfg="hours"></li><li data-t="chrome.hoursNote">Nhận khách cuối trước giờ đóng cửa 90 phút</li></ul></div>
+      <div><h4 data-t="chrome.linksTitle">Khám phá</h4><ul data-l="chrome.links"><li><a href="/bang-gia/">Bảng giá</a></li><li><a href="#ve-chung-toi">Về Thiên Hà</a></li><li><a href="#hoi-dap">Hỏi đáp</a></li><li><a href="#dat-lich">Đặt lịch</a></li></ul></div>
     </div>
-    <div class="wrap copyright"><span>© <span id="year"></span> Thiên Hà Wellness. Bảo lưu mọi quyền.</span><span>Dịch vụ mang tính thư giãn, chăm sóc sức khỏe; không thay thế chẩn đoán hay điều trị y khoa.</span></div>
+    <div class="wrap copyright"><span>© <span id="year"></span> <span data-t="chrome.copyright">Thiên Hà Wellness. Bảo lưu mọi quyền.</span></span><span data-t="chrome.disclaimer">Dịch vụ mang tính thư giãn, chăm sóc sức khỏe; không thay thế chẩn đoán hay điều trị y khoa.</span></div>
   </footer>
 
   <!-- Nút liên hệ nổi -->
@@ -279,8 +300,8 @@
 
   <!-- Thanh đặt lịch dưới cùng (điện thoại) -->
   <div class="mobile-bar">
-    <a data-cfg-href="tel" href="#">Gọi ngay</a>
-    <a href="#dat-lich" class="primary">Đặt lịch</a>
+    <a data-cfg-href="tel" href="#" data-t="chrome.mobileCall">Gọi ngay</a>
+    <a href="#dat-lich" class="primary" data-t="chrome.mobileBook">Đặt lịch</a>
   </div>
 
   <div class="toast" id="toast" role="status"></div>

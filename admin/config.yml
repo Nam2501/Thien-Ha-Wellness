@@ -34,7 +34,7 @@ collections:
     editor: { preview: false }
     files:
       - name: site
-        label: "Liên hệ, giờ mở cửa & banner"
+        label: "Liên hệ & giờ mở cửa"
         file: data/site.json
         fields:
           - { name: name, label: "Tên spa", widget: string }
@@ -74,23 +74,159 @@ collections:
                   - { label: "Google Maps (để trống = link bản đồ ở trên)", value: maps }
               - { name: url, label: "Link", widget: string, required: false, hint: "Dán link đầy đủ bắt đầu bằng https://. Gọi điện: nhập số điện thoại. Email: nhập địa chỉ email." }
               - { name: "on", label: "Hiển thị trên website", widget: boolean, default: true, required: false }
-          - { name: heroEyebrow, label: "Banner — dòng chữ nhỏ", widget: string }
-          - { name: heroTitle, label: "Banner — tiêu đề lớn", widget: string, hint: "Đặt chữ trong dấu * để in nghiêng, vd: Thả trôi mệt mỏi, *như dòng nước* về biển lặng." }
-          - { name: heroLead, label: "Banner — đoạn mô tả", widget: text }
-          - { name: needsEyebrow, label: "Mục 'Cơ thể bạn cần gì' — dòng chữ nhỏ", widget: string, required: false }
-          - { name: needsTitle, label: "Mục 'Cơ thể bạn cần gì' — tiêu đề", widget: string, required: false, hint: "Đặt chữ trong dấu * để in nghiêng, vd: Hôm nay, cơ thể bạn *cần điều gì?*" }
-          - { name: needsSub, label: "Mục 'Cơ thể bạn cần gì' — mô tả ngắn", widget: string, required: false }
-          - name: needs
-            label: "Mục 'Cơ thể bạn cần gì' — các thẻ (nên để 4 thẻ)"
-            label_singular: "thẻ"
-            widget: list
-            max: 8
-            summary: "{{fields.title}} → {{fields.group}}"
+
+  # ---------------- GIAO DIỆN (mỗi trang 1 mục) ----------------
+  - name: layout
+    label: "Giao diện"
+    description: "Mỗi trang 1 mục: sửa chữ, ảnh, nút bấm và bật/tắt từng khu vực. Menu & chân trang dùng chung cho cả website. Đặt chữ trong dấu * để in nghiêng. Để trống ô nào = giữ chữ mặc định."
+    editor: { preview: false }
+    files:
+      - name: home
+        label: "Trang chủ"
+        file: data/layout/home.json
+        fields:
+          - label: "Banner đầu trang"
+            name: hero
+            widget: object
+            collapsed: true
             fields:
-              - { name: title, label: "Tiêu đề thẻ", widget: string }
-              - { name: desc, label: "Mô tả ngắn", widget: string }
-              - { name: icon, label: "Biểu tượng", widget: select, default: drop, options: [ { label: "Đầu", value: head }, { label: "Cơ thể (body)", value: body }, { label: "Giọt nước & sóng", value: drop }, { label: "Cổ vai", value: neck }, { label: "Lưng", value: back }, { label: "Khuôn mặt", value: face }, { label: "Ngôi sao", value: star } ] }
-              - { name: group, label: "Bấm vào thì tới nhóm dịch vụ", widget: select, options: &groups [ "Dịch vụ gội đầu", "Dịch vụ massage body thư giãn", "Dịch vụ massage dưỡng sinh & phục hồi sức khỏe", "Dịch vụ chăm sóc tai & mặt" ], hint: "Nhóm phải trùng với 'Nhóm dịch vụ' của các liệu trình trong Bảng giá." }
+              - { name: eyebrow, label: "Dòng chữ nhỏ", widget: string, required: false }
+              - { name: title, label: "Tiêu đề lớn (H1)", widget: string, required: false, hint: "Đặt chữ trong dấu * để in nghiêng, vd: Thả trôi mệt mỏi, *như dòng nước* về biển lặng." }
+              - { name: lead, label: "Đoạn mô tả", widget: text, required: false }
+              - { name: btn1, label: "Nút chính", widget: object, fields: &btn [ { name: text, label: "Chữ trên nút", widget: string, required: false }, { name: link, label: "Link", widget: string, required: false, hint: "vd #dat-lich (khu đặt lịch), /bang-gia/, hoặc https://…" } ] }
+              - { name: btn2, label: "Nút phụ", widget: object, fields: *btn }
+          - { label: "Dải thông tin nhanh (giờ mở cửa, hotline, địa chỉ)", name: infobar, widget: object, collapsed: true, fields: [ &on { name: "on", label: "Hiển thị khu này", widget: boolean, default: true, required: false } ] }
+          - label: "Khu 'Cơ thể bạn cần gì'"
+            name: needs
+            widget: object
+            collapsed: true
+            fields:
+              - *on
+              - &eyebrow { name: eyebrow, label: "Dòng chữ nhỏ", widget: string, required: false }
+              - &title { name: title, label: "Tiêu đề", widget: string, required: false, hint: "Đặt chữ trong dấu * để in nghiêng." }
+              - &sub { name: sub, label: "Mô tả ngắn", widget: text, required: false }
+              - name: items
+                label: "Các thẻ (nên để 4 thẻ)"
+                label_singular: "thẻ"
+                widget: list
+                max: 8
+                summary: "{{fields.title}} → {{fields.group}}"
+                fields:
+                  - { name: title, label: "Tiêu đề thẻ", widget: string }
+                  - { name: desc, label: "Mô tả ngắn", widget: string }
+                  - { name: icon, label: "Biểu tượng", widget: select, default: drop, options: [ { label: "Đầu", value: head }, { label: "Cơ thể (body)", value: body }, { label: "Giọt nước & sóng", value: drop }, { label: "Cổ vai", value: neck }, { label: "Lưng", value: back }, { label: "Khuôn mặt", value: face }, { label: "Ngôi sao", value: star } ] }
+                  - { name: group, label: "Bấm vào thì tới nhóm dịch vụ", widget: select, options: &groups [ "Dịch vụ gội đầu", "Dịch vụ massage body thư giãn", "Dịch vụ massage dưỡng sinh & phục hồi sức khỏe", "Dịch vụ chăm sóc tai & mặt" ], hint: "Nhóm phải trùng với 'Nhóm dịch vụ' của các liệu trình trong Bảng giá." }
+          - label: "Khu Bảng giá (trên trang chủ)"
+            name: pricing
+            widget: object
+            collapsed: true
+            fields: [ *on, *eyebrow, *title, *sub, { name: btn, label: "Chữ nút xem bảng giá", widget: string, required: false }, { name: note, label: "Ghi chú dưới bảng giá", widget: text, required: false } ]
+          - label: "Khu Về chúng tôi"
+            name: about
+            widget: object
+            collapsed: true
+            fields:
+              - *on
+              - *eyebrow
+              - *title
+              - { name: text, label: "Nội dung", widget: text, required: false, hint: "Cách 1 dòng trống giữa các đoạn." }
+              - { name: ticks, label: "Các ý nổi bật (dấu tích)", label_singular: "ý", widget: list, required: false, field: { name: text, label: "Ý", widget: string } }
+              - { name: btn, label: "Nút", widget: object, fields: *btn }
+              - { name: image, label: "Ảnh (để trống = hình trang trí sóng nước)", widget: thimage, required: false, hint: "Ảnh dọc, chụp thật tại spa. Alt lấy trong Thư viện ảnh." }
+              - { name: badgeBig, label: "Vòng tròn — chữ lớn", widget: string, required: false }
+              - { name: badgeSmall, label: "Vòng tròn — chữ nhỏ", widget: text, required: false, hint: "Xuống dòng trong ô = xuống dòng trên web." }
+          - label: "Khu Vì sao khách quay lại"
+            name: values
+            widget: object
+            collapsed: true
+            fields: [ *on, *eyebrow, *title, { name: items, label: "Các ý (đánh số 01, 02… tự động)", label_singular: "ý", widget: list, summary: "{{fields.title}}", fields: &items [ { name: title, label: "Tiêu đề", widget: string }, { name: desc, label: "Mô tả", widget: string, required: false } ] } ]
+          - label: "Khu Hành trình một buổi"
+            name: journey
+            widget: object
+            collapsed: true
+            fields: [ *on, *eyebrow, *title, { name: items, label: "Các bước", label_singular: "bước", widget: list, summary: "{{fields.title}}", fields: *items } ]
+          - label: "Khu Không gian"
+            name: gallery
+            widget: object
+            collapsed: true
+            hint: "Ảnh không gian sửa ở Nội dung → Không gian."
+            fields: [ *on, *eyebrow, *title, *sub ]
+          - label: "Khu Đánh giá Google"
+            name: reviews
+            widget: object
+            collapsed: true
+            fields: [ *on, *eyebrow, *title, *sub, { name: box, label: "Chữ trong ô bên phải", widget: string, required: false }, { name: btnMap, label: "Chữ nút xem Google Maps", widget: string, required: false }, { name: btnReview, label: "Chữ nút viết đánh giá", widget: string, required: false } ]
+          - label: "Khu Bài viết mới"
+            name: posts
+            widget: object
+            collapsed: true
+            fields: [ *on, *eyebrow, *title, { name: btn, label: "Chữ nút xem tất cả", widget: string, required: false }, { name: count, label: "Số bài hiển thị", widget: number, value_type: int, min: 1, max: 12, default: 3, required: false } ]
+          - label: "Khu Hỏi đáp"
+            name: faq
+            widget: object
+            collapsed: true
+            hint: "Câu hỏi sửa ở Nội dung → Hỏi đáp."
+            fields: [ *on, *eyebrow, *title, *sub ]
+          - label: "Khu Đặt lịch (luôn hiển thị)"
+            name: booking
+            widget: object
+            collapsed: true
+            fields: [ *eyebrow, *title, { name: text, label: "Đoạn mô tả", widget: text, required: false }, { name: submit, label: "Chữ nút gửi", widget: string, required: false } ]
+      - name: pricing
+        label: "Trang Bảng giá"
+        file: data/layout/pricing.json
+        fields:
+          - *eyebrow
+          - { name: h1, label: "Tiêu đề trang (H1)", widget: string, required: false }
+          - { name: lead, label: "Đoạn mô tả", widget: text, required: false, hint: "Để trống = tự ghi số liệu trình và giá thấp nhất." }
+          - { name: helpTitle, label: "Ô tư vấn — tiêu đề", widget: string, required: false }
+          - { name: helpText, label: "Ô tư vấn — nội dung", widget: text, required: false }
+          - { name: helpBtn, label: "Ô tư vấn — chữ nút", widget: string, required: false }
+          - { name: note, label: "Ghi chú cuối trang", widget: text, required: false }
+      - name: blog
+        label: "Trang Bài viết"
+        file: data/layout/blog.json
+        fields:
+          - *eyebrow
+          - { name: h1, label: "Tiêu đề trang (H1)", widget: string, required: false, hint: "Để trống = dùng tiêu đề SEO của trang bài viết." }
+          - { name: lead, label: "Đoạn mô tả", widget: text, required: false }
+      - name: service
+        label: "Trang chi tiết liệu trình (dùng chung)"
+        file: data/layout/service.json
+        fields:
+          - { name: priceTitle, label: "Cột phải — tiêu đề bảng giá", widget: string, required: false }
+          - { name: bookBtn, label: "Chữ nút đặt lịch", widget: string, required: false }
+          - { name: otherTitle, label: "Cột phải — tiêu đề liệu trình khác", widget: string, required: false }
+          - { name: disclaimer, label: "Lưu ý cuối bài", widget: text, required: false }
+      - name: post
+        label: "Trang chi tiết bài viết (dùng chung)"
+        file: data/layout/post.json
+        fields:
+          - { name: sideTitle, label: "Ô đặt lịch — tiêu đề", widget: string, required: false }
+          - { name: sideText, label: "Ô đặt lịch — nội dung", widget: text, required: false }
+          - { name: sideBtn, label: "Ô đặt lịch — chữ nút", widget: string, required: false }
+          - { name: servicesTitle, label: "Cột phải — tiêu đề danh sách liệu trình", widget: string, required: false }
+          - { name: disclaimer, label: "Lưu ý cuối bài", widget: text, required: false }
+      - name: chrome
+        label: "Menu & chân trang"
+        file: data/layout/chrome.json
+        fields:
+          - name: menu
+            label: "Menu đầu trang"
+            label_singular: "mục"
+            widget: list
+            summary: "{{fields.label}} → {{fields.link}}"
+            hint: "Kéo để đổi thứ tự. Link khu trên trang chủ: #ve-chung-toi, #khong-gian, #hoi-dap, #dat-lich, #bang-gia, #bai-viet."
+            fields: &link [ { name: label, label: "Chữ hiển thị", widget: string }, { name: link, label: "Link", widget: string, hint: "vd /bang-gia/, #hoi-dap hoặc https://…" } ]
+          - { name: headerBtn, label: "Chữ nút Đặt lịch trên đầu trang", widget: string, required: false }
+          - { name: footerAbout, label: "Chân trang — giới thiệu ngắn", widget: text, required: false }
+          - { name: hoursNote, label: "Chân trang — ghi chú dưới giờ mở cửa", widget: string, required: false }
+          - { name: linksTitle, label: "Chân trang — tiêu đề cột link", widget: string, required: false }
+          - { name: links, label: "Chân trang — các link", label_singular: "link", widget: list, summary: "{{fields.label}} → {{fields.link}}", fields: *link }
+          - { name: copyright, label: "Dòng bản quyền (sau © năm)", widget: string, required: false }
+          - { name: disclaimer, label: "Dòng lưu ý cuối trang", widget: string, required: false }
+          - { name: mobileCall, label: "Thanh dưới cùng (điện thoại) — chữ nút gọi", widget: string, required: false }
+          - { name: mobileBook, label: "Thanh dưới cùng (điện thoại) — chữ nút đặt lịch", widget: string, required: false }
 
   # ---------------- SEO TOÀN WEBSITE ----------------
   - name: seo

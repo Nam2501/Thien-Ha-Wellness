@@ -1,0 +1,98 @@
+{
+  "hero": {
+    "eyebrow": "Spa & Massage trị liệu · Tinh thần của nước",
+    "title": "Thả trôi mệt mỏi, *như dòng nước* tìm về biển lặng.",
+    "lead": "Thiên Hà Wellness là khoảng lặng giữa nhịp sống vội — nơi đôi tay kỹ thuật viên, hương thảo mộc ấm và tiếng nước chảy giúp cơ thể thả lỏng, tâm trí dịu lại.",
+    "btn1": { "text": "Đặt lịch trải nghiệm", "link": "#dat-lich" },
+    "btn2": { "text": "Xem bảng giá", "link": "/bang-gia/" }
+  },
+  "infobar": { "on": true },
+  "needs": {
+    "on": true,
+    "eyebrow": "Bắt đầu từ cơ thể bạn",
+    "title": "Hôm nay, cơ thể bạn *cần điều gì?*",
+    "sub": "Chọn vùng đang mỏi mệt nhất — chúng tôi gợi ý liệu pháp phù hợp.",
+    "items": [
+      { "title": "Gội Đầu", "desc": "Căng thẳng, nặng đầu — gội dưỡng sinh thảo mộc.", "icon": "head", "group": "Dịch vụ gội đầu" },
+      { "title": "Massage Body", "desc": "Uể oải, chân mỏi — massage body, foot, đá nóng.", "icon": "body", "group": "Dịch vụ massage body thư giãn" },
+      { "title": "Cổ vai gáy & lưng", "desc": "Ngồi lâu, cứng cổ, mỏi lưng — massage dưỡng sinh.", "icon": "neck", "group": "Dịch vụ massage dưỡng sinh & phục hồi sức khỏe" },
+      { "title": "Tai & mặt", "desc": "Muốn thư giãn nhẹ nhàng vùng tai, gương mặt.", "icon": "face", "group": "Dịch vụ chăm sóc tai & mặt" }
+    ]
+  },
+  "pricing": {
+    "on": true,
+    "eyebrow": "Liệu trình & bảng giá",
+    "title": "Chọn liệu trình *vừa vặn* với bạn",
+    "sub": "Mỗi nhóm dịch vụ gồm nhiều liệu trình và thời lượng. Xem bảng giá đầy đủ để so sánh và đặt lịch nhanh. Chưa biết chọn gì? Để lại số điện thoại, chúng tôi tư vấn miễn phí.",
+    "btn": "Xem bảng giá đầy đủ",
+    "note": "Bảng giá tham khảo, có thể thay đổi theo chương trình. Vui lòng liên hệ để được tư vấn liệu trình phù hợp với thể trạng."
+  },
+  "about": {
+    "on": true,
+    "eyebrow": "Về Thiên Hà Wellness",
+    "title": "Chăm sóc cơ thể bằng *sự tĩnh lặng* của nước",
+    "text": "Nước không vội vàng, nhưng luôn tìm được đường đi. Chúng tôi đặt tên mình theo dải ngân hà — dòng sông của bầu trời — với mong muốn mỗi khách hàng tìm thấy nhịp chậm lại cho chính mình.\n\nMỗi buổi trị liệu bắt đầu bằng cuộc trò chuyện ngắn để hiểu thể trạng, chọn lực tay và vùng cần tập trung. Không gian riêng tư, âm thanh nhẹ, khăn ấm và trà thảo mộc sau liệu trình — để bạn ra về nhẹ nhõm hơn khi đến.",
+    "ticks": ["Tư vấn thể trạng trước mỗi liệu trình", "Phòng riêng, sạch sẽ, khăn dùng một lần mỗi khách", "Tinh dầu và thảo mộc có nguồn gốc rõ ràng"],
+    "btn": { "text": "Đặt lịch tư vấn", "link": "#dat-lich" },
+    "image": "",
+    "badgeBig": "Thủy",
+    "badgeSmall": "mềm mại\nmà bền bỉ"
+  },
+  "values": {
+    "on": true,
+    "eyebrow": "Vì sao khách quay lại",
+    "title": "Tay nghề, sự riêng tư và *không ép mua gói*",
+    "items": [
+      { "title": "Kỹ thuật viên tận tâm", "desc": "Lắng nghe trước khi bắt đầu, điều chỉnh lực tay suốt buổi." },
+      { "title": "Yên tĩnh & riêng tư", "desc": "Phòng riêng, ánh sáng dịu, âm thanh nước chảy nhẹ nhàng." },
+      { "title": "Không ép mua gói", "desc": "Bạn chọn từng buổi theo nhu cầu, không bị chèo kéo." },
+      { "title": "Sạch sẽ chuẩn mực", "desc": "Khăn, ga thay mới cho từng khách; dụng cụ vệ sinh sau mỗi lượt." },
+      { "title": "Trà & nghỉ ngơi", "desc": "Trà thảo mộc ấm và thời gian nghỉ sau mỗi liệu trình." }
+    ]
+  },
+  "journey": {
+    "on": true,
+    "eyebrow": "Một buổi tại Thiên Hà",
+    "title": "Hành trình *bốn nhịp* thư thái",
+    "items": [
+      { "title": "Đón tiếp & tư vấn", "desc": "Trà ấm, hỏi thăm thể trạng và vùng cần chăm sóc." },
+      { "title": "Ngâm chân thảo mộc", "desc": "Làm ấm cơ thể, giúp bạn thả lỏng trước trị liệu." },
+      { "title": "Trị liệu chuyên sâu", "desc": "Thực hiện liệu trình đã chọn trong phòng riêng." },
+      { "title": "Nghỉ ngơi & dặn dò", "desc": "Thư giãn thêm vài phút và gợi ý chăm sóc tại nhà." }
+    ]
+  },
+  "gallery": {
+    "on": true,
+    "eyebrow": "Không gian",
+    "title": "Nơi một ngày *chậm lại*",
+    "sub": "Tông xanh biển sâu, ánh sáng dịu và tiếng nước — từng chi tiết được chọn để bạn quên đi nhịp phố bên ngoài."
+  },
+  "reviews": {
+    "on": true,
+    "eyebrow": "Cảm nhận khách hàng",
+    "title": "Lắng nghe *những người đã đến*",
+    "sub": "Đánh giá thật từ khách hàng được hiển thị trên Google Maps. Sau buổi trải nghiệm, bạn cũng có thể để lại cảm nhận để Thiên Hà phục vụ tốt hơn.",
+    "box": "Xem đánh giá và chỉ đường trên Google Maps",
+    "btnMap": "Xem trên Google Maps",
+    "btnReview": "Viết đánh giá"
+  },
+  "posts": {
+    "on": true,
+    "eyebrow": "Góc chăm sóc cơ thể",
+    "title": "Hiểu cơ thể, *chăm sóc đúng cách*",
+    "btn": "Xem tất cả bài viết",
+    "count": 3
+  },
+  "faq": {
+    "on": true,
+    "eyebrow": "Trước khi đặt lịch",
+    "title": "Câu hỏi *thường gặp*",
+    "sub": "Không thấy câu trả lời bạn cần? Gọi hoặc nhắn Zalo cho chúng tôi."
+  },
+  "booking": {
+    "eyebrow": "Đặt lịch",
+    "title": "Dành một chút thời gian *cho cơ thể bạn.*",
+    "text": "Điền thông tin, chúng tôi sẽ gọi lại xác nhận trong giờ làm việc. Hoặc liên hệ trực tiếp:",
+    "submit": "Gửi yêu cầu đặt lịch"
+  }
+}

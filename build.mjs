@@ -33,6 +33,14 @@ const SITE = read("site"), SEO = read("seo");
 const MEDIA = read("media").items || {};
 const mediaOf = p => { const m = String(p || "").match(/images\/uploads\/(.+)$/); if (!m) return {}; let n = m[1]; try { n = decodeURI(n); } catch {} return MEDIA[n] || {}; };
 const figImg = (p, alt) => { const m = mediaOf(p); return `<figure><img src="${esc(absPath(p))}" alt="${esc(m.alt || alt)}"${m.title ? ` title="${esc(m.title)}"` : ""} width="${m.w || 1200}" height="${m.h || 675}"></figure>`; };
+// Giao diện (admin → Giao diện): chữ, ảnh, nút, bật/tắt từng khu của từng trang — data/layout/<trang>.json
+const readLayout = f => read("layout/" + f);
+const LAYOUT = { home: readLayout("home"), pricing: readLayout("pricing"), blog: readLayout("blog"), service: readLayout("service"), post: readLayout("post"), chrome: readLayout("chrome") };
+const L = LAYOUT;
+const pick = k => k.split(".").reduce((o, x) => (o == null ? undefined : o[x]), LAYOUT);
+const has = v => v != null && String(v).trim() !== "";
+const T = (v, d) => has(v) ? v : d;   // chữ trong Giao diện, để trống = dùng chữ mặc định
+const NEEDS = L.home.needs?.items?.length ? L.home.needs.items : (SITE.needs || []);   // thẻ "Cơ thể bạn cần gì"
 const SITE_URL = String(SEO.siteUrl || process.env.URL || "").replace(/\/+$/, "");
 // Bài viết: mỗi bài 1 file data/posts/<tên>.json (mỗi bài 1 trang sửa riêng trong /admin). Gộp lại khi build,
 // sắp ngày đăng mới nhất trước; _file = tên file để Bảng điều khiển SEO mở đúng bài. Chưa có thư mục thì đọc data/posts.json cũ.
@@ -88,20 +96,58 @@ const SPA = {
 const crumbs = list => ({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: list.map(([name, p], i) => ({ "@type": "ListItem", position: i + 1, name, item: full(p) })) });
 
 /* ---------- Dữ liệu nhúng cho main.js ---------- */
-const EMBED = `<script id="site-data" type="application/json">${JSON.stringify({ site: SITE, services: SERVICES, faq: [], gallery: [], posts: [] }).replace(/</g, "\\u003c")}</script>`;
+const EMBED = `<script id="site-data" type="application/json">${JSON.stringify({ site: { ...SITE, needs: NEEDS }, services: SERVICES, faq: [], gallery: [], posts: [] }).replace(/</g, "\\u003c")}</script>`;
+
+/* ---------- Giao diện: thay chữ/ảnh/nút theo data/layout ---------- */
+// Tìm thẻ có thuộc tính đánh dấu (vd data-t="home.hero.title") và thay phần bên trong (tính cả thẻ lồng nhau cùng tên)
+function replaceMarked(html, attr, fn) {
+  const re = new RegExp(`<(\\w+)\\b[^>]*\\s${attr}="([\\w.]+)"[^>]*>`, "g");
+  let out = "", last = 0, m;
+  while ((m = re.exec(html))) {
+    const [open, tag, key] = m, start = m.index + open.length;
+    const tr = new RegExp(`<(/?)${tag}\\b[^>]*>`, "g"); tr.lastIndex = start;
+    let depth = 1, t, end = -1;
+    while ((t = tr.exec(html))) { if (t[1]) { if (--depth === 0) { end = t.index; break; } } else if (!t[0].endsWith("/>")) depth++; }
+    if (end < 0) continue;
+    const v = fn(key, html.slice(start, end));
+    if (v == null) continue;
+    out += html.slice(last, start) + v; last = end; re.lastIndex = end;
+  }
+  return out + html.slice(last);
+}
+const pad2 = i => String(i + 1).padStart(2, "0");
+const LISTS = {
+  "chrome.menu": a => a.filter(x => has(x.label)).map(x => `<a href="${esc(x.link || "/")}">${esc(x.label)}</a>`).join("\n        ") + `\n        <a href="#dat-lich" class="nav-cta-mobile">${esc(T(L.chrome.headerBtn, "Đặt lịch"))}</a>\n      `,
+  "chrome.links": a => a.filter(x => has(x.label)).map(x => `<li><a href="${esc(x.link || "/")}">${esc(x.label)}</a></li>`).join(""),
+  "home.about.ticks": a => a.filter(has).map(x => `\n            <li>${esc(typeof x === "string" ? x : x.text)}</li>`).join("") + "\n          ",
+  "home.values.items": a => a.filter(x => has(x.title)).map((x, i) => `\n          <div class="value"><span class="num">${pad2(i)}</span><h3>${esc(x.title)}</h3><p>${esc(x.desc || "")}</p></div>`).join("") + "\n        ",
+  "home.journey.items": a => a.filter(x => has(x.title)).map(x => `\n          <li><span class="dot"></span><b>${esc(x.title)}</b><p>${esc(x.desc || "")}</p></li>`).join("") + "\n        "
+};
+function applyLayout(html) {
+  // Khu bị tắt (on = false) → bỏ khỏi trang
+  html = html.replace(/[ \t]*<!--b:([\w.]+)-->\r?\n?([\s\S]*?)[ \t]*<!--\/b:\1-->\r?\n?/g, (_, k, inner) => pick(k + ".on") === false ? "" : inner);
+  html = replaceMarked(html, "data-t", k => has(pick(k)) ? titleHTML(String(pick(k)).trim()).replace(/\r?\n/g, "<br>") : null);   // xuống dòng trong ô = <br>
+  html = replaceMarked(html, "data-p", k => has(pick(k)) ? String(pick(k)).split(/\n\s*\n/).map(x => x.trim()).filter(Boolean).map(x => `<p>${titleHTML(x)}</p>`).join("\n          ") : null);
+  html = replaceMarked(html, "data-l", k => Array.isArray(pick(k)) && pick(k).length && LISTS[k] ? LISTS[k](pick(k)) : null);
+  html = html.replace(/<a\b([^>]*?)\shref="[^"]*"([^>]*\sdata-h="([\w.]+)"[^>]*)>/g, (m, a, b, k) => has(pick(k)) ? `<a${a} href="${esc(pick(k))}"${b}>` : m);
+  // Ảnh "Về chúng tôi"
+  html = html.replace(/(<div class="art art-tall" data-art="([\w.]+)">)/, (m, open, k) => has(pick(k))
+    ? `${open}<img class="art-photo" src="${esc(absPath(pick(k)))}" alt="${esc(mediaOf(pick(k)).alt || SITE.name)}"${mediaOf(pick(k)).w ? ` width="${mediaOf(pick(k)).w}" height="${mediaOf(pick(k)).h}"` : ""} loading="lazy">` : m);
+  return html;
+}
 
 /* ---------- Trang chủ ---------- */
-let home = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
+let home = applyLayout(fs.readFileSync(path.join(ROOT, "index.html"), "utf8"));
 home = home
   .replace(/(<(\w+)\b[^>]*\bdata-cfg="(\w+)"[^>]*>)[\s\S]*?(<\/\2>)/g, (all, open, tag, key, close) => SITE[key] != null ? open + esc(SITE[key]) + close : all)
   .replace(/(<(\w+)\b[^>]*\bdata-cfg-html="(\w+)"[^>]*>)[\s\S]*?(<\/\2>)/g, (all, open, tag, key, close) => SITE[key] ? open + titleHTML(SITE[key]) + close : all)
   .replace(/data-cfg-href="(\w+)" href="#"/g, (all, k) => `data-cfg-href="${k}" href="${esc(LINKS[k] || "#")}"`)
   .replace('<div class="float-contact" id="float-contact" aria-label="Liên hệ nhanh"></div>', `<div class="float-contact" id="float-contact" aria-label="Liên hệ nhanh">${R.socialsHTML(SITE)}</div>`)
   .replace('<div class="svc-groups" id="services"></div>', `<div class="svc-groups" id="services">${R.featuredHTML(SERVICES)}</div>`)
-  .replace('<div class="needs" id="needs"></div>', `<div class="needs" id="needs">${R.needsHTML(SITE.needs)}</div>`)
+  .replace('<div class="needs" id="needs"></div>', `<div class="needs" id="needs">${R.needsHTML(NEEDS)}</div>`)
   .replace('<div class="faq" id="faq"></div>', `<div class="faq" id="faq">${R.faqHTML(FAQ)}</div>`)
   .replace('<div class="gallery" id="gallery"></div>', `<div class="gallery" id="gallery">${R.galleryHTML(GALLERY)}</div>`)
-  .replace('<div class="posts" id="home-posts"></div>', `<div class="posts" id="home-posts">${POSTS.slice(0, 3).map(R.postCard).join("")}</div>`);
+  .replace('<div class="posts" id="home-posts"></div>', `<div class="posts" id="home-posts">${POSTS.slice(0, Math.max(1, Math.min(12, parseInt(L.home.posts?.count, 10) || 3))).map(R.postCard).join("")}</div>`);
 
 const homeMeta = Check.meta("page", { key: "home", path: "/", title: SITE.name, ...(SEO.pages?.home || {}) }, ctx);
 const homeLd = [{ "@context": "https://schema.org", "@graph": [SPA, { "@type": "WebSite", "@id": full("/#web"), name: SITE.name, url: full("/"), inLanguage: "vi" }] }];
@@ -156,10 +202,10 @@ function servicePage(s) {
   return page({ meta: m, schemas,
     hero: `${crumbHTML(list)}${s.tag ? `<p class="eyebrow light">${esc(s.tag)}</p>` : ""}<h1>${esc(s.name)}</h1><p class="lead">${esc(s.desc)}</p>`,
     body: `<div class="detail"><article class="prose">${s.img ? figImg(s.img, s.name) : ""}${bodyHTML(s.content || s.desc)}
-      <div class="disclaimer">Liệu trình mang tính thư giãn, chăm sóc cơ thể; không thay thế chẩn đoán hay điều trị y khoa. Vui lòng báo trước nếu bạn đang mang thai hoặc có bệnh lý.</div></article>
-      <aside class="side"><div class="side-card"><h3>Bảng giá</h3><table class="price-table">${ps.map(p => `<tr><td>${R.durText(p.min)}</td><td>${money(p.price)}</td></tr>`).join("")}</table>
-        <a class="btn btn-navy" href="/?dv=${encodeURIComponent(s.id + "|" + (ps[0]?.min || ""))}#dat-lich">Đặt lịch liệu trình này</a><a class="btn btn-line" href="${esc(LINKS.tel)}">Gọi ${esc(SITE.phone)}</a></div>
-        <div class="side-card"><h3>Liệu trình khác</h3><ul class="side-list">${others.map(x => `<li><a href="${urlFor("services", x)}">${esc(x.name)}</a></li>`).join("")}</ul></div></aside></div>` });
+      <div class="disclaimer">${esc(T(L.service.disclaimer, "Liệu trình mang tính thư giãn, chăm sóc cơ thể; không thay thế chẩn đoán hay điều trị y khoa. Vui lòng báo trước nếu bạn đang mang thai hoặc có bệnh lý."))}</div></article>
+      <aside class="side"><div class="side-card"><h3>${esc(T(L.service.priceTitle, "Bảng giá"))}</h3><table class="price-table">${ps.map(p => `<tr><td>${R.durText(p.min)}</td><td>${money(p.price)}</td></tr>`).join("")}</table>
+        <a class="btn btn-navy" href="/?dv=${encodeURIComponent(s.id + "|" + (ps[0]?.min || ""))}#dat-lich">${esc(T(L.service.bookBtn, "Đặt lịch liệu trình này"))}</a><a class="btn btn-line" href="${esc(LINKS.tel)}">Gọi ${esc(SITE.phone)}</a></div>
+        <div class="side-card"><h3>${esc(T(L.service.otherTitle, "Liệu trình khác"))}</h3><ul class="side-list">${others.map(x => `<li><a href="${urlFor("services", x)}">${esc(x.name)}</a></li>`).join("")}</ul></div></aside></div>` });
 }
 
 /* ---------- Trang bảng giá /bang-gia/ ---------- */
@@ -172,12 +218,12 @@ function pricingPage() {
     itemListElement: SERVICES.map(s => ({ "@type": "Offer", priceCurrency: "VND", price: prices(s)[0]?.price || undefined,
       itemOffered: { "@type": "Service", name: s.name, url: full(urlFor("services", s)), provider: { "@id": full("/#spa") } } })) };
   return page({ meta: m, schemas: [crumbs(list), catalog],
-    hero: `${crumbHTML(list)}<p class="eyebrow light">Liệu trình &amp; bảng giá</p><h1>${esc(pg.h1 || "Bảng giá dịch vụ")}</h1>
-      <p class="lead">${esc(pg.lead || `${SERVICES.length} liệu trình, giá từ ${money(Math.min(...all))}. Chọn thời lượng để xem giá, bấm Đặt lịch để giữ chỗ.`)}</p>`,
+    hero: `${crumbHTML(list)}<p class="eyebrow light">${esc(T(L.pricing.eyebrow, "Liệu trình & bảng giá"))}</p><h1>${esc(T(L.pricing.h1, pg.h1 || "Bảng giá dịch vụ"))}</h1>
+      <p class="lead">${esc(T(L.pricing.lead, pg.lead || `${SERVICES.length} liệu trình, giá từ ${money(Math.min(...all))}. Chọn thời lượng để xem giá, bấm Đặt lịch để giữ chỗ.`))}</p>`,
     body: `<div class="pricing">${R.pricingHTML(SERVICES)}
-      <div class="pl-help"><div><h3>Chưa biết chọn liệu trình nào?</h3><p>Để lại số điện thoại hoặc gọi cho chúng tôi, kỹ thuật viên sẽ tư vấn theo thể trạng của bạn, miễn phí.</p></div>
-        <div class="pl-help-act"><a class="btn btn-navy" href="/#dat-lich">Đặt lịch tư vấn</a><a class="btn btn-line" href="${esc(LINKS.tel)}">Gọi ${esc(SITE.phone)}</a></div></div>
-      <p class="note">Bảng giá tham khảo, có thể thay đổi theo chương trình. Liệu trình mang tính thư giãn, chăm sóc cơ thể; không thay thế chẩn đoán hay điều trị y khoa.</p></div>` });
+      <div class="pl-help"><div><h3>${esc(T(L.pricing.helpTitle, "Chưa biết chọn liệu trình nào?"))}</h3><p>${esc(T(L.pricing.helpText, "Để lại số điện thoại hoặc gọi cho chúng tôi, kỹ thuật viên sẽ tư vấn theo thể trạng của bạn, miễn phí."))}</p></div>
+        <div class="pl-help-act"><a class="btn btn-navy" href="/#dat-lich">${esc(T(L.pricing.helpBtn, "Đặt lịch tư vấn"))}</a><a class="btn btn-line" href="${esc(LINKS.tel)}">Gọi ${esc(SITE.phone)}</a></div></div>
+      <p class="note">${esc(T(L.pricing.note, "Bảng giá tham khảo, có thể thay đổi theo chương trình. Liệu trình mang tính thư giãn, chăm sóc cơ thể; không thay thế chẩn đoán hay điều trị y khoa."))}</p></div>` });
 }
 
 /* ---------- Bài viết ---------- */
@@ -193,15 +239,15 @@ function postPage(p) {
     body: `<div class="detail"><article class="prose">${p.img ? figImg(p.img, p.title) : ""}${R.postBodyHTML(p)}
       ${p.reviewer ? `<p><em>Nội dung được tham vấn bởi ${esc(p.reviewer)}.</em></p>` : ""}
       ${src.length ? `<h2>Nguồn tham khảo</h2><ol>${src.map(x => `<li>${/^https?:/.test(x) ? `<a href="${esc(x)}" rel="nofollow noopener" target="_blank">${esc(x)}</a>` : esc(x)}</li>`).join("")}</ol>` : ""}
-      <div class="disclaimer">Thông tin mang tính tham khảo, không thay thế tư vấn y khoa.</div></article>
-      <aside class="side"><div class="side-card"><h3>Đặt lịch thư giãn</h3><p>Dành một chút thời gian cho cơ thể bạn tại ${esc(SITE.name)}.</p><a class="btn btn-navy" href="/#dat-lich">Đặt lịch</a></div>
-        <div class="side-card"><h3>Liệu trình</h3><ul class="side-list">${SERVICES.slice(0, 6).map(x => `<li><a href="${urlFor("services", x)}">${esc(x.name)}</a></li>`).join("")}</ul></div></aside></div>
+      <div class="disclaimer">${esc(T(L.post.disclaimer, "Thông tin mang tính tham khảo, không thay thế tư vấn y khoa."))}</div></article>
+      <aside class="side"><div class="side-card"><h3>${esc(T(L.post.sideTitle, "Đặt lịch thư giãn"))}</h3><p>${esc(T(L.post.sideText, `Dành một chút thời gian cho cơ thể bạn tại ${SITE.name}.`))}</p><a class="btn btn-navy" href="/#dat-lich">${esc(T(L.post.sideBtn, "Đặt lịch"))}</a></div>
+        <div class="side-card"><h3>${esc(T(L.post.servicesTitle, "Liệu trình"))}</h3><ul class="side-list">${SERVICES.slice(0, 6).map(x => `<li><a href="${urlFor("services", x)}">${esc(x.name)}</a></li>`).join("")}</ul></div></aside></div>
       <script>/* Đếm lượt xem: mỗi trình duyệt tối đa 1 lần/ngày cho mỗi bài */(function(s){try{var k="xem:"+s,d=new Date().toISOString().slice(0,10);if(localStorage.getItem(k)===d)return;localStorage.setItem(k,d);}catch(e){}try{navigator.sendBeacon("/api/luot-xem",new Blob([JSON.stringify({slug:s})],{type:"application/json"}));}catch(e){}})(${JSON.stringify(p.slug)});</script>` });
 }
 function blogPage() {
   const pg = SEO.pages?.blog || {}, m = Check.meta("page", { key: "blog", path: "/bai-viet/", title: "Bài viết", ...pg }, ctx);
   return page({ meta: m, schemas: [crumbs([["Trang chủ", "/"], ["Bài viết", "/bai-viet/"]])],
-    hero: `${crumbHTML([["Trang chủ", "/"], ["Bài viết", "/bai-viet/"]])}<p class="eyebrow light">Góc chăm sóc cơ thể</p><h1>${esc(pg.title || "Bài viết")}</h1>${pg.description ? `<p class="lead">${esc(pg.description)}</p>` : ""}`,
+    hero: `${crumbHTML([["Trang chủ", "/"], ["Bài viết", "/bai-viet/"]])}<p class="eyebrow light">${esc(T(L.blog.eyebrow, "Góc chăm sóc cơ thể"))}</p><h1>${esc(T(L.blog.h1, pg.title || "Bài viết"))}</h1>${T(L.blog.lead, pg.description) ? `<p class="lead">${esc(T(L.blog.lead, pg.description))}</p>` : ""}`,
     body: POSTS.length ? `<div class="blog-list">${POSTS.map(R.postCard).join("")}</div>` : `<p class="sub">Chưa có bài viết.</p>` });
 }
 

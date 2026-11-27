@@ -1,45 +1,13 @@
 {
-  "needsSub": "Chọn vùng đang mỏi mệt nhất — chúng tôi gợi ý liệu pháp phù hợp.",
   "facebook": "",
   "zalo": "0782751714",
   "name": "Thiên Hà Wellness",
-  "needsEyebrow": "Bắt đầu từ cơ thể bạn",
   "phone": "0782 751 714",
-  "heroEyebrow": "Spa & Massage trị liệu · Tinh thần của nước",
   "hours": "9:00 – 22:00 · Thứ 2 – Chủ nhật",
   "mapUrl": "https://www.google.com/maps/search/?api=1&query=Thi%C3%AAn+H%C3%A0+Wellness",
   "address": "Cập nhật địa chỉ spa",
-  "heroLead": "Thiên Hà Wellness là khoảng lặng giữa nhịp sống vội — nơi đôi tay kỹ thuật viên, hương thảo mộc ấm và tiếng nước chảy giúp cơ thể thả lỏng, tâm trí dịu lại.",
   "reviewUrl": "https://www.google.com/maps/search/?api=1&query=Thi%C3%AAn+H%C3%A0+Wellness",
-  "needsTitle": "Hôm nay, cơ thể bạn *cần điều gì?*",
   "email": "lienhe@thienhawellness.vn",
-  "needs": [
-    {
-      "title": "Gội Đầu",
-      "desc": "Căng thẳng, nặng đầu — gội dưỡng sinh thảo mộc.",
-      "icon": "head",
-      "group": "Dịch vụ gội đầu"
-    },
-    {
-      "title": "Massage Body",
-      "desc": "Uể oải, chân mỏi — massage body, foot, đá nóng.",
-      "icon": "body",
-      "group": "Dịch vụ massage body thư giãn"
-    },
-    {
-      "title": "Cổ vai gáy & lưng",
-      "desc": "Ngồi lâu, cứng cổ, mỏi lưng — massage dưỡng sinh.",
-      "icon": "neck",
-      "group": "Dịch vụ massage dưỡng sinh & phục hồi sức khỏe"
-    },
-    {
-      "title": "Tai & mặt",
-      "desc": "Muốn thư giãn nhẹ nhàng vùng tai, gương mặt.",
-      "icon": "face",
-      "group": "Dịch vụ chăm sóc tai & mặt"
-    }
-  ],
-  "heroTitle": "Thả trôi mệt mỏi, *như dòng nước* tìm về biển lặng.",
   "socials": [
     {
       "net": "zalo",
