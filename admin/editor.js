@@ -249,10 +249,34 @@
   });
   CMS.registerWidget("thimage", THImage);
 
+  // Mục "Thư viện ảnh" trong cột Bộ sưu tập (ngay dưới Bài viết) — bấm mở Thư viện ảnh
+  const addLibItem = () => {
+    const posts = document.querySelector('a[href="#/collections/posts"]');
+    if (!posts || !posts.parentElement || document.getElementById("th-lib-item")) return;
+    const li = posts.closest("li") || posts, item = li.cloneNode(true), a = item.matches("a") ? item : item.querySelector("a");
+    item.id = "th-lib-item";
+    a.setAttribute("href", "#/thu-vien-anh"); a.removeAttribute("aria-current");
+    a.removeAttribute("data-testid");
+    // Lấy kiểu chữ của 1 mục KHÔNG đang chọn (mục đang chọn có màu nền xanh)
+    const plain = [...li.parentElement.querySelectorAll('a[href^="#/collections/"]')].find(x => !x.classList.contains("sidebar-active"));
+    a.className = plain ? plain.className : a.className.split(" ").filter(c => !/active/i.test(c)).join(" ");
+    const walk = document.createTreeWalker(a, NodeFilter.SHOW_TEXT); let t; while ((t = walk.nextNode())) if (t.nodeValue.trim()) { t.nodeValue = "Thư viện ảnh"; break; }
+    const svg = a.querySelector("svg");
+    if (svg) { const ic = document.createElement("span"); ic.textContent = "🖼"; ic.style.cssText = "display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:16px;line-height:1"; svg.replaceWith(ic); }
+    a.addEventListener("click", e => { e.preventDefault(); if (window.TH_MEDIA) TH_MEDIA.open({ mode: "manage" }); });
+    li.parentElement.appendChild(item);
+  };
+  // Đổi chữ nút "Tập tin" trên thanh đầu thành "Thư viện ảnh" (bấm mở Thư viện ảnh, xem bên dưới)
+  const renameHeader = () => document.querySelectorAll('button[class*="AppHeaderButton"]').forEach(b => {
+    const w = document.createTreeWalker(b, NodeFilter.SHOW_TEXT); let t;
+    while ((t = w.nextNode())) if (/^\s*(tập tin|phương tiện|media)\s*$/i.test(t.nodeValue)) t.nodeValue = "Thư viện ảnh";
+  });
+  new MutationObserver(() => { addLibItem(); renameHeader(); }).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+
   // Nút "Phương tiện" trên đầu trang của Decap tự đổi tên ảnh khi tải → mở Thư viện ảnh của web thay thế
   document.addEventListener("click", e => {
     const b = e.target.closest && e.target.closest('button[class*="AppHeaderButton"]');
-    if (!b || !/phương tiện|media/i.test(b.textContent) || !window.TH_MEDIA) return;
+    if (!b || !/phương tiện|media|tập tin|thư viện ảnh/i.test(b.textContent) || !window.TH_MEDIA) return;
     e.preventDefault(); e.stopPropagation(); TH_MEDIA.open({ mode: "manage" });
   }, true);
 })();
