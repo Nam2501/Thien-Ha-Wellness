@@ -44,13 +44,63 @@
   // Bài viết: mỗi bài 1 trang sửa riêng → chấm điểm riêng bài đang sửa (so trùng với các bài đã đăng)
   let PUBLISHED = [];
   fetch("/data/posts.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {}).then(d => { PUBLISHED = d.items || []; }).catch(() => {});
+  /* ---------- Xem trước bài viết đúng giao diện website (trước khi bấm Công bố) ----------
+     Lấy khung trang (đầu trang, menu, chân trang, CSS) từ 1 trang bài viết đang chạy, thay phần nội dung bằng bài đang soạn. */
+  let FRAME = null;
+  const loadFrame = () => FRAME || (FRAME = fetch("/bai-viet/", { cache: "no-cache" }).then(r => r.text()).then(t => {
+    const head = t.slice(0, t.indexOf('<main id="top">')), foot = t.slice(t.indexOf("</main>") + 7);
+    // Bỏ script của trang (không cần trong bản xem trước) nên tự gắn lớp "scrolled" cho đầu trang như main.js vẫn làm ở trang con
+    return { head: head.replace(/<title>[\s\S]*?<\/title>/, "").replace("<head>", `<head><base href="${location.origin}/">`).replace(/class="header"/, 'class="header scrolled"'), foot: foot.replace(/<script[\s\S]*?<\/script>/g, "") };
+  }).catch(() => ({ head: `<!DOCTYPE html><html lang="vi"><head><base href="${location.origin}/"><link rel="stylesheet" href="/css/style.css"></head><body class="subpage">`, foot: "</body></html>" })));
+  loadFrame();
+  const e2 = s => esc(String(s ?? ""));
+  function articleDoc(p, frame, asset) {
+    const img = p.img ? asset(p.img) : "", src = (p.sources || []).filter(Boolean);
+    const body = Render.postBodyHTML(p).replace(/(<img\b[^>]*\bsrc=")([^"]+)"/g, (m, a, s) => a + asset(s) + '"');
+    const main = `<main id="top">
+      <section class="page-hero"><div class="galaxy" aria-hidden="true"></div><div class="wrap">
+        <nav class="crumb" aria-label="breadcrumb"><a href="/">Trang chủ</a> / <a href="/bai-viet/">Bài viết</a> / <span>${e2(p.title || "(Chưa có tiêu đề)")}</span></nav>
+        <h1>${e2(p.title || "(Chưa có tiêu đề)")}</h1>
+        <div class="meta"><span>${e2(p.author || "Thiên Hà Wellness")}</span>${p.date ? `<span>Đăng ${e2(p.date)}</span>` : ""}${p.updated ? `<span>Cập nhật ${e2(p.updated)}</span>` : ""}${p.category ? `<span>${e2(p.category)}</span>` : ""}</div>
+      </div></section>
+      <section class="section"><div class="wrap"><div class="detail"><article class="prose">
+        ${img ? `<figure><img src="${e2(img)}" alt="${e2(p.title)}" width="1200" height="675"></figure>` : ""}${body || "<p><em>Chưa có nội dung.</em></p>"}
+        ${p.reviewer ? `<p><em>Nội dung được tham vấn bởi ${e2(p.reviewer)}.</em></p>` : ""}
+        ${src.length ? `<h2>Nguồn tham khảo</h2><ol>${src.map(x => `<li>${e2(x)}</li>`).join("")}</ol>` : ""}
+        <div class="disclaimer">Thông tin mang tính tham khảo, không thay thế tư vấn y khoa.</div></article>
+        <aside class="side"><div class="side-card"><h3>Đặt lịch thư giãn</h3><p>Dành một chút thời gian cho cơ thể bạn tại Thiên Hà Wellness.</p><a class="btn btn-navy" href="/#dat-lich">Đặt lịch</a></div></aside>
+      </div></div></section></main>`;
+    return `${frame.head.replace("<head>", `<head><title>Xem trước: ${e2(p.title)}</title>`)}${main}
+      <div style="position:fixed;left:12px;bottom:12px;z-index:999;padding:7px 14px;border-radius:999px;background:#b8913a;color:#fff;font:600 12px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25)">BẢN XEM TRƯỚC · chưa đăng lên website</div>
+      <style>.reveal{opacity:1!important;transform:none!important}</style>${frame.foot}`;
+  }
+
   const PostPreview = createClass({
+    getInitialState() { return { tab: "view", frame: null }; },
+    componentDidMount() { loadFrame().then(frame => this.setState({ frame })); },
+    asset(path) {
+      if (!path || /^(https?:|data:|blob:)/.test(path)) return path || "";
+      try { const a = this.props.getAsset && this.props.getAsset(path); const u = a && a.toString(); if (u && u !== "[object Object]") return u; } catch {}
+      return Render.absPath(path);
+    },
+    openFull(doc) { const w = window.open("", "_blank"); if (w) { w.document.open(); w.document.write(doc); w.document.close(); } },
     render() {
       const it = toJS(this.props.entry.get("data")), self = this.props.entry.get("slug");
       const others = Render.assignSlugs(PUBLISHED.filter(o => o._file !== self));
       const [cur] = Render.assignSlugs([{ ...it, id: it.id || self || "moi" }]);
       const r = analyze("posts", cur, { seo: SETTINGS, ...dupMaps([...others, cur].map(x => analyze("posts", x, { seo: SETTINGS }))) });
-      return box(`<h2>Điểm SEO của bài này ${scoreHTML(r.score)}</h2><p class="sx-lead">Điểm cập nhật ngay khi bạn gõ.</p>${block(r, cur.title, true)}`);
+      const tab = this.state.tab, doc = this.state.frame ? articleDoc(cur, this.state.frame, p => this.asset(p)) : "";
+      const tabBtn = (k, label) => h("button", { type: "button", onClick: () => this.setState({ tab: k }),
+        style: { padding: "7px 14px", border: "1px solid #c7d2db", borderBottom: tab === k ? "2px solid #0d2440" : "1px solid #c7d2db", borderRadius: "6px 6px 0 0", background: tab === k ? "#fff" : "#eef3f6", fontWeight: tab === k ? 700 : 500, color: "#0d2440", cursor: "pointer", font: "inherit" } }, label);
+      return h("div", { style: { fontFamily: "system-ui, sans-serif" } },
+        h("div", { style: { display: "flex", gap: 6, alignItems: "flex-end", padding: "10px 12px 0", borderBottom: "1px solid #c7d2db", background: "#f3f6f8", position: "sticky", top: 0, zIndex: 5 } },
+          tabBtn("view", "👁 Xem trước bài viết"), tabBtn("seo", `Điểm SEO · ${r.score}`),
+          h("span", { style: { flex: 1 } }),
+          tab === "view" && doc ? h("button", { type: "button", onClick: () => this.openFull(doc), style: { marginBottom: 6, marginRight: 64, padding: "6px 12px", border: 0, borderRadius: 6, background: "#0d2440", color: "#fff", cursor: "pointer", font: "inherit", fontWeight: 600 } }, "Mở toàn màn hình ↗") : null),
+        tab === "view"
+          ? (doc ? h("iframe", { title: "Xem trước bài viết", srcDoc: doc, style: { width: "100%", height: "calc(100vh - 120px)", border: 0, display: "block", background: "#fff" } })
+                 : h("p", { style: { padding: 20 } }, "Đang tải giao diện website…"))
+          : box(`<h2>Điểm SEO của bài này ${scoreHTML(r.score)}</h2><p class="sx-lead">Điểm cập nhật ngay khi bạn gõ.</p>${block(r, cur.title, true)}`));
     }
   });
   CMS.registerPreviewTemplate("posts", PostPreview);
