@@ -34,6 +34,18 @@
   .wpe-slug .wpe-preview:hover { background: #135e96; }
   .wpe-slug .wpe-seo { margin: 0; padding: 6px 14px; border: 1px solid; border-radius: 4px; background: #fff; font: 600 13px system-ui, sans-serif; cursor: pointer; }
   .wpe-tip { color: #8c8f94; font-size: 12px; }
+  .wpe { position: relative; }
+  .wpe-visual figure.th-img { margin: 1em 0; } .wpe-visual figure.th-img img { height: auto; }
+  .wpe-visual figure.align-center { text-align: center; } .wpe-visual figure.align-left { float: left; margin: .3em 1.2em 1em 0; max-width: 50%; }
+  .wpe-visual figure.align-right { float: right; margin: .3em 0 1em 1.2em; max-width: 50%; } .wpe-visual figcaption { font-size: 13px; color: #646970; text-align: center; }
+  .wpe-visual img.wpe-sel { outline: 3px solid #2271b1; }
+  .wpe-imgbtn { position: absolute; z-index: 5; padding: 5px 10px; border: 0; border-radius: 4px; background: #1d2327; color: #fff; font: 600 12px system-ui, sans-serif; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.3); }
+  .thi { display: flex; gap: 14px; align-items: flex-start; padding: 10px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; font: 13px/1.5 system-ui, sans-serif; color: #50575e; }
+  .thi img { width: 160px; height: 100px; object-fit: cover; background: #f0f0f1; border: 1px solid #dcdcde; }
+  .thi b { color: #1d2327; } .thi .row { display: flex; gap: 8px; margin-top: 8px; }
+  .thi button { padding: 5px 12px; border: 1px solid #2271b1; border-radius: 4px; background: #fff; color: #2271b1; font: 600 13px system-ui, sans-serif; cursor: pointer; }
+  .thi button.rm { border-color: #b32d2e; color: #b32d2e; }
+  .thi .bad { color: #b32d2e; } .thi .ok { color: #00a32a; }
   /* Trang soạn Bài viết: ẩn khung xem trước bên phải, ô soạn rộng hết màn hình (xem trước bằng nút như WordPress) */
   .th-posts .SplitPane > .Pane2, .th-posts .SplitPane > .Resizer, .th-posts button[class*="EditorToggle"] { display: none !important; }
   .th-posts .SplitPane > .Pane1 { width: 100% !important; max-width: none !important; flex: 1 1 auto !important; }`;
@@ -61,6 +73,13 @@
   // Dùng đúng hàm tạo đường dẫn của website (js/render.js) để địa chỉ hiển thị khớp địa chỉ thật
   const slugify = s => window.Render ? Render.slugify(s) : String(s || "").toLowerCase().replace(/đ/g, "d").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
   const pathOf = p => !p ? "" : /^(https?:)?\//.test(p) ? p : "/" + p;   // ảnh tải lên: images/uploads/x.jpg → /images/uploads/x.jpg
+  // Ảnh mới tải chưa có trên web (web đăng lại sau 1–2 phút) → trong ô soạn hiển thị bằng bản trên GitHub, khi lưu đổi về /images/uploads/
+  const RAWUP = () => (window.TH_MEDIA ? TH_MEDIA.RAW : "") + "images/uploads/";
+  const toEdit = h => window.TH_MEDIA ? String(h).split('src="/images/uploads/').join('src="' + RAWUP()) : h;
+  const toSave = h => {
+    let x = String(h).replace(/ class="wpe-sel"/g, "").replace(/(class="[^"]*?)\s*\bwpe-sel\b/g, "$1");
+    return window.TH_MEDIA ? x.split(RAWUP()).join("/images/uploads/") : x;
+  };
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   // Thanh nút tab "Mã" (giống WordPress): [nhãn, thẻ mở, thẻ đóng]
@@ -76,25 +95,13 @@
     html() { return String(this.props.value || ""); },
     set(v) { this.props.onChange(v); },
     componentDidMount() { this.fill(); },
-    // Decap chỉ vẽ lại ô khi giá trị đổi; khai báo hàm này để Decap báo cả lúc chọn ảnh xong trong thư viện
-    shouldComponentUpdate(next, nextState) {
-      const got = next.mediaPaths && next.mediaPaths.get && next.mediaPaths.get(next.forID);
-      return next.value !== this.props.value || !!got || (nextState && nextState.tab !== this.state.tab) || nextState === undefined;
-    },
+    shouldComponentUpdate(next, nextState) { return next.value !== this.props.value || nextState !== undefined; },
     componentDidUpdate(prev) {
-      // Ảnh vừa chọn trong thư viện → chèn vào bài
-      const id = this.props.forID, mp = this.props.mediaPaths, got = mp && mp.get && mp.get(id);
-      if (got && got !== this._lastMedia) {
-        this._lastMedia = got;
-        const list = Array.isArray(got) ? got : (got.toJS ? got.toJS() : [got]);
-        const tags = list.map(p => `<img src="${esc(pathOf(typeof p === "string" ? p : p.url || p.path))}" alt="" loading="lazy">`).join("\n");
-        this.insertHTML(`<figure>${tags}</figure>`);
-        this.props.onRemoveInsertedMedia && this.props.onRemoveInsertedMedia(id);
-      }
       if (prev.value !== this.props.value && this.vis && document.activeElement !== this.vis) this.fill();
     },
-    fill() { if (this.vis && this.vis.innerHTML !== this.html()) this.vis.innerHTML = this.html(); },
-    switchTab(tab) { if (tab === this.state.tab) return; if (this.state.tab === "visual" && this.vis) this.set(this.vis.innerHTML); this.setState({ tab }, () => this.fill()); },
+    fill() { if (this.vis && toSave(this.vis.innerHTML) !== this.html()) this.vis.innerHTML = toEdit(this.html()); },
+    saveVis() { if (this.vis) this.set(toSave(this.vis.innerHTML)); },
+    switchTab(tab) { if (tab === this.state.tab) return; if (this.state.tab === "visual") this.saveVis(); this.setState({ tab, imgBtn: null }, () => this.fill()); },
     // Chèn HTML vào đúng chỗ con trỏ đang đứng (con trỏ được nhớ lại vì mở thư viện ảnh làm mất vùng chọn)
     insertHTML(h) {
       if (this.state.tab === "code" && this.code) return this.wrap(h, "");
@@ -102,7 +109,7 @@
       const frag = document.createRange().createContextualFragment(h), r = this._range;
       if (r && this.vis.contains(r.startContainer)) { r.deleteContents(); r.insertNode(frag); }
       else this.vis.appendChild(frag);
-      this.set(this.vis.innerHTML);
+      this.saveVis();
     },
     saveRange() {
       const s = window.getSelection();
@@ -116,7 +123,7 @@
     },
     quick([label, open, close]) {
       if (label === "link") { const u = prompt("Địa chỉ liên kết (vd https://… hoặc /bang-gia/):", "https://"); if (u) this.wrap(`<a href="${esc(u)}">`, "</a>"); return; }
-      if (label === "img") { const u = prompt("Đường dẫn ảnh (vd /images/uploads/anh.jpg):", "/images/uploads/"); if (!u) return; const a = prompt("Mô tả ảnh (alt) — nên có từ khóa, mô tả đúng nội dung ảnh:", ""); this.wrap(`<img src="${esc(u)}" alt="${esc(a || "")}" loading="lazy">`, ""); return; }
+      if (label === "img") return this.openMedia();
       this.wrap(open, close);
     },
     exec(cmd) {
@@ -124,15 +131,41 @@
       if (cmd === "h2" || cmd === "h3" || cmd === "p" || cmd === "blockquote") document.execCommand("formatBlock", false, cmd.toUpperCase());
       else if (cmd === "link") { const u = prompt("Địa chỉ liên kết (vd https://… hoặc /bang-gia/):", "https://"); if (u) document.execCommand("createLink", false, u); }
       else document.execCommand(cmd, false, null);
-      this.set(this.vis.innerHTML);
+      this.saveVis();
     },
+    // Nút "Thêm tệp" → Thư viện ảnh (admin/media.js): tải ảnh giữ nguyên tên, nhập alt/title/chú thích, chọn kích thước & căn lề
     openMedia() {
-      this.props.onOpenMediaLibrary({ controlID: this.props.forID, forImage: true, allowMultiple: false, value: "", field: this.props.field });
+      if (!window.TH_MEDIA) return alert("Chưa tải được Thư viện ảnh — bấm Ctrl + F5 rồi thử lại.");
+      if (this.state.tab === "code" && this.code) this._codeSel = [this.code.selectionStart, this.code.selectionEnd];
+      TH_MEDIA.open({ mode: "insert" }).then(o => {
+        if (!o) return;
+        if (this.state.tab === "code" && this.code && this._codeSel) { this.code.selectionStart = this._codeSel[0]; this.code.selectionEnd = this._codeSel[1]; }
+        this.insertHTML(TH_MEDIA.html(o));
+      });
+    },
+    // Bấm vào ảnh trong tab Trực quan → hiện nút "Sửa ảnh" (sửa alt, title, chú thích, kích thước, căn lề)
+    clickVis(e) {
+      const img = e.target.closest && e.target.closest("img");
+      this.vis.querySelectorAll("img.wpe-sel").forEach(i => { if (i !== img) i.classList.remove("wpe-sel"); });
+      if (!img) { if (this.state.imgBtn) this.setState({ imgBtn: null }); return; }
+      img.classList.add("wpe-sel"); this._img = img;
+      const box = this.root.getBoundingClientRect(), r = img.getBoundingClientRect();
+      this.setState({ imgBtn: { top: Math.max(r.top - box.top + 8, 8), left: Math.max(r.left - box.left + 8, 8) } });
+    },
+    editImg() {
+      const img = this._img; if (!img || !window.TH_MEDIA) return;
+      const cur = TH_MEDIA.parse(img);
+      TH_MEDIA.open({ mode: "insert", current: cur }).then(o => {
+        img.classList.remove("wpe-sel"); this.setState({ imgBtn: null });
+        if (o) cur.node.replaceWith(document.createRange().createContextualFragment(toEdit(TH_MEDIA.html(o))));
+        this.saveVis();
+      });
     },
     render() {
       const tab = this.state.tab, words = this.html().replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
       const btn = (label, on) => h("button", { type: "button", key: label, onMouseDown: e => e.preventDefault(), onClick: on }, label);
-      return h("div", { className: "wpe", id: this.props.forID },
+      return h("div", { className: "wpe", id: this.props.forID, ref: el => { this.root = el; } },
+        this.state.imgBtn && tab === "visual" ? h("button", { type: "button", className: "wpe-imgbtn", style: this.state.imgBtn, onMouseDown: e => e.preventDefault(), onClick: () => this.editImg() }, "✎ Sửa ảnh (alt, kích thước…)") : null,
         h("div", { className: "wpe-top" },
           h("button", { type: "button", className: "wpe-media", onClick: this.openMedia }, "🖼 Thêm tệp"),
           h("div", { className: "wpe-tabs" },
@@ -143,8 +176,9 @@
           : h("div", { className: "wpe-bar" }, QUICK.map(q => btn(q[0], () => this.quick(q)))),
         tab === "visual"
           ? h("div", { className: "wpe-visual", contentEditable: true, suppressContentEditableWarning: true, ref: el => { this.vis = el; },
-              onInput: () => { this.saveRange(); this.set(this.vis.innerHTML); }, onKeyUp: () => this.saveRange(), onMouseUp: () => this.saveRange(),
-              onBlur: () => { this.saveRange(); this.set(this.vis.innerHTML); } })
+              onInput: () => { this.saveRange(); this.saveVis(); }, onKeyUp: () => this.saveRange(), onMouseUp: () => this.saveRange(),
+              onClick: e => this.clickVis(e), onScroll: () => { if (this.state.imgBtn) this.setState({ imgBtn: null }); },
+              onBlur: () => { this.saveRange(); this.saveVis(); } })
           : h("textarea", { className: "wpe-code", spellCheck: false, ref: el => { this.code = el; }, value: this.html(), onChange: e => this.set(e.target.value) }),
         h("div", { className: "wpe-foot" }, `Số từ: ${words}`));
     }
@@ -189,4 +223,36 @@
     }
   });
   CMS.registerWidget("slugurl", SlugURL);
+
+  // Ô "Ảnh" / "Ảnh đại diện": chọn từ Thư viện ảnh (tên file giữ nguyên, alt lấy từ thư viện)
+  const THImage = createClass({
+    getInitialState() { return { meta: null }; },
+    componentDidMount() { if (window.TH_MEDIA) TH_MEDIA.load().then(() => this.setState({ meta: TH_MEDIA.meta() })).catch(() => {}); },
+    choose() {
+      if (!window.TH_MEDIA) return alert("Chưa tải được Thư viện ảnh — bấm Ctrl + F5 rồi thử lại.");
+      const v = this.props.value;
+      TH_MEDIA.open({ mode: "select", current: v ? { name: TH_MEDIA.nameOf(v), src: pathOf(v), alt: "", title: "", caption: "" } : null })
+        .then(o => { if (o) { this.props.onChange(o.path); this.setState({ meta: TH_MEDIA.meta() }); } });
+    },
+    render() {
+      const v = this.props.value || "", name = window.TH_MEDIA ? TH_MEDIA.nameOf(v) : "", m = (this.state.meta || {})[name] || {};
+      const src = name && window.TH_MEDIA ? TH_MEDIA.rawOf(name) : pathOf(v);
+      return h("div", { className: "thi", id: this.props.forID },
+        v ? h("img", { src, alt: "" }) : null,
+        h("div", null,
+          v ? h("div", null, h("b", null, "Tệp: "), name || v) : h("div", null, "Chưa có ảnh."),
+          v && name ? h("div", { className: m.alt ? "ok" : "bad" }, m.alt ? `Alt: ${m.alt}` : "Ảnh chưa có alt — bấm Đổi ảnh để thêm alt trong thư viện.") : null,
+          h("div", { className: "row" },
+            h("button", { type: "button", onClick: () => this.choose() }, v ? "Đổi ảnh / sửa alt" : "Chọn ảnh từ thư viện"),
+            v ? h("button", { type: "button", className: "rm", onClick: () => this.props.onChange("") }, "Bỏ ảnh") : null)));
+    }
+  });
+  CMS.registerWidget("thimage", THImage);
+
+  // Nút "Phương tiện" trên đầu trang của Decap tự đổi tên ảnh khi tải → mở Thư viện ảnh của web thay thế
+  document.addEventListener("click", e => {
+    const b = e.target.closest && e.target.closest('button[class*="AppHeaderButton"]');
+    if (!b || !/phương tiện|media/i.test(b.textContent) || !window.TH_MEDIA) return;
+    e.preventDefault(); e.stopPropagation(); TH_MEDIA.open({ mode: "manage" });
+  }, true);
 })();

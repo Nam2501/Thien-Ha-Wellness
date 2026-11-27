@@ -7,7 +7,8 @@
   const money = n => Number(n) ? Number(n).toLocaleString("vi-VN") + "đ" : "Liên hệ";   // giá 0 / trống = Liên hệ
   const slugify = s => String(s ?? "").toLowerCase().replace(/đ/g, "d").normalize("NFD").replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80).replace(/-+$/, "");
-  const absPath = p => !p ? "" : /^(https?:)?\/\//.test(p) || p.startsWith("/") || p.startsWith("data:") ? p : "/" + p;
+  const encPath = p => { try { return encodeURI(decodeURI(p)); } catch { return encodeURI(p); } };   // "Ảnh spa.jpg" → "%E1%BA%A2nh%20spa.jpg"
+  const absPath = p => !p ? "" : /^(https?:)?\/\//.test(p) || p.startsWith("data:") ? p : encPath(p.startsWith("/") ? p : "/" + p);
 
   // Mỗi loại nội dung có đường dẫn riêng
   const SECTIONS = {

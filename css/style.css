@@ -377,6 +377,14 @@ h3 { font-size: 24px; color: var(--navy); }
 .prose a { color: var(--tide); text-decoration: underline; text-underline-offset: 3px; }
 .prose figure { border-radius: var(--radius); overflow: hidden; }
 .prose figure img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.prose figure.th-img { border-radius: 0; overflow: visible; }
+.prose figure.th-img img { width: auto; max-width: 100%; height: auto; aspect-ratio: auto; object-fit: initial; border-radius: var(--radius); display: block; }
+.prose figure.th-img.align-center img { margin-inline: auto; }
+.prose figure.th-img.align-left { float: left; max-width: 50%; margin: 6px 24px 14px 0; }
+.prose figure.th-img.align-right { float: right; max-width: 50%; margin: 6px 0 14px 24px; }
+.prose figure.th-img figcaption { margin-top: 8px; font-size: 14px; color: var(--muted); text-align: center; }
+.prose h2, .prose h3, .prose .disclaimer { clear: both; }
+@media (max-width: 640px) { .prose figure.th-img.align-left, .prose figure.th-img.align-right { float: none; max-width: 100%; margin: 0; } }
 .disclaimer { margin-top: 36px; padding: 16px 20px; border-left: 3px solid var(--mist); background: var(--pearl); border-radius: 0 12px 12px 0; font-size: 14.5px; color: var(--muted); }
 .side { position: sticky; top: 110px; display: grid; gap: 18px; }
 .side-card { background: var(--pearl); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; }

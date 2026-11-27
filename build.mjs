@@ -29,6 +29,10 @@ const read = f => {
 
 /* ---------- Dữ liệu ---------- */
 const SITE = read("site"), SEO = read("seo");
+// Thư viện ảnh (admin/media.js): alt, title, kích thước thật của từng ảnh trong images/uploads
+const MEDIA = read("media").items || {};
+const mediaOf = p => { const m = String(p || "").match(/images\/uploads\/(.+)$/); if (!m) return {}; let n = m[1]; try { n = decodeURI(n); } catch {} return MEDIA[n] || {}; };
+const figImg = (p, alt) => { const m = mediaOf(p); return `<figure><img src="${esc(absPath(p))}" alt="${esc(m.alt || alt)}"${m.title ? ` title="${esc(m.title)}"` : ""} width="${m.w || 1200}" height="${m.h || 675}"></figure>`; };
 const SITE_URL = String(SEO.siteUrl || process.env.URL || "").replace(/\/+$/, "");
 // Bài viết: mỗi bài 1 file data/posts/<tên>.json (mỗi bài 1 trang sửa riêng trong /admin). Gộp lại khi build,
 // sắp ngày đăng mới nhất trước; _file = tên file để Bảng điều khiển SEO mở đúng bài. Chưa có thư mục thì đọc data/posts.json cũ.
@@ -151,7 +155,7 @@ function servicePage(s) {
   const others = [...SERVICES.filter(x => x !== s && x.group === s.group), ...SERVICES.filter(x => x.group !== s.group)].slice(0, 5);
   return page({ meta: m, schemas,
     hero: `${crumbHTML(list)}${s.tag ? `<p class="eyebrow light">${esc(s.tag)}</p>` : ""}<h1>${esc(s.name)}</h1><p class="lead">${esc(s.desc)}</p>`,
-    body: `<div class="detail"><article class="prose">${s.img ? `<figure><img src="${esc(absPath(s.img))}" alt="${esc(s.name)}" width="1200" height="675"></figure>` : ""}${bodyHTML(s.content || s.desc)}
+    body: `<div class="detail"><article class="prose">${s.img ? figImg(s.img, s.name) : ""}${bodyHTML(s.content || s.desc)}
       <div class="disclaimer">Liệu trình mang tính thư giãn, chăm sóc cơ thể; không thay thế chẩn đoán hay điều trị y khoa. Vui lòng báo trước nếu bạn đang mang thai hoặc có bệnh lý.</div></article>
       <aside class="side"><div class="side-card"><h3>Bảng giá</h3><table class="price-table">${ps.map(p => `<tr><td>${R.durText(p.min)}</td><td>${money(p.price)}</td></tr>`).join("")}</table>
         <a class="btn btn-navy" href="/?dv=${encodeURIComponent(s.id + "|" + (ps[0]?.min || ""))}#dat-lich">Đặt lịch liệu trình này</a><a class="btn btn-line" href="${esc(LINKS.tel)}">Gọi ${esc(SITE.phone)}</a></div>
@@ -186,7 +190,7 @@ function postPage(p) {
   const src = (p.sources || []).filter(Boolean);
   return page({ meta: m, schemas,
     hero: `${crumbHTML(list)}<h1>${esc(p.title)}</h1><div class="meta"><span>${esc(p.author || SITE.name)}</span>${p.date ? `<span>Đăng ${esc(p.date)}</span>` : ""}${p.updated ? `<span>Cập nhật ${esc(p.updated)}</span>` : ""}</div>`,
-    body: `<div class="detail"><article class="prose">${p.img ? `<figure><img src="${esc(absPath(p.img))}" alt="${esc(p.title)}" width="1200" height="675"></figure>` : ""}${R.postBodyHTML(p)}
+    body: `<div class="detail"><article class="prose">${p.img ? figImg(p.img, p.title) : ""}${R.postBodyHTML(p)}
       ${p.reviewer ? `<p><em>Nội dung được tham vấn bởi ${esc(p.reviewer)}.</em></p>` : ""}
       ${src.length ? `<h2>Nguồn tham khảo</h2><ol>${src.map(x => `<li>${/^https?:/.test(x) ? `<a href="${esc(x)}" rel="nofollow noopener" target="_blank">${esc(x)}</a>` : esc(x)}</li>`).join("")}</ol>` : ""}
       <div class="disclaimer">Thông tin mang tính tham khảo, không thay thế tư vấn y khoa.</div></article>

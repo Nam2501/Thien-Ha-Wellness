@@ -78,6 +78,8 @@
   /* Nút "Xem trước" / "Điểm SEO" kiểu WordPress (admin/editor.js gọi): mở tab mới, không chiếm chỗ màn hình soạn */
   const toAsset = getAsset => path => {
     if (!path || /^(https?:|data:|blob:)/.test(path)) return path || "";
+    const up = String(path).match(/^\/?(images\/uploads\/.+)$/);
+    if (up && window.TH_MEDIA) { let x = up[1]; try { x = decodeURI(x); } catch {} return TH_MEDIA.RAW + encodeURI(x); }
     try { const a = getAsset && getAsset(path); const u = a && a.toString(); if (u && u !== "[object Object]") return u; } catch {}
     return Render.absPath(path);
   };

@@ -103,7 +103,7 @@ collections:
         fields:
           - { name: siteUrl, label: "Tên miền chính", widget: string, required: false, hint: "vd https://thienhawellness.vn — không có dấu / ở cuối." }
           - { name: titleTemplate, label: "Mẫu tiêu đề", widget: string, hint: "%s là tiêu đề từng trang." }
-          - { name: defaultImage, label: "Ảnh chia sẻ mặc định (1200×630, JPG/PNG)", widget: image, required: false }
+          - { name: defaultImage, label: "Ảnh chia sẻ mặc định (1200×630, JPG/PNG)", widget: thimage, required: false }
           - { name: gscVerification, label: "Mã xác minh Google Search Console", widget: string, required: false }
           - { name: ga4Id, label: "Mã Google Analytics 4 (G-…)", widget: string, required: false }
           - { name: noindexAll, label: "Chặn Google lập chỉ mục TOÀN website", widget: boolean, default: false, hint: "Chỉ bật khi đang thử nghiệm." }
@@ -125,7 +125,7 @@ collections:
                   { name: title, label: "Tiêu đề", widget: string },
                   { name: description, label: "Mô tả", widget: text },
                   { name: keyword, label: "Từ khóa chính", widget: string, required: false },
-                  { name: image, label: "Ảnh chia sẻ", widget: image, required: false } ] }
+                  { name: image, label: "Ảnh chia sẻ", widget: thimage, required: false } ] }
               - { name: pricing, label: "Trang bảng giá (/bang-gia/)", widget: object, collapsed: true, fields: *pagefields }
               - { name: blog, label: "Trang danh sách bài viết", widget: object, collapsed: true, fields: *pagefields }
 
@@ -150,7 +150,7 @@ collections:
               - &slug { name: slug, label: "Đường dẫn (URL)", widget: string, required: false, hint: "Để trống = tự tạo từ tên. Đã đăng thì không nên đổi." }
               - { name: tag, label: "Nhãn (vd Phổ biến)", widget: string, required: false }
               - { name: icon, label: "Biểu tượng (khi chưa có ảnh)", widget: select, options: [ { label: "Cổ vai", value: neck }, { label: "Lưng", value: back }, { label: "Đầu", value: head }, { label: "Giọt nước", value: drop }, { label: "Khuôn mặt", value: face }, { label: "Ngôi sao", value: star } ], default: drop }
-              - { name: img, label: "Ảnh", widget: image, required: false }
+              - { name: img, label: "Ảnh", widget: thimage, required: false }
               - { name: desc, label: "Mô tả ngắn (hiện trên thẻ)", widget: text }
               - { name: content, label: "Nội dung trang chi tiết", widget: text, hint: "Cách 1 dòng trống giữa các đoạn. Tiêu đề phụ: '## '. Danh sách: mỗi dòng '- '." }
               - name: prices
@@ -178,7 +178,7 @@ collections:
                   - { name: keyword, label: "Từ khóa chính", widget: string, required: false, hint: "vd massage cổ vai gáy quận 1 — mỗi trang một từ khóa." }
                   - { name: title, label: "Tiêu đề SEO", widget: string, required: false, hint: "Để trống = dùng tên. Nên 30–60 ký tự." }
                   - { name: description, label: "Mô tả SEO", widget: text, required: false, hint: "110–160 ký tự, có từ khóa và lời mời đặt lịch." }
-                  - { name: image, label: "Ảnh chia sẻ", widget: image, required: false }
+                  - { name: image, label: "Ảnh chia sẻ", widget: thimage, required: false }
                   - { name: noindex, label: "Ẩn trang khỏi Google", widget: boolean, default: false, required: false }
 
       - name: faq
@@ -206,7 +206,7 @@ collections:
             summary: "{{fields.caption}}"
             fields:
               - { name: caption, label: "Chú thích", widget: string }
-              - { name: img, label: "Ảnh", widget: image, required: false }
+              - { name: img, label: "Ảnh", widget: thimage, required: false }
 
   # ---------------- BÀI VIẾT (mỗi bài 1 file, có trang sửa riêng) ----------------
   - name: posts
@@ -242,13 +242,13 @@ collections:
       - { name: excerpt, label: "Mô tả ngắn", widget: text }
       - { name: date, label: "Ngày đăng (dd/mm/yyyy)", widget: string }
       - { name: updated, label: "Ngày cập nhật (dd/mm/yyyy)", widget: string, required: false }
-      - { name: img, label: "Ảnh đại diện", widget: image, required: false }
+      - { name: img, label: "Ảnh đại diện", widget: thimage, required: false }
       - { name: mode, widget: hidden, default: html }
       - name: html
         label: "Nội dung"
         widget: wpeditor
         required: false
-        hint: "Tab Trực quan: soạn như Word. Tab Mã: sửa HTML trực tiếp. Nút Thêm tệp: chèn ảnh từ thư viện. Mã <script> sẽ bị bỏ khi đăng để an toàn."
+        hint: "Tab Trực quan: soạn như Word. Tab Mã: sửa HTML trực tiếp. Nút Thêm tệp: mở Thư viện ảnh (tải ảnh giữ nguyên tên, nhập alt/title/chú thích, chọn kích thước). Bấm vào ảnh trong bài để sửa lại. Mã <script> sẽ bị bỏ khi đăng để an toàn."
       - { name: content, widget: hidden, required: false }
       - { name: author, label: "Tác giả", widget: string, required: false }
       - { name: reviewer, label: "Người tham vấn chuyên môn (nếu có, người thật)", widget: string, required: false }

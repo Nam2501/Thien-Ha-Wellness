@@ -61,6 +61,10 @@
       add("words", "Độ dài nội dung", wc >= good ? "good" : wc >= min ? "warn" : "bad", `${wc} chữ — nên từ ${good} chữ trở lên.`);
       add("img", "Ảnh đại diện", m.image ? "good" : "warn", m.image ? "Có ảnh." : "Chưa có ảnh — nên dùng ảnh thật chụp tại spa.", 5);
       const hasH2 = /(^|\n)## /.test(type === "posts" ? R.postText(it) : it.content || "");
+      if (type === "posts" && it.mode === "html") {
+        const imgs = String(it.html || "").match(/<img\b[^>]*>/gi) || [], noAlt = imgs.filter(t => !/\balt\s*=\s*"[^"]*\S[^"]*"/i.test(t)).length;
+        if (imgs.length) add("img-alt", "Alt của ảnh trong bài", noAlt ? "warn" : "good", noAlt ? `${noAlt}/${imgs.length} ảnh chưa có alt — bấm vào ảnh trong ô soạn → Sửa ảnh.` : `${imgs.length} ảnh đều có alt.`, 5);
+      }
       add("h2", "Tiêu đề phụ (##)", hasH2 ? "good" : "warn", hasH2 ? "Nội dung có chia mục." : "Nên chia nội dung bằng tiêu đề phụ (dòng bắt đầu bằng ## ).", 5);
     }
     if (type === "services") {
