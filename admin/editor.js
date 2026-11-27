@@ -38,15 +38,20 @@
   .th-posts .SplitPane > .Pane2, .th-posts .SplitPane > .Resizer, .th-posts button[class*="EditorToggle"] { display: none !important; }
   .th-posts .SplitPane > .Pane1 { width: 100% !important; max-width: none !important; flex: 1 1 auto !important; }`;
   document.head.appendChild(style);
-  // Nút "Xem trước" cố định trên thanh trên cùng (cạnh nút Công bố), như WordPress
+  // Nút "Xem trước" trên thanh trên cùng, xếp NGAY SAU các nút Công bố / Xoá (nằm trong hàng nút của Decap → không đè lên nút nào)
   const topBtn = document.createElement("button");
   topBtn.type = "button"; topBtn.textContent = "👁 Xem trước";
-  topBtn.style.cssText = "position:fixed;top:15px;left:440px;z-index:300;display:none;padding:8px 16px;border:1px solid #2271b1;border-radius:5px;background:#fff;color:#2271b1;font:600 14px system-ui,sans-serif;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)";
+  topBtn.style.cssText = "flex:0 0 auto;align-self:center;margin-left:10px;padding:8px 14px;border:1px solid #2271b1;border-radius:5px;background:#fff;color:#2271b1;font:600 14px system-ui,sans-serif;white-space:nowrap;cursor:pointer";
   topBtn.onclick = () => { const L = window.__TH_LATEST; if (L && L.data && window.TH_PREVIEW) TH_PREVIEW.article(L.data, L.getAsset, L.file); };
-  document.addEventListener("DOMContentLoaded", () => document.body.appendChild(topBtn));
-  if (document.body) document.body.appendChild(topBtn);
-  const markPosts = () => { const on = /^#\/collections\/posts\/(new|entries\/)/.test(location.hash); document.documentElement.classList.toggle("th-posts", on); topBtn.style.display = on ? "block" : "none"; };
+  const isPosts = () => /^#\/collections\/posts\/(new|entries\/)/.test(location.hash);
+  const placeTop = () => {
+    if (!isPosts()) { topBtn.remove(); return; }
+    const sec = document.querySelector('[class*="ToolbarSubSectionFirst"]');
+    if (sec && topBtn.parentNode !== sec) sec.appendChild(topBtn);   // chưa thấy thanh nút thì thôi — vẫn còn nút Xem trước dưới tiêu đề
+  };
+  const markPosts = () => { document.documentElement.classList.toggle("th-posts", isPosts()); placeTop(); };
   addEventListener("hashchange", markPosts); markPosts();
+  new MutationObserver(placeTop).observe(document.documentElement, { childList: true, subtree: true });
 
   // Dùng đúng hàm tạo đường dẫn của website (js/render.js) để địa chỉ hiển thị khớp địa chỉ thật
   const slugify = s => window.Render ? Render.slugify(s) : String(s || "").toLowerCase().replace(/đ/g, "d").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
