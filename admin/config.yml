@@ -230,44 +230,26 @@ collections:
       - { label: "Tin tức Thiên Hà", field: category, pattern: "Tin tức" }
     editor: { preview: true }
     fields:
-      - { name: id, label: "Mã bài (không bắt buộc)", widget: string, required: false, hint: "Để trống = tự dùng tên file của bài." }
+      - { name: id, label: "Mã bài", widget: string, required: false, hint: "Để trống = tự dùng tên file của bài." }
       - { name: title, label: "Tiêu đề", widget: string }
+      - { name: slug, label: "Đường dẫn", widget: slugurl, prefix: "/bai-viet/", required: false, hint: "Để trống = tự tạo từ tiêu đề. Bài đã đăng thì không nên đổi (link cũ sẽ hỏng)." }
       - name: category
         label: "Chuyên mục"
         widget: select
         required: false
         default: "Chăm sóc cơ thể"
         options: ["Chăm sóc cơ thể", "Massage & trị liệu", "Gội đầu dưỡng sinh", "Thư giãn & giấc ngủ", "Tin tức Thiên Hà"]
-      - *slug
       - { name: excerpt, label: "Mô tả ngắn", widget: text }
       - { name: date, label: "Ngày đăng (dd/mm/yyyy)", widget: string }
       - { name: updated, label: "Ngày cập nhật (dd/mm/yyyy)", widget: string, required: false }
       - { name: img, label: "Ảnh đại diện", widget: image, required: false }
-      - name: mode
-        label: "Cách soạn nội dung"
-        widget: select
-        default: editor
-        required: false
-        options:
-          - { label: "Trình soạn thảo (in đậm, tiêu đề, danh sách, link, ảnh…)", value: editor }
-          - { label: "HTML (dán mã HTML)", value: html }
-        hint: "Chọn HTML thì website hiển thị ô 'Nội dung HTML'; chọn Trình soạn thảo thì hiển thị ô 'Nội dung'. Ô còn lại được giữ nguyên, có thể đổi qua lại."
-      - name: content
-        label: "Nội dung (Trình soạn thảo)"
-        widget: markdown
-        required: false
-        modes: [rich_text, raw]
-        buttons: [bold, italic, link, heading-two, heading-three, quote, bulleted-list, numbered-list]
-        editor_components: [image]
-        hint: "Nút 'Markdown' ở góc phải ô soạn thảo để xem/sửa dạng văn bản thô. Tiêu đề phụ dùng H2, H3."
+      - { name: mode, widget: hidden, default: html }
       - name: html
-        label: "Nội dung HTML"
-        widget: code
-        default_language: html
-        allow_language_selection: false
-        output_code_only: true
+        label: "Nội dung"
+        widget: wpeditor
         required: false
-        hint: "Chỉ dùng khi 'Cách soạn nội dung' = HTML. Dán phần thân bài (thẻ <h2>, <p>, <ul>, <img>…), không cần <html>, <head>, <body>. Mã <script> sẽ bị bỏ để an toàn."
+        hint: "Tab Trực quan: soạn như Word. Tab Mã: sửa HTML trực tiếp. Nút Thêm tệp: chèn ảnh từ thư viện. Mã <script> sẽ bị bỏ khi đăng để an toàn."
+      - { name: content, widget: hidden, required: false }
       - { name: author, label: "Tác giả", widget: string, required: false }
       - { name: reviewer, label: "Người tham vấn chuyên môn (nếu có, người thật)", widget: string, required: false }
       - { name: sources, label: "Nguồn tham khảo", label_singular: "nguồn", widget: list, required: false, field: { name: source, label: "Nguồn", widget: string } }
