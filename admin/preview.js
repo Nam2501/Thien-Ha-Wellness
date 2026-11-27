@@ -41,6 +41,18 @@
 
   CMS.registerPreviewStyle("/admin/seo-admin.css");
   CMS.registerPreviewTemplate("services", listPreview("services"));
-  CMS.registerPreviewTemplate("posts", listPreview("posts"));
+  // Bài viết: mỗi bài 1 trang sửa riêng → chấm điểm riêng bài đang sửa (so trùng với các bài đã đăng)
+  let PUBLISHED = [];
+  fetch("/data/posts.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {}).then(d => { PUBLISHED = d.items || []; }).catch(() => {});
+  const PostPreview = createClass({
+    render() {
+      const it = toJS(this.props.entry.get("data")), self = this.props.entry.get("slug");
+      const others = Render.assignSlugs(PUBLISHED.filter(o => o._file !== self));
+      const [cur] = Render.assignSlugs([{ ...it, id: it.id || self || "moi" }]);
+      const r = analyze("posts", cur, { seo: SETTINGS, ...dupMaps([...others, cur].map(x => analyze("posts", x, { seo: SETTINGS }))) });
+      return box(`<h2>Điểm SEO của bài này ${scoreHTML(r.score)}</h2><p class="sx-lead">Điểm cập nhật ngay khi bạn gõ.</p>${block(r, cur.title, true)}`);
+    }
+  });
+  CMS.registerPreviewTemplate("posts", PostPreview);
   CMS.registerPreviewTemplate("seo", SettingsPreview);
 })();

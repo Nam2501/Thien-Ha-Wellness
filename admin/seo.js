@@ -7,7 +7,9 @@
   const results = analyzeSite({ seo, services: services.items || [], posts: posts.items || [] });
 
   const TYPE = { page: "Trang chính", services: "Liệu trình", posts: "Bài viết" };
-  const EDIT = { page: "seo/entries/seo", services: "content/entries/services", posts: "content/entries/posts" };
+  const EDIT = { page: "seo/entries/seo", services: "content/entries/services", posts: "posts" };
+  // Bài viết: mỗi bài 1 trang sửa riêng (posts/entries/<tên file>)
+  const editPath = r => r.type === "posts" && r.item._file ? `posts/entries/${encodeURIComponent(r.item._file)}` : EDIT[r.type];
   const nameOf = r => r.item.label || r.item.name || r.item.title;
 
   /* ---------- Tổng quan ---------- */
@@ -84,7 +86,7 @@
     const tr = e.target.closest("tr[data-i]"); if (!tr) return;
     const r = results[tr.dataset.i];
     $("#d-score").innerHTML = scoreHTML(r.score); $("#d-title").textContent = nameOf(r);
-    $("#d-body").innerHTML = `<div class="sx-actions"><a class="sx-btn gold" href="/admin/#/collections/${EDIT[r.type]}">Sửa trong trang quản trị</a><a class="sx-btn line" href="${esc(r.meta.path)}" target="_blank">Xem trang</a></div>
+    $("#d-body").innerHTML = `<div class="sx-actions"><a class="sx-btn gold" href="/admin/#/collections/${editPath(r)}">Sửa trong trang quản trị</a><a class="sx-btn line" href="${esc(r.meta.path)}" target="_blank">Xem trang</a></div>
       <div><b style="color:var(--sx-green)">Xem trước trên Google</b>${snippetHTML(r.meta)}</div>
       <div><b style="color:var(--sx-green)">Kiểm tra (${r.checks.filter(c => c.status === "good").length}/${r.checks.length} đạt)</b>${checksHTML(r)}</div>
       ${r.type !== "page" ? `<p class="sx-note">Trong trang quản trị: mở “${TYPE[r.type]}”, tìm “${esc(nameOf(r))}”, bấm mở nhóm <b>SEO</b>.</p>` : ""}`;

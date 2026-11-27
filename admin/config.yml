@@ -181,53 +181,6 @@ collections:
                   - { name: image, label: "Ảnh chia sẻ", widget: image, required: false }
                   - { name: noindex, label: "Ẩn trang khỏi Google", widget: boolean, default: false, required: false }
 
-      - name: posts
-        label: "Bài viết"
-        file: data/posts.json
-        fields:
-          - name: items
-            label: "Danh sách bài viết"
-            label_singular: "bài viết"
-            widget: list
-            summary: "{{fields.title}} — {{fields.date}}"
-            fields:
-              - { name: id, label: "Mã (không trùng, vd p2)", widget: string }
-              - { name: title, label: "Tiêu đề", widget: string }
-              - *slug
-              - { name: excerpt, label: "Mô tả ngắn", widget: text }
-              - { name: date, label: "Ngày đăng (dd/mm/yyyy)", widget: string }
-              - { name: updated, label: "Ngày cập nhật (dd/mm/yyyy)", widget: string, required: false }
-              - { name: img, label: "Ảnh đại diện", widget: image, required: false }
-              - name: mode
-                label: "Cách soạn nội dung"
-                widget: select
-                default: editor
-                required: false
-                options:
-                  - { label: "Trình soạn thảo (in đậm, tiêu đề, danh sách, link, ảnh…)", value: editor }
-                  - { label: "HTML (dán mã HTML)", value: html }
-                hint: "Chọn HTML thì website hiển thị ô 'Nội dung HTML'; chọn Trình soạn thảo thì hiển thị ô 'Nội dung'. Ô còn lại được giữ nguyên, có thể đổi qua lại."
-              - name: content
-                label: "Nội dung (Trình soạn thảo)"
-                widget: markdown
-                required: false
-                modes: [rich_text, raw]
-                buttons: [bold, italic, link, heading-two, heading-three, quote, bulleted-list, numbered-list]
-                editor_components: [image]
-                hint: "Nút 'Markdown' ở góc phải ô soạn thảo để xem/sửa dạng văn bản thô. Tiêu đề phụ dùng H2, H3."
-              - name: html
-                label: "Nội dung HTML"
-                widget: code
-                default_language: html
-                allow_language_selection: false
-                output_code_only: true
-                required: false
-                hint: "Chỉ dùng khi 'Cách soạn nội dung' = HTML. Dán phần thân bài (thẻ <h2>, <p>, <ul>, <img>…), không cần <html>, <head>, <body>. Mã <script> sẽ bị bỏ để an toàn."
-              - { name: author, label: "Tác giả", widget: string, required: false }
-              - { name: reviewer, label: "Người tham vấn chuyên môn (nếu có, người thật)", widget: string, required: false }
-              - { name: sources, label: "Nguồn tham khảo", label_singular: "nguồn", widget: list, required: false, field: { name: source, label: "Nguồn", widget: string } }
-              - *seo
-
       - name: faq
         label: "Hỏi đáp"
         file: data/faq.json
@@ -254,3 +207,68 @@ collections:
             fields:
               - { name: caption, label: "Chú thích", widget: string }
               - { name: img, label: "Ảnh", widget: image, required: false }
+
+  # ---------------- BÀI VIẾT (mỗi bài 1 file, có trang sửa riêng) ----------------
+  - name: posts
+    label: "Bài viết"
+    label_singular: "bài viết"
+    description: "Bấm vào một bài để mở trang sửa riêng của bài đó. Bấm nút “+ bài viết” để viết bài mới."
+    folder: data/posts
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: title
+    slug: "{{slug}}"
+    summary: "{{fields.title}} · {{fields.category}} · {{fields.date}}"
+    sortable_fields: ["title", "category", "date"]
+    view_filters:
+      - { label: "Chăm sóc cơ thể", field: category, pattern: "Chăm sóc cơ thể" }
+      - { label: "Massage & trị liệu", field: category, pattern: "Massage" }
+      - { label: "Gội đầu dưỡng sinh", field: category, pattern: "Gội đầu" }
+      - { label: "Thư giãn & giấc ngủ", field: category, pattern: "Thư giãn" }
+      - { label: "Tin tức Thiên Hà", field: category, pattern: "Tin tức" }
+    editor: { preview: true }
+    fields:
+      - { name: id, label: "Mã bài (không bắt buộc)", widget: string, required: false, hint: "Để trống = tự dùng tên file của bài." }
+      - { name: title, label: "Tiêu đề", widget: string }
+      - name: category
+        label: "Chuyên mục"
+        widget: select
+        required: false
+        default: "Chăm sóc cơ thể"
+        options: ["Chăm sóc cơ thể", "Massage & trị liệu", "Gội đầu dưỡng sinh", "Thư giãn & giấc ngủ", "Tin tức Thiên Hà"]
+      - *slug
+      - { name: excerpt, label: "Mô tả ngắn", widget: text }
+      - { name: date, label: "Ngày đăng (dd/mm/yyyy)", widget: string }
+      - { name: updated, label: "Ngày cập nhật (dd/mm/yyyy)", widget: string, required: false }
+      - { name: img, label: "Ảnh đại diện", widget: image, required: false }
+      - name: mode
+        label: "Cách soạn nội dung"
+        widget: select
+        default: editor
+        required: false
+        options:
+          - { label: "Trình soạn thảo (in đậm, tiêu đề, danh sách, link, ảnh…)", value: editor }
+          - { label: "HTML (dán mã HTML)", value: html }
+        hint: "Chọn HTML thì website hiển thị ô 'Nội dung HTML'; chọn Trình soạn thảo thì hiển thị ô 'Nội dung'. Ô còn lại được giữ nguyên, có thể đổi qua lại."
+      - name: content
+        label: "Nội dung (Trình soạn thảo)"
+        widget: markdown
+        required: false
+        modes: [rich_text, raw]
+        buttons: [bold, italic, link, heading-two, heading-three, quote, bulleted-list, numbered-list]
+        editor_components: [image]
+        hint: "Nút 'Markdown' ở góc phải ô soạn thảo để xem/sửa dạng văn bản thô. Tiêu đề phụ dùng H2, H3."
+      - name: html
+        label: "Nội dung HTML"
+        widget: code
+        default_language: html
+        allow_language_selection: false
+        output_code_only: true
+        required: false
+        hint: "Chỉ dùng khi 'Cách soạn nội dung' = HTML. Dán phần thân bài (thẻ <h2>, <p>, <ul>, <img>…), không cần <html>, <head>, <body>. Mã <script> sẽ bị bỏ để an toàn."
+      - { name: author, label: "Tác giả", widget: string, required: false }
+      - { name: reviewer, label: "Người tham vấn chuyên môn (nếu có, người thật)", widget: string, required: false }
+      - { name: sources, label: "Nguồn tham khảo", label_singular: "nguồn", widget: list, required: false, field: { name: source, label: "Nguồn", widget: string } }
+      - *seo

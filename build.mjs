@@ -30,7 +30,18 @@ const read = f => {
 /* ---------- Dữ liệu ---------- */
 const SITE = read("site"), SEO = read("seo");
 const SITE_URL = String(SEO.siteUrl || process.env.URL || "").replace(/\/+$/, "");
-const SERVICES = assignSlugs(read("services").items), POSTS = assignSlugs(read("posts").items);
+// Bài viết: mỗi bài 1 file data/posts/<tên>.json (mỗi bài 1 trang sửa riêng trong /admin). Gộp lại khi build,
+// sắp ngày đăng mới nhất trước; _file = tên file để Bảng điều khiển SEO mở đúng bài. Chưa có thư mục thì đọc data/posts.json cũ.
+const dateKey = d => { const m = String(d || "").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? +`${m[3]}${m[2].padStart(2, "0")}${m[1].padStart(2, "0")}` : 0; };
+function readPosts() {
+  const dir = path.join(ROOT, "data", "posts");
+  if (!fs.existsSync(dir)) return read("posts").items || [];
+  return fs.readdirSync(dir).filter(f => f.endsWith(".json")).map(f => {
+    try { const o = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8").replace(/^﻿/, "")); return { ...o, id: o.id || f.slice(0, -5), _file: f.slice(0, -5) }; }
+    catch (e) { throw new Error(`Bài viết data/posts/${f} bị lỗi định dạng: ${e.message}`); }
+  }).sort((a, b) => dateKey(b.date) - dateKey(a.date) || String(a.title || "").localeCompare(String(b.title || ""), "vi"));
+}
+const SERVICES = assignSlugs(read("services").items), POSTS = assignSlugs(readPosts());
 const FAQ = read("faq").items || [], GALLERY = read("gallery").items || [];
 const ctx = { ...SEO, siteUrl: SITE_URL };
 const full = p => SITE_URL + p;
@@ -194,6 +205,8 @@ const write = (rel, s) => { const p = path.join(DIST, rel); fs.mkdirSync(path.di
 if (!DIST.startsWith(ROOT)) throw new Error("Sai thư mục dist");
 fs.rmSync(DIST, { recursive: true, force: true });
 for (const d of COPY) if (fs.existsSync(path.join(ROOT, d))) fs.cpSync(path.join(ROOT, d), path.join(DIST, d), { recursive: true });
+// File gộp các bài viết cho giao diện (main.js) và Bảng điều khiển SEO
+fs.writeFileSync(path.join(DIST, "data", "posts.json"), JSON.stringify({ items: POSTS }, null, 2));
 // Cloudflare Pages: header (noindex /admin) và chuyển hướng 301 phải nằm trong dist
 for (const f of ["_headers", "_redirects"]) if (fs.existsSync(path.join(ROOT, f))) fs.copyFileSync(path.join(ROOT, f), path.join(DIST, f));
 

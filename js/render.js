@@ -161,7 +161,7 @@
   const galleryHTML = items => (items || []).slice(0, 5).map((g, i) =>
     `<figure class="art ${GALLERY_ART[i]}">${g.img ? `<img src="${esc(absPath(g.img))}" alt="${esc(g.caption)}" loading="lazy">` : ""}<figcaption>${esc(g.caption)}</figcaption></figure>`).join("");
   const postCard = (p, i = 0) => `<article class="post"><a class="post-art art ${ARTS[(i + 1) % ARTS.length]}" href="${urlFor("posts", p)}">${p.img ? `<img src="${esc(absPath(p.img))}" alt="${esc(p.title)}" loading="lazy">` : ""}</a>
-    <div class="post-body"><span class="post-date">${esc(p.date)}</span><h3><a href="${urlFor("posts", p)}">${esc(p.title)}</a></h3><p>${esc(p.excerpt)}</p>
+    <div class="post-body"><span class="post-date">${esc(p.date)}${p.category ? ` · ${esc(p.category)}` : ""}</span><h3><a href="${urlFor("posts", p)}">${esc(p.title)}</a></h3><p>${esc(p.excerpt)}</p>
     <a class="link-more" href="${urlFor("posts", p)}">Đọc tiếp →</a></div></article>`;
 
   /* ---------- Nút liên hệ nổi (Zalo, gọi, mạng xã hội) — bật/tắt trong admin → site.socials ---------- */
