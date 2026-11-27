@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Bài viết · Quản trị Thiên Hà Wellness</title>
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <style>
+    :root { --navy: #0d2440; --tide: #2c7aa0; --ink: #1d2a36; --muted: #6b7783; --line: #e6e1e1; --bg: #f5f2f2; --row: #fbf8f6; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: #fff; border-bottom: 1px solid var(--line); }
+    header h1 { margin: 0; font-size: 18px; } header a { color: var(--muted); text-decoration: none; font-size: 13px; } header a:hover { color: var(--tide); }
+    main { max-width: 1400px; margin: 0 auto; padding: 22px 20px 60px; }
+    .top { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .top h2 { margin: 0; font-size: 17px; }
+    .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .tools input, .tools select { font: inherit; padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+    .btn-add { display: inline-block; padding: 8px 14px; border-radius: 8px; background: var(--navy); color: #fff; font-weight: 600; font-size: 13px; text-decoration: none; box-shadow: 0 2px 6px rgba(13,36,64,.25); }
+    .btn-add:hover { background: #174b6d; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); padding: 10px 8px; border-bottom: 1px solid var(--line); }
+    td { padding: 11px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+    tbody tr:hover { background: var(--row); }
+    td.t a { color: var(--ink); font-weight: 600; text-decoration: none; } td.t a:hover { color: var(--tide); }
+    td.c, td.d { color: #4a5560; } td.v { color: #4a5560; font-variant-numeric: tabular-nums; }
+    .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .pill.ok { background: #e6f4ea; color: #2f7d4f; } .pill.hide { background: #f1f1f1; color: #6b6b6b; } .pill.soon { background: #fff4d6; color: #8a6400; }
+    .act { white-space: nowrap; text-align: right; }
+    .act a, .act button { font: 600 12px system-ui, sans-serif; padding: 4px 9px; border-radius: 6px; cursor: pointer; text-decoration: none; margin-left: 4px; }
+    .act a { color: var(--tide); border: 1px solid var(--line); background: #fff; }
+    .act button { color: #fff; background: #c8414b; border: 0; } .act button:disabled { opacity: .5; cursor: wait; }
+    .note { padding: 26px; text-align: center; color: var(--muted); background: #fff; border-radius: 10px; }
+    .warn { margin-bottom: 12px; padding: 10px 14px; border-radius: 8px; background: #fff4d6; color: #6b4e00; font-size: 13px; }
+    .warn a { color: inherit; font-weight: 600; }
+    @media (max-width: 820px) {
+      thead { display: none; } table, tbody, tr, td { display: block; width: 100%; }
+      tr { background: #fff; border-radius: 10px; margin-bottom: 10px; padding: 6px 4px; } td { border: 0; padding: 4px 10px; }
+      td[data-l]::before { content: attr(data-l) ": "; color: var(--muted); font-size: 12px; } .act { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>Bài viết</h1><a href="/admin/">Quản trị</a></header>
+  <main>
+    <div id="warn"></div>
+    <div class="top">
+      <h2 id="count">Bài viết</h2>
+      <div class="tools">
+        <input id="q" placeholder="Tìm tiêu đề…" aria-label="Tìm bài viết">
+        <select id="cat" aria-label="Lọc chuyên mục"><option value="">Tất cả chuyên mục</option></select>
+        <a class="btn-add" href="/admin/#/collections/posts/new">+ Thêm bài viết</a>
+      </div>
+    </div>
+    <div id="list"><div class="note">Đang tải…</div></div>
+  </main>
+<script>
+(async () => {
+  const REPO = "Nam2501/Thien-Ha-Wellness", BRANCH = "main", DIR = "data/posts";
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const slugify = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  const dateKey = d => { const m = String(d || "").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? +`${m[3]}${m[2].padStart(2, "0")}${m[1].padStart(2, "0")}` : 0; };
+  const today = +new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10).replace(/-/g, "");
+
+  // Token đăng nhập GitHub mà trang quản trị (Decap) đã lưu → đọc bài mới nhất từ kho và xóa được bài
+  let token = ""; try { token = JSON.parse(localStorage.getItem("decap-cms-user") || "{}").token || ""; } catch {}
+  const gh = (path, opt = {}) => fetch(`https://api.github.com/repos/${REPO}/${path}`, { ...opt, headers: { Accept: "application/vnd.github+json", Authorization: `token ${token}`, ...(opt.headers || {}) } });
+  const b64 = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, "")), c => c.charCodeAt(0)));
+
+  let POSTS = [], live = false;
+  if (token) {
+    try {
+      const r = await gh(`contents/${DIR}?ref=${BRANCH}`);
+      if (!r.ok) throw new Error(r.status);
+      const files = (await r.json()).filter(f => f.name.endsWith(".json"));
+      POSTS = await Promise.all(files.map(async f => {
+        const j = await (await gh(`contents/${DIR}/${encodeURIComponent(f.name)}?ref=${BRANCH}`)).json();
+        const o = JSON.parse(b64(j.content || ""));
+        return { ...o, _file: f.name.slice(0, -5), _sha: j.sha };
+      }));
+      live = true;
+    } catch { token = ""; }
+  }
+  if (!live) {
+    const d = await fetch("/data/posts.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+    POSTS = d.items || [];
+    $("#warn").innerHTML = `<div class="warn">Đang xem danh sách bài đã đăng trên web. <a href="/admin/">Đăng nhập trang quản trị</a> rồi mở lại trang này để thấy bài vừa sửa và dùng được nút Xóa.</div>`;
+  }
+  POSTS.forEach(p => { p.slug = p.slug || slugify(p.title) || p._file; });
+  POSTS.sort((a, b) => dateKey(b.date) - dateKey(a.date) || String(a.title).localeCompare(String(b.title), "vi"));
+  const VIEWS = await fetch("/api/luot-xem", { cache: "no-store" }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+
+  const cats = [...new Set(POSTS.map(p => p.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, "vi"));
+  $("#cat").insertAdjacentHTML("beforeend", cats.map(c => `<option>${esc(c)}</option>`).join(""));
+
+  // Bài lưu xong là lên web ngay (không có hẹn giờ đăng); "Ẩn khỏi Google" = đã bật ô ẩn trong mục SEO của bài
+  const status = p => p.seo?.noindex ? `<span class="pill hide">Đã đăng · Ẩn khỏi Google</span>` : `<span class="pill ok">Đã đăng</span>`;
+
+  function render() {
+    const q = $("#q").value.trim().toLowerCase(), c = $("#cat").value;
+    const list = POSTS.filter(p => (!c || p.category === c) && (!q || String(p.title).toLowerCase().includes(q)));
+    $("#count").textContent = `Bài viết (${POSTS.length})`;
+    if (!list.length) { $("#list").innerHTML = `<div class="note">${POSTS.length ? "Không có bài phù hợp." : "Chưa có bài viết nào."}</div>`; return; }
+    $("#list").innerHTML = `<table><thead><tr><th>Tiêu đề</th><th>Chuyên mục</th><th>Trạng thái</th><th>Lượt xem</th><th>Ngày</th><th></th></tr></thead><tbody>
+      ${list.map(p => `<tr>
+        <td class="t"><a href="/bai-viet/${esc(p.slug)}/" target="_blank" title="Xem bài trên web">${esc(p.title)}</a></td>
+        <td class="c" data-l="Chuyên mục">${esc(p.category || "—")}</td>
+        <td data-l="Trạng thái">${status(p)}</td>
+        <td class="v" data-l="Lượt xem">${(VIEWS[p.slug] || 0).toLocaleString("vi-VN")}</td>
+        <td class="d" data-l="Ngày">${esc(p.date || "")}</td>
+        <td class="act"><a href="/admin/#/collections/posts/entries/${encodeURIComponent(p._file || p.slug)}">Sửa</a>${live ? `<button data-file="${esc(p._file)}" data-sha="${esc(p._sha)}" data-title="${esc(p.title)}">Xoá</button>` : ""}</td>
+      </tr>`).join("")}</tbody></table>`;
+  }
+  $("#q").oninput = render; $("#cat").onchange = render;
+  render();
+
+  // Xóa bài: xóa file trong kho GitHub → Cloudflare tự đăng lại web sau 1–2 phút
+  document.addEventListener("click", async e => {
+    const b = e.target.closest("button[data-file]"); if (!b) return;
+    if (!confirm(`Xoá bài “${b.dataset.title}”?\nBài sẽ biến mất khỏi web sau 1–2 phút. Không hoàn tác được trong trang này.`)) return;
+    b.disabled = true;
+    const r = await gh(`contents/${DIR}/${encodeURIComponent(b.dataset.file)}.json`, { method: "DELETE", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: `Xóa posts “${b.dataset.file}”`, sha: b.dataset.sha, branch: BRANCH }) });
+    if (!r.ok) { alert("Chưa xoá được (" + r.status + "). Thử tải lại trang, hoặc xoá trong trang quản trị."); b.disabled = false; return; }
+    POSTS = POSTS.filter(p => p._file !== b.dataset.file); render();
+  });
+})();
+</script>
+</body>
+</html>

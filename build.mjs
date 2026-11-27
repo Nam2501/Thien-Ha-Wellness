@@ -191,7 +191,8 @@ function postPage(p) {
       ${src.length ? `<h2>Nguồn tham khảo</h2><ol>${src.map(x => `<li>${/^https?:/.test(x) ? `<a href="${esc(x)}" rel="nofollow noopener" target="_blank">${esc(x)}</a>` : esc(x)}</li>`).join("")}</ol>` : ""}
       <div class="disclaimer">Thông tin mang tính tham khảo, không thay thế tư vấn y khoa.</div></article>
       <aside class="side"><div class="side-card"><h3>Đặt lịch thư giãn</h3><p>Dành một chút thời gian cho cơ thể bạn tại ${esc(SITE.name)}.</p><a class="btn btn-navy" href="/#dat-lich">Đặt lịch</a></div>
-        <div class="side-card"><h3>Liệu trình</h3><ul class="side-list">${SERVICES.slice(0, 6).map(x => `<li><a href="${urlFor("services", x)}">${esc(x.name)}</a></li>`).join("")}</ul></div></aside></div>` });
+        <div class="side-card"><h3>Liệu trình</h3><ul class="side-list">${SERVICES.slice(0, 6).map(x => `<li><a href="${urlFor("services", x)}">${esc(x.name)}</a></li>`).join("")}</ul></div></aside></div>
+      <script>/* Đếm lượt xem: mỗi trình duyệt tối đa 1 lần/ngày cho mỗi bài */(function(s){try{var k="xem:"+s,d=new Date().toISOString().slice(0,10);if(localStorage.getItem(k)===d)return;localStorage.setItem(k,d);}catch(e){}try{navigator.sendBeacon("/api/luot-xem",new Blob([JSON.stringify({slug:s})],{type:"application/json"}));}catch(e){}})(${JSON.stringify(p.slug)});</script>` });
 }
 function blogPage() {
   const pg = SEO.pages?.blog || {}, m = Check.meta("page", { key: "blog", path: "/bai-viet/", title: "Bài viết", ...pg }, ctx);
